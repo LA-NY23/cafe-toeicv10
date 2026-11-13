@@ -374,7 +374,7 @@
         };
         
         try { 
-            const saved = localStorage.getItem('cafeToeicDataV35'); 
+            const saved = localStorage.getItem('cafeToeicDataV37'); 
             if (saved) {
                 const parsed = JSON.parse(saved);
                 S = { ...S, ...parsed };
@@ -383,16 +383,16 @@
                 }
             }
         } catch (e) {
-            localStorage.removeItem('cafeToeicDataV35');
+            localStorage.removeItem('cafeToeicDataV37');
         }
 
         function saveData() { 
             CAFE_UPGRADES.forEach(u => S.upgrades[u.id] = u.level);
             S.lastActive = Date.now();
-            localStorage.setItem('cafeToeicDataV35', JSON.stringify(S)); 
+            localStorage.setItem('cafeToeicDataV37', JSON.stringify(S)); 
         }
 
-        const EMBEDDED_HF_TOKEN = "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";
+        const EMBEDDED_HF_TOKEN = "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";
 
         const $ = id => document.getElementById(id);
         const getBonusIncome = () => S.items.reduce((acc, id) => {
@@ -712,7 +712,7 @@ Format de réponse attendu :
 
         function showTranslation() {
             const box = $('hint-box');
-            box.innerHTML = `<strong>🇫🇷 Mode IA Connectée :</strong><br>L'IA open-source Llama 3 analyse tes phrases en direct. Clé Hugging Face intégrée de manière invisible.`;
+            box.innerHTML = `<strong>🇫🇷 Mode IA Connectée :</strong><br>L'IA open-source Llama 3 analyse tes phrases en direct.`;
             box.style.display = 'block';
         }
 
@@ -845,12 +845,12 @@ Format de réponse attendu :
 
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(S));
-            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v35.json");
+            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v37.json");
             document.body.appendChild(a); a.click(); a.remove();
         }
 
         function resetData() {
-            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV35'); location.reload(); }
+            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV37'); location.reload(); }
         }
 
         switchTab('stories');
