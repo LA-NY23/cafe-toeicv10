@@ -32,7 +32,6 @@
         .card.locked { opacity: 0.7; }
         .card-icon { font-size: 32px; background: var(--bg); width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; border-radius: 16px; flex-shrink: 0; position: relative; }
         
-        /* Sprite CSS pour les 72 clés basées sur keys-sheet.png (9 colonnes, 8 lignes) */
         .key-sprite {
             width: 36px;
             height: 36px;
@@ -200,7 +199,6 @@
     
     <div class="toast" id="toast">Message</div>
 
-    <!-- MODAL DE NOTIFICATION DE FIN D'HISTOIRE & OBTENTION DE LA CLÉ -->
     <div class="modal-overlay" id="reward-modal">
         <div class="modal">
             <h2 style="color:var(--accent); margin-bottom: 12px;">🎉 Histoire Réussie !</h2>
@@ -210,7 +208,7 @@
                     <div id="reward-key-icon" style="width: 54px; height: 54px;"></div>
                 </div>
             </div>
-            <p style="font-size: 13px; font-weight: 600; color: var(--success); margin-bottom: 20px;" id="key-status-text">Clé 1 sur 1 obtenue 🔑</p>
+            <p style="font-size: 13px; font-weight: 600; color: var(--success); margin-bottom: 20px;" id="key-status-text">1 sur 1 obtenue 🔑</p>
             <button class="btn btn-green" id="claim-key-btn" onclick="claimKeyAndProceed()">Obtenir la clé et continuer ➔</button>
         </div>
     </div>
@@ -258,7 +256,6 @@
         let activeTest = { questions: [], currentIndex: 0, correctCount: 0 };
         let pendingRewardStoryId = null;
 
-        // Fonction pour générer le style CSS de la clé i (0 à 71) depuis le sprite sheet 'keys-sheet.png'
         function getKeySpriteStyle(id) {
             const index = id % 72;
             const col = index % 9;
@@ -274,36 +271,36 @@
               desc: "Premier grand rendez-vous au restaurant avec Clara.",
               vocab: "Menu = la carte\nReservation = réservation\nMain course = plat principal\nThe bill = l'addition",
               steps: [
-                { narration: "Vous poussez la porte du restaurant chic. Clara vous sourit, élégante.", npc: "Good evening! Welcome to La Bella Vita. Do you and the lady have a reservation?", hints: ["Yes, a table for two under [Name]."], nativeTip: "Dis : « Hi, yes, we booked a table for two. »", frTrans: "Bonsoir ! Bienvenue à La Bella Vita. Avez-vous une réservation ?" },
-                { narration: "Le serveur vous conduit à travers la salle tamisée jusqu'à une jolie table.", npc: "Here is your table. Is this spot alright for you and Clara?", hints: ["Yes, this table is perfect, thank you."], nativeTip: "Dis : « This table is wonderful, thank you. »", frTrans: "Voici votre table. Est-ce que cette place vous convient ?" },
-                { narration: "Vous vous asseyez face à Clara. Le serveur s'apprête à partir.", npc: "Can I get you started with some drinks while you look at the menu?", hints: ["I'll have a glass of red wine, please."], nativeTip: "Dis : « Could we get some water and wine? »", frTrans: "Puis-je vous apporter des boissons ?" },
-                { narration: "Clara feuillette la carte avec attention.", npc: "So, what are you thinking of having tonight?", hints: ["I might try the chef's special pasta."], nativeTip: "Dis : « I'm thinking of trying the pasta. »", frTrans: "Qu'penses-tu commander ce soir ?" },
-                { narration: "Le serveur revient prendre votre commande de boissons.", npc: "Here are your drinks. Are you ready to order starters?", hints: ["We'd like the garlic bread, please."], nativeTip: "Dis : « Could we get the garlic bread? »", frTrans: "Prêts pour les entrées ?" },
-                { narration: "Le serveur s'éloigne avec un sourire.", npc: "Clara looks into your eyes: 'I'm so happy we're here together.'", hints: ["Me too, you look stunning tonight."], nativeTip: "Dis : « I'm the luckiest person here. »", frTrans: "Heureuse qu'on soit ensemble." },
-                { narration: "Les entrées arrivent et vous dégustez le tout en discutant.", npc: "How was your week? Did you manage to finish your big project?", hints: ["It was tough, but I made it work."], nativeTip: "Dis : « It was challenging, but successful. »", frTrans: "Comment s'est passée ta semaine ?" },
-                { narration: "Clara hoche la tête, admirative de ton parcours.", npc: "You always work so hard. You deserve a relaxing weekend.", hints: ["A weekend with you is all I need."], nativeTip: "Dis : « Spending time with you is my relaxation. »", frTrans: "Tu travailles si dur." },
-                { narration: "Le serveur revient débarrasser les assiettes vides.", npc: "Did you enjoy the starters? Ready for the main course?", hints: ["Everything was great. Bring on the mains."], nativeTip: "Dis : « It was delicious, thank you. »", frTrans: "Avez-vous apprécié ?" },
-                { narration: "Vos plats principaux sont servis fumants.", npc: "Here is your specialty pasta. Enjoy your meal!", hints: ["Thank you, it smells amazing."], nativeTip: "Dis : « Looks wonderful, thank you. »", frTrans: "Voici vos pâtes." },
-                { narration: "Vous goûtez votre plat... (Test de goût aléatoire)", 
+                { narration: "Vous poussez la porte du restaurant chic. Clara vous sourit, élégante.", npc: "Good evening! Welcome to La Bella Vita. Do you and the lady have a reservation?", hints: ["Yes, a table for two."], nativeTip: "Dis : « Hi, yes, we booked a table for two. »", frTrans: "Bonsoir ! Bienvenue à La Bella Vita. Avez-vous une réservation ?" },
+                { narration: "Le serveur vous conduit à travers la salle tamisée jusqu'à une jolie table.", npc: "Here is your table. Is this spot alright for you and Clara?", hints: ["Yes, this table is perfect."], nativeTip: "Dis : « This table is wonderful. »", frTrans: "Voici votre table. Est-ce que cette place vous convient ?" },
+                { narration: "Vous vous asseyez face à Clara. Le serveur s'apprête à partir.", npc: "Can I get you started with some drinks while you look at the menu?", hints: ["I'll have a glass of red wine."], nativeTip: "Dis : « Could we get water and wine? »", frTrans: "Puis-je vous apporter des boissons ?" },
+                { narration: "Clara feuillette la carte avec attention.", npc: "So, what are you thinking of having tonight?", hints: ["I might try the pasta."], nativeTip: "Dis : « I'm thinking of trying the pasta. »", frTrans: "Qu'penses-tu commander ce soir ?" },
+                { narration: "Le serveur revient prendre votre commande.", npc: "Are you ready to order starters?", hints: ["We'd like garlic bread."], nativeTip: "Dis : « Could we get garlic bread? »", frTrans: "Prêts pour les entrées ?" },
+                { narration: "Le serveur s'éloigne avec un sourire.", npc: "Clara looks into your eyes: 'I'm so happy we're here together.'", hints: ["Me too, you look stunning."], nativeTip: "Dis : « I'm so happy too. »", frTrans: "Je suis tellement heureuse." },
+                { narration: "Les entrées arrivent et vous dégustez le tout.", npc: "How was your week? Did you finish your project?", hints: ["It was tough, but I made it work."], nativeTip: "Dis : « It was challenging. »", frTrans: "Comment s'est passée ta semaine ?" },
+                { narration: "Clara hoche la tête, admirative.", npc: "You always work so hard. You deserve rest.", hints: ["A weekend with you is all I need."], nativeTip: "Dis : « Spending time with you is my rest. »", frTrans: "Tu travailles si dur." },
+                { narration: "Le serveur débarrasse.", npc: "Ready for the main course?", hints: ["Yes, bring on the mains."], nativeTip: "Dis : « Yes, please. »", frTrans: "Prêts pour les plats ?" },
+                { narration: "Vos plats principaux sont servis.", npc: "Here is your specialty pasta. Enjoy!", hints: ["Thank you, it smells amazing."], nativeTip: "Dis : « Looks wonderful. »", frTrans: "Voici vos pâtes." },
+                { narration: "Vous goûtez votre plat...", 
                   process: (t) => {
                       const good = Math.random() > 0.3;
                       window.foodSuccess = good;
-                      return good ? "You take a bite and smile: 'This is honestly incredible!' Clara agrees happily." : "You take a bite and frown: 'Hmm, it's a bit too salty today...' Clara laughs and shares hers with you.";
+                      return good ? "You smile: 'This is honestly incredible!' Clara agrees happily." : "You frown: 'Hmm, it's a bit too salty today...' Clara laughs and shares hers.";
                   },
-                  hints: ["Let's share mine since yours is tricky."], nativeTip: "Dis : « We can share my dish. »", frTrans: "Tu goûtes et observes la réaction." },
-                { narration: "Le repas continue dans une ambiance détendue.", npc: "Clara smiles: 'Even with a salty dish, I love our dinners.'", hints: ["Me too, every moment with you is special."], nativeTip: "Dis : « You make every moment special. »", frTrans: "J'adore nos dîners." },
-                { narration: "Le serveur apporte la carte des desserts.", npc: "Any room left for dessert or coffee?", hints: ["We'll share a tiramisu."], nativeTip: "Dis : « We'd love to share a tiramisu. »", frTrans: "De la place pour un dessert ?" },
-                { narration: "Le tiramisu fond dans la bouche, un vrai régal.", npc: "That was so good. Should we ask for the bill?", hints: ["Yes, let's grab the check."], nativeTip: "Dis : « Could we get the check, please? »", frTrans: "Demandons l'addition." },
-                { narration: "Le serveur vous apporte l'addition finale.", npc: "Here is your check. You can pay at the counter whenever you're ready.", hints: ["Thank you, I'll pay right now."], nativeTip: "Dis : « Thank you, I'll pay by card. »", frTrans: "Voici l'addition." },
-                { narration: "Vous marchez tranquillement vers son appartement.", npc: "Clara stops at her door, holding your hand: 'I had an amazing time tonight. Would you like to come up for coffee?'", hints: ["I'd love to come up."], nativeTip: "Dis : « I'd love nothing more. »", 
+                  hints: ["Let's share mine."], nativeTip: "Dis : « We can share. »", frTrans: "Tu goûtes le plat." },
+                { narration: "Le repas continue dans la joie.", npc: "Clara smiles: 'Even with a salty dish, I love our dinners.'", hints: ["Me too, you're special."], nativeTip: "Dis : « You make every moment special. »", frTrans: "J'adore nos dîners." },
+                { narration: "Carte des desserts.", npc: "Any room left for dessert or coffee?", hints: ["We'll share a tiramisu."], nativeTip: "Dis : « We'd love to share tiramisu. »", frTrans: "De la place pour un dessert ?" },
+                { narration: "Le tiramisu fond dans la bouche.", npc: "That was so good. Should we ask for the bill?", hints: ["Yes, let's grab the check."], nativeTip: "Dis : « Could we get the check? »", frTrans: "Demandons l'addition." },
+                { narration: "Paiement effectué.", npc: "You can pay at the counter whenever you're ready.", hints: ["Thank you, I'll pay."], nativeTip: "Dis : « Thank you. »", frTrans: "Paiement au comptoir." },
+                { narration: "Retour vers son appartement.", npc: "Clara stops at her door: 'I had an amazing time. Come up for coffee?'", hints: ["I'd love to come up."], nativeTip: "Dis : « I'd love to. »", 
                   process: (t) => {
                       const success = t.toLowerCase().includes('coffee') || t.toLowerCase().includes('love') || t.toLowerCase().includes('stay') || t.toLowerCase().includes('yes');
                       window.dateSuccess = success;
-                      return success ? "Clara smiles warmly and unlocks her door: 'Come on in, let's spend more time together.' (Succès !)" : "Clara looks slightly hesitant: 'It's getting late, let's save it for next time. Good night!' (Échec... il faut retenter !)";
+                      return success ? "Clara smiles and unlocks her door: 'Come on in.' (Succès !)" : "Clara hesitates: 'It's getting late, good night!' (Échec, recommence !)";
                   },
                   frTrans: "Veux-tu monter boire un café ?" 
                 },
-                { end: true, narration: "Fin du scénario du Mois 1.", npc: "FIN DU RENDEZ-VOUS" }
+                { end: true, narration: "Fin du Mois 1.", npc: "FIN DU RENDEZ-VOUS" }
               ]
             },
             ...Array.from({length: 71}, (_, i) => {
@@ -363,7 +360,7 @@
         };
         
         try { 
-            const saved = localStorage.getItem('cafeToeicDataV21'); 
+            const saved = localStorage.getItem('cafeToeicDataV22'); 
             if (saved) {
                 const parsed = JSON.parse(saved);
                 S = { ...S, ...parsed };
@@ -387,13 +384,13 @@
                 }
             }
         } catch (e) {
-            localStorage.removeItem('cafeToeicDataV21');
+            localStorage.removeItem('cafeToeicDataV22');
         }
 
         function saveData() { 
             CAFE_UPGRADES.forEach(u => S.upgrades[u.id] = u.level);
             S.lastActive = Date.now();
-            localStorage.setItem('cafeToeicDataV21', JSON.stringify(S)); 
+            localStorage.setItem('cafeToeicDataV22', JSON.stringify(S)); 
         }
 
         const $ = id => document.getElementById(id);
@@ -568,7 +565,7 @@
                 }
             });
             $('chat-messages').innerHTML = msgHtml;
-            $('view-chat').scrollTop = $('view-chat'].scrollHeight;
+            $('view-chat').scrollTop = $('view-chat').scrollHeight;
             $('hint-box').style.display = 'none';
         }
 
@@ -640,7 +637,6 @@
             }, 800);
         }
 
-        // Déclenche l'affichage du pop-up de réussite avec la clé correspondante
         function triggerKeyReward(storyId) {
             pendingRewardStoryId = storyId;
             const spriteCss = getKeySpriteStyle(storyId);
@@ -649,7 +645,6 @@
             $('reward-modal').classList.add('active');
         }
 
-        // Clic sur le bouton vert "Obtenir la clé et continuer"
         function claimKeyAndProceed() {
             $('reward-modal').classList.remove('active');
             const stId = pendingRewardStoryId;
@@ -799,12 +794,12 @@
 
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(S));
-            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v21.json");
+            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v22.json");
             document.body.appendChild(a); a.click(); a.remove();
         }
 
         function resetData() {
-            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV21'); location.reload(); }
+            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV22'); location.reload(); }
         }
 
         switchTab('stories');
