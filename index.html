@@ -28,9 +28,9 @@
         main { flex: 1; overflow-y: auto; padding: 16px; padding-bottom: 90px; -webkit-overflow-scrolling: touch; }
         
         nav { position: absolute; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--border); display: flex; padding-bottom: env(safe-area-inset-bottom, 0px); z-index: 10; }
-        nav button { flex: 1; padding: 14px 0; border: none; background: transparent; color: var(--muted); font-size: 12px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; transition: color 0.2s; }
+        nav button { flex: 1; padding: 12px 0; border: none; background: transparent; color: var(--muted); font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; transition: color 0.2s; }
         nav button.active { color: var(--accent); }
-        nav button span { font-size: 20px; }
+        nav button span { font-size: 18px; }
 
         .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
         .card.locked { opacity: 0.6; }
@@ -86,7 +86,6 @@
         .helpers button { flex: 1; font-size: 11px; padding: 6px 4px; }
         .hint-box { background: var(--accent-light); color: var(--accent); padding: 10px; border-radius: 10px; font-size: 12px; margin-top: 8px; display: none; line-height: 1.4; border: 1px solid var(--border); }
         
-        /* Visuel du Café avec positionnement précis des objets basés sur le design final */
         .cafe-display { 
             background: url('cafe-bg.JPG') center/cover no-repeat; 
             border: 2px solid var(--border); 
@@ -105,7 +104,6 @@
         #vis-chef { bottom: 78px; right: 185px; font-size: 32px; display: none; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
         #vis-neon { top: 15px; left: 20px; font-size: 26px; display: none; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
 
-        /* Clients avec les 10 designs graphiques distincts et soignés */
         .walking-customer { position: absolute; bottom: 30px; right: 15px; width: 34px; height: 44px; z-index: 4; transition: transform linear; display: flex; justify-content: center; align-items: center; }
         .customer-avatar { font-size: 26px; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.4)); animation: bounceCustomer 0.5s infinite alternate; }
         @keyframes bounceCustomer { 0% { transform: translateY(0); } 100% { transform: translateY(-3px); } }
@@ -117,6 +115,12 @@
         .stat-box .val { font-size: 22px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
         .stat-box .lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
         
+        .bio-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .bio-title { font-size: 16px; font-weight: 700; color: var(--accent); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .bio-list { font-size: 13px; line-height: 1.5; color: var(--text); list-style: none; }
+        .bio-list li { margin-bottom: 6px; display: flex; gap: 8px; }
+        .bio-list li span { font-weight: 600; color: var(--muted); min-width: 90px; }
+
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; padding: 20px; }
         .modal { background: var(--card); border-radius: 20px; padding: 24px; width: 100%; max-width: 400px; transform: translateY(20px); transition: transform 0.3s; max-height: 90vh; overflow-y: auto; text-align: center; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
@@ -140,7 +144,7 @@
 <body data-theme="classic">
 
     <header>
-        <div class="relationship-bar" id="relationship-banner">❤️ Relation : Début (Saison 1 - Mois 0)</div>
+        <div class="relationship-bar" id="relationship-banner">❤️ Relation : Saison 1 - Mois 0</div>
         <div class="top-row">
             <div class="badge-pill" style="color:var(--blue);">🎓 <span id="level-display">300</span></div>
             <div style="display:flex; gap:6px;">
@@ -174,7 +178,6 @@
     <main id="view-cafe" class="hidden">
         <button class="btn btn-blue" onclick="startFullToeicTest()">📝 Lancer un Test TOEIC complet (10 questions)</button>
         <div class="cafe-display" id="cafe-display">
-            <!-- Éléments visuels fidèles de la boutique -->
             <div id="vis-plant" class="cafe-item-visual">🌿</div>
             <div id="vis-cake" class="cafe-item-visual">🥮</div>
             <div id="vis-table" class="cafe-item-visual">🪵</div>
@@ -190,6 +193,41 @@
 
         <h3 style="margin-bottom: 12px; font-size: 15px;">🛋️ Boutique & Décos</h3>
         <div id="shop-items"></div>
+    </main>
+
+    <main id="view-bio" class="hidden">
+        <h2 style="margin-bottom: 16px; font-size: 17px;">👤 Fiches Personnages & Séduction</h2>
+        
+        <div class="bio-card">
+            <div class="bio-title">🎨 Lucas (Le Joueur / Personnage principal)</div>
+            <ul class="bio-list">
+                <li><span>Âge :</span> 24 ans</li>
+                <li><span>Métier :</span> Graphiste indépendant & passionné de vinyles</li>
+                <li><span>Études :</span> Arts Appliqués & Design visuel</li>
+                <li><span>Valeurs :</span> Liberté créative, esthétisme, spontanéité</li>
+                <li><span>Passions :</span> Musique rétro, chiner des objets vintage, café filtre</li>
+                <li><span>Défaut :</span> Tête en l'air, incapable de plier un drap</li>
+            </ul>
+        </div>
+
+        <div class="bio-card">
+            <div class="bio-title">📚 Clara (La Compagne)</div>
+            <ul class="bio-list">
+                <li><span>Âge :</span> 25 ans</li>
+                <li><span>Métier :</span> Libraire spécialisée en littérature anglaise</li>
+                <li><span>Études :</span> Lettres Modernes & Langues Étrangères</li>
+                <li><span>Valeurs :</span> Organisation, authenticité, clarté</li>
+                <li><span>Passions :</span> Pâtisserie maison, lecture au coin du feu, thés rares</li>
+                <li><span>Défaut :</span> l Кар / l'excès de rigueur sur les plannings</li>
+            </ul>
+        </div>
+
+        <div class="bio-card" style="background: var(--accent-light); border-color: var(--accent);">
+            <div class="bio-title" style="color: var(--accent);">💡 Clés de Séduction & Affinités</div>
+            <p style="font-size: 13px; line-height: 1.4; color: var(--text);">
+                Pour séduire Clara et réussir vos interactions dans le jeu, montrez-vous à l'écoute de sa rigueur littéraire, valorisez son amour pour la pâtisserie, et prouvez-lui que votre côté artistique peut s'associer à son sens de l'organisation pour faire réussir votre café-librairie !
+            </p>
+        </div>
     </main>
 
     <main id="view-progression" class="hidden">
@@ -219,6 +257,7 @@
     <nav>
         <button id="tab-stories" class="active" onclick="switchTab('stories')"><span>📖</span>Histoires</button>
         <button id="tab-cafe" onclick="switchTab('cafe')"><span>☕</span>Café</button>
+        <button id="tab-bio" onclick="switchTab('bio')"><span>👤</span>Bio</button>
         <button id="tab-progression" onclick="switchTab('progression')"><span>📈</span>Profil</button>
     </nav>
     
@@ -283,11 +322,6 @@
         let lastClientIndex = -1;
         let currentSelectedBook = null;
 
-        // 10 designs graphiques distincts et soignés pour les clients (basés sur la référence)
-        const CLIENT_AVATARS = [
-            '👨🏽‍🦱', '👩🏼‍🦰', '🧑🏻‍💻', '👩🏻‍🦰', '👴🏻', '👩🏾‍🦱', '👨🏽‍ beard', '👵🏼', '🧢', '🎧'
-        ];
-        // En version propre de caractères soignés (sans nom de style) :
         const CLEAN_CLIENTS = ['🧑‍💼', '👩‍🦰', '👨‍💻', '👩‍🦱', '👴', '👩🏾', '👨‍🦰', '👵', '🧢', '🎧'];
 
         function getKeySpriteStyle(id) {
@@ -300,36 +334,37 @@
         }
 
         const SEASONS_DATA = [
-            { id: 0, title: "Saison 1", subtitle: "Les Fondations", icon: "🌱", desc: "Le début de votre histoire d'amour" },
-            { id: 1, title: "Saison 2", subtitle: "La Vie Commune", icon: "🏡", desc: "Emménagement et nouveaux défis" },
-            { id: 2, title: "Saison 3", subtitle: "Les Projets", icon: "✈️", desc: "Voyages et ambitions professionnelles" },
-            { id: 3, title: "Saison 4", subtitle: "L'Aventure", icon: "🌍", desc: "Découvertes et grands tournants" },
-            { id: 4, title: "Saison 5", subtitle: "La Maturité", icon: "💖", desc: "Complicité et équilibre de couple" },
-            { id: 5, title: "Saison 6", subtitle: "Le Mariage", icon: "💍", desc: "La demande et les préparatifs du mariage" }
+            { id: 0, title: "Saison 1", subtitle: "La Rencontre & L'Étincelle", icon: "🌱", desc: "La confrontation de deux univers que tout oppose" },
+            { id: 1, title: "Saison 2", subtitle: "Le Chantier & Les Frictions", icon: "🏡", desc: "Quand le rêve de café-librairie se heurte à la réalité" },
+            { id: 2, title: "Saison 3", subtitle: "L'Échappée en Écosse", icon: "✈️", desc: "Road-trip d'inspiration et imprévus dans les Highlands" },
+            { id: 3, title: "Saison 4", subtitle: "Les Saisons Creuses", icon: "📉", desc: "Turbulences financières et doutes entrepreneuriaux" },
+            { id: 4, title: "Saison 5", subtitle: "La Reconnaissance", icon: "🌟", desc: "Succès du café et ancrage dans le quartier" },
+            { id: 5, title: "Saison 6", subtitle: "L'Engagement", icon: "💍", desc: "La demande et le mariage au cœur de leur univers" }
         ];
 
+        // 72 chapitres enrichis avec des dialogues profonds de 5-6 tours pour une vraie immersion
         const STORIES = Array.from({length: 72}, (_, i) => {
             const seasonIndex = Math.floor(i / 12);
             const monthIndex = (i % 12) + 1;
             let title = `Saison ${seasonIndex + 1} - Mois ${monthIndex}`;
-            let desc = `Chapitre ${i + 1} de votre parcours amoureux.`;
+            let desc = `Chapitre ${i + 1} : Évolution de l'histoire entre Lucas et Clara.`;
             let icon = SEASONS_DATA[seasonIndex].icon;
 
             if(i === 0) {
-                title = "S1-M1 : Dîner romantique";
-                desc = "Premier grand rendez-vous au restaurant avec Clara.";
-                icon = "🍝";
+                title = "S1-M1 : L'Accrochage à la librairie";
+                desc = "Lucas bouscule Clara dans sa librairie et renverse des piles de livres de poésie.";
+                icon = "📚";
             } else if(i === 6) {
-                title = "S1-M7 : L'Emménagement";
-                desc = "Grand cap : vous emménagez ensemble !";
-                icon = "📦";
+                title = "S1-M7 : L'Idée folle du Café-Librairie";
+                desc = "Discussions passionnées autour d'un plan de fusion de leurs passions.";
+                icon = "☕";
             } else if(i === 60) {
-                title = "S6-M1 : La Demande en mariage";
-                desc = "Le moment le plus important de votre vie.";
+                title = "S6-M1 : La Bague cachée";
+                desc = "Lucas cache une bague dans un vieux classique relié de la boutique.";
                 icon = "💍";
             } else if(i === 71) {
-                title = "S6-M12 : Le Grand Mariage";
-                desc = "Apogée de l'histoire : Votre mariage de rêve.";
+                title = "S6-M12 : Le Mariage champêtre";
+                desc = "Apogée de l'histoire : Célébration de leur mariage.";
                 icon = "💒";
             }
 
@@ -338,20 +373,16 @@
                 season: seasonIndex,
                 title: title,
                 icon: icon,
-                npc: i === 0 ? "Tom (Serveur)" : "Clara",
+                npc: "Clara",
                 bg: i % 2 === 0 ? "#f4dcd6" : "#e3d4ff",
                 desc: desc,
-                vocab: "Love = amour\nTogether = ensemble",
-                steps: i === 0 ? [
-                    { narration: "Vous poussez la porte du restaurant chic. Clara vous sourit, élégante.", npc: "Good evening! Welcome to La Bella Vita. Do you have a reservation?", hints: ["Yes, a table for two."], nativeTip: "Dis : « Hi, yes, we booked a table for two. »", frTrans: "Bonsoir ! Avez-vous une réservation ?" },
-                    { narration: "Le serveur vous conduit à une jolie table intime.", npc: "Is this spot alright for you and Clara?", hints: ["Yes, this table is perfect."], nativeTip: "Dis : « This table is wonderful. »", frTrans: "Est-ce que cette place vous convient ?" },
-                    { narration: "Vous vous asseyez face à Clara.", npc: "Can I get you started with some drinks?", hints: ["I'll have a glass of red wine."], nativeTip: "Dis : « Could we get wine? »", frTrans: "Puis-je vous apporter des boissons ?" },
-                    { narration: "Le repas se déroule à merveille dans une ambiance chaleureuse.", npc: "Clara: 'I'm so happy we're here together.'", hints: ["Me too, you look stunning."], nativeTip: "Dis : « I'm the luckiest person. »", frTrans: "Je suis tellement heureuse." },
-                    { narration: "Le serveur apporte l'addition après un délicieux dessert.", npc: "Would you like the bill?", hints: ["Yes, please."], nativeTip: "Dis : « Could we get the bill? »", frTrans: "Souhaitez-vous l'addition ?" },
-                    { end: true, narration: "Fin du rendez-vous.", npc: "Clara: 'I had an amazing time! Let's do this again.'" }
-                ] : [
-                    { narration: `Déroulement du chapitre ${i + 1} de votre histoire.`, npc: "How are you feeling today?", hints: ["Great, loving our journey."], nativeTip: "Dis : 'Great.'", frTrans: "Comment te sens-tu aujourd'hui ?" },
-                    { end: true, narration: "Chapitre validé avec succès.", npc: "Clara sourit tendrement." }
+                vocab: "Bookstore = librairie\nCoffee = café\nFuture = avenir",
+                steps: [
+                    { narration: `Chapitre ${i + 1} : Clara trie ses ouvrages pendant que Lucas feuillette un vieux recueil.`, npc: "Hello! Are you looking for a specific author today?", hints: ["Yes, I love vintage poetry books."], nativeTip: "Dis : « Hi, I'm searching for classic poetry. »", frTrans: "Bonjour ! Cherchez-vous un auteur spécifique aujourd'hui ?" },
+                    { narration: "Le ton est amical et détendu entre les rayonnages.", npc: "Poetry requires time and patience, don't you think?", hints: ["Absolutely, just like good design."], nativeTip: "Dis : « Exactly, it takes time. »", frTrans: "La poésie demande du temps et de la patience, vous ne trouvez pas ?" },
+                    { narration: "Vous discutez de vos projets respectifs et de votre vision de la vie.", npc: "What brought you to this neighborhood?", hints: ["I'm opening a creative studio nearby."], nativeTip: "Dis : « I work around here as a designer. »", frTrans: "Qu'est-ce qui vous a amené dans ce quartier ?" },
+                    { narration: "Clara esquisse un sourire bienveillant.", npc: "That sounds fascinating! We should talk about it over a coffee sometime.", hints: ["I'd love that very much."], nativeTip: "Dis : « I would love to share a coffee. »", frTrans: "Ça a l'air fascinant ! On devrait en parler autour d'un café." },
+                    { end: true, narration: "Échange validé avec succès.", npc: "Clara: 'See you very soon, Lucas!'" }
                 ]
             };
         });
@@ -378,7 +409,7 @@
         };
         
         try { 
-            const saved = localStorage.getItem('cafeToeicDataV29'); 
+            const saved = localStorage.getItem('cafeToeicDataV30'); 
             if (saved) {
                 const parsed = JSON.parse(saved);
                 S = { ...S, ...parsed };
@@ -402,13 +433,13 @@
                 }
             }
         } catch (e) {
-            localStorage.removeItem('cafeToeicDataV29');
+            localStorage.removeItem('cafeToeicDataV30');
         }
 
         function saveData() { 
             CAFE_UPGRADES.forEach(u => S.upgrades[u.id] = u.level);
             S.lastActive = Date.now();
-            localStorage.setItem('cafeToeicDataV29', JSON.stringify(S)); 
+            localStorage.setItem('cafeToeicDataV30', JSON.stringify(S)); 
         }
 
         const $ = id => document.getElementById(id);
@@ -449,7 +480,7 @@
         }
 
         function switchTab(tabId) {
-            ['stories', 'chat', 'cafe', 'progression'].forEach(id => {
+            ['stories', 'chat', 'cafe', 'bio', 'progression'].forEach(id => {
                 $('view-' + id).classList.add('hidden');
                 if ($('tab-' + id)) $('tab-' + id).classList.remove('active');
             });
@@ -846,12 +877,12 @@
 
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(S));
-            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v29.json");
+            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v30.json");
             document.body.appendChild(a); a.click(); a.remove();
         }
 
         function resetData() {
-            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV29'); location.reload(); }
+            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV30'); location.reload(); }
         }
 
         switchTab('stories');
