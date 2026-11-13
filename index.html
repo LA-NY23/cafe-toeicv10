@@ -9,16 +9,38 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
-        :root { --bg: #f9f6f0; --card: #ffffff; --text: #3d3430; --muted: #8c7b74; --accent: #c87965; --accent-light: #f4dcd6; --success: #a3b19b; --success-light: #e4efe0; --border: #e3d9d3; --blue: #4a90e2; --gold: #d4af37; }
-        [data-theme="dark"] { --bg: #1a1614; --card: #2c2421; --text: #f5f0eb; --muted: #b0a299; --accent: #d88975; --accent-light: #44322d; --border: #3d3430; }
-        [data-theme="vintage"] { --bg: #f4ecd8; --card: #fff9e6; --text: #5c4033; --muted: #9e826b; --accent: #b85d33; --accent-light: #fbe6d4; --border: #dfccb0; }
-        [data-theme="gold"] { --bg: #111111; --card: #1f1f1f; --text: #f5f0eb; --muted: #a0a0a0; --accent: #d4af37; --accent-light: #332d15; --border: #333333; }
+        :root {
+            --bg: #f4ecd8;
+            --card: #fff9e6;
+            --text: #5c4033;
+            --muted: #9e826b;
+            --accent: #b85d33;
+            --accent-light: #fbe6d4;
+            --success: #a3b19b;
+            --success-light: #e4efe0;
+            --border: #dfccb0;
+            --wood: #c4a574;
+            --wood-dark: #8b6b4a;
+            --cream: #f9f1e0;
+        }
+        [data-theme="dark"] {
+            --bg: #1a1614; --card: #2c2421; --text: #f5f0eb; --muted: #b0a299;
+            --accent: #d88975; --accent-light: #44322d; --border: #3d3430;
+        }
+        [data-theme="vintage"] {
+            --bg: #f4ecd8; --card: #fff9e6; --text: #5c4033; --muted: #9e826b;
+            --accent: #b85d33; --accent-light: #fbe6d4; --border: #dfccb0;
+        }
+        [data-theme="gold"] {
+            --bg: #111111; --card: #1f1f1f; --text: #f5f0eb; --muted: #a0a0a0;
+            --accent: #d4af37; --accent-light: #332d15; --border: #333333;
+        }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
         body, html { height: 100%; background: var(--bg); color: var(--text); overflow: hidden; transition: background 0.3s, color 0.3s; }
         body { display: flex; flex-direction: column; max-width: 600px; margin: 0 auto; position: relative; }
         
-        header { background: var(--card); padding: calc(env(safe-area-inset-top, 10px) + 12px) 16px 12px; border-bottom: 1px solid var(--border); z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        header { background: var(--card); padding: calc(env(safe-area-inset-top, 10px) + 12px) 16px 12px; border-bottom: 1px solid var(--border); z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
         .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 13px; font-weight: 600; }
         .badge-pill { background: var(--bg); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 6px; }
         .relationship-bar { background: var(--accent-light); color: var(--accent); font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 8px; text-align: center; margin-bottom: 8px; }
@@ -32,43 +54,222 @@
         nav button.active { color: var(--accent); }
         nav button span { font-size: 18px; }
 
-        .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-        .card.locked { opacity: 0.6; }
-        .card-icon { font-size: 28px; background: var(--bg); width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 14px; flex-shrink: 0; position: relative; border: 1px solid var(--border); }
-        
+        /* ========== NOUVEAU MENU PRINCIPAL PIXEL CAFÉ ========== */
+        .cafe-library {
+            background: linear-gradient(180deg, #e8d9b8 0%, #d4c09a 40%, #c4a574 100%);
+            border-radius: 20px;
+            padding: 18px 14px 24px;
+            border: 3px solid var(--wood-dark);
+            box-shadow: 
+                inset 0 0 0 2px #f0e0c0,
+                0 8px 24px rgba(92,64,51,0.25);
+            position: relative;
+            overflow: hidden;
+            image-rendering: pixelated;
+        }
+
+        .cafe-library::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(ellipse at 20% 10%, rgba(255,240,200,0.4) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(255,220,160,0.3) 0%, transparent 40%);
+            pointer-events: none;
+        }
+
+        .library-header {
+            text-align: center;
+            margin-bottom: 16px;
+            position: relative;
+            z-index: 2;
+        }
+        .library-header h2 {
+            font-size: 17px;
+            font-weight: 800;
+            color: #5c4033;
+            letter-spacing: 0.5px;
+            text-shadow: 1px 1px 0 #f5e6c8;
+        }
+        .library-header p {
+            font-size: 11px;
+            color: #8b6b4a;
+            margin-top: 4px;
+        }
+
+        /* Étagère de livres */
+        .bookshelf {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .pixel-book {
+            background: #fff9e6;
+            border: 3px solid #8b6b4a;
+            border-radius: 6px 6px 4px 4px;
+            padding: 10px 6px 12px;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.18s, box-shadow 0.18s;
+            box-shadow: 
+                3px 3px 0 #5c4033,
+                inset 0 0 0 1px rgba(255,255,255,0.4);
+            image-rendering: pixelated;
+        }
+        .pixel-book:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 #5c4033;
+        }
+        .pixel-book:hover {
+            transform: translateY(-4px);
+        }
+
+        .book-spine {
+            font-size: 28px;
+            margin-bottom: 6px;
+            filter: drop-shadow(1px 1px 0 rgba(0,0,0,0.15));
+        }
+        .book-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: #5c4033;
+            line-height: 1.2;
+            margin-bottom: 3px;
+        }
+        .book-subtitle {
+            font-size: 9px;
+            color: #9e826b;
+            line-height: 1.25;
+            margin-bottom: 6px;
+            min-height: 24px;
+        }
+        .book-progress {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--accent);
+            background: var(--accent-light);
+            border-radius: 10px;
+            padding: 2px 6px;
+            display: inline-block;
+        }
+
+        /* Décor pixel café autour */
+        .cafe-deco {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 18px;
+            padding: 0 4px;
+            position: relative;
+            z-index: 2;
+        }
+        .deco-item {
+            font-size: 22px;
+            filter: drop-shadow(1px 1px 0 rgba(0,0,0,0.2));
+            opacity: 0.9;
+        }
+
+        /* Vue ouverte d’une saison */
+        .season-open {
+            background: #fff9e6;
+            border: 3px solid #8b6b4a;
+            border-radius: 16px;
+            padding: 14px;
+            box-shadow: 4px 4px 0 #5c4033;
+        }
+        .season-open-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 2px dashed #dfccb0;
+        }
+        .back-btn {
+            background: #f4ecd8;
+            border: 2px solid #8b6b4a;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #5c4033;
+            box-shadow: 2px 2px 0 #5c4033;
+        }
+        .back-btn:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 #5c4033; }
+
+        .card {
+            background: #fff9e6;
+            border: 2px solid #dfccb0;
+            border-radius: 14px;
+            padding: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 2px 2px 0 rgba(92,64,51,0.12);
+        }
+        .card.locked { opacity: 0.55; }
+        .card-icon {
+            font-size: 26px;
+            background: #f4ecd8;
+            width: 52px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            flex-shrink: 0;
+            border: 2px solid #dfccb0;
+            position: relative;
+        }
         .key-sprite {
-            width: 30px;
-            height: 30px;
+            width: 28px;
+            height: 28px;
             background-image: url('keys-sheet.PNG');
             background-size: 900% 800%;
             image-rendering: pixelated;
             position: absolute;
-            bottom: -2px;
-            right: -2px;
+            bottom: -3px;
+            right: -3px;
             border-radius: 50%;
-            border: 2px solid var(--card);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            border: 2px solid #fff9e6;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.25);
         }
-
         .card-content { flex: 1; }
-        .card-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
-        .card-desc { font-size: 12px; color: var(--muted); line-height: 1.3; }
+        .card-title { font-weight: 700; font-size: 14px; margin-bottom: 3px; color: #5c4033; }
+        .card-desc { font-size: 11px; color: #9e826b; line-height: 1.3; }
 
-        button.btn { background: var(--accent); color: white; border: none; padding: 10px 16px; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; transition: transform 0.1s; }
-        button.btn:active { transform: scale(0.96); }
-        button.btn.btn-outline { background: var(--accent-light); color: var(--accent); border: 1px solid var(--border); }
-        button.btn.btn-blue { background: var(--blue); color: white; width: 100%; margin-bottom: 16px; padding: 14px; font-size: 15px; }
-        button.btn.btn-green { background: #5cb85c; color: white; width: 100%; padding: 14px; font-size: 15px; font-weight: 700; border-radius: 12px; }
+        button.btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 9px 14px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 #8b3a1a;
+        }
+        button.btn:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 #8b3a1a; }
+        button.btn.btn-outline {
+            background: #fbe6d4;
+            color: var(--accent);
+            border: 2px solid #dfccb0;
+            box-shadow: 2px 2px 0 #c4a574;
+        }
+        button.btn.btn-blue { background: #4a90e2; color: white; width: 100%; margin-bottom: 16px; padding: 14px; font-size: 15px; box-shadow: 2px 2px 0 #2a5a9e; }
+        button.btn.btn-green { background: #5cb85c; color: white; width: 100%; padding: 14px; font-size: 15px; font-weight: 700; border-radius: 12px; box-shadow: 2px 2px 0 #3a7a3a; }
 
-        .books-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .book-card { background: var(--card); border: 2px solid var(--border); border-radius: 16px; padding: 20px; text-align: center; cursor: pointer; transition: transform 0.2s, border-color 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .book-card:hover { transform: translateY(-2px); border-color: var(--accent); }
-        .book-cover { font-size: 40px; margin-bottom: 8px; }
-        .book-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
-        .book-subtitle { font-size: 11px; color: var(--muted); }
-
+        /* Reste du CSS original (chat, café, bio, etc.) */
         .chat-story-banner { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 16px; position: sticky; top: 0; z-index: 5; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-        .back-btn { background: var(--bg); border: none; width: 34px; height: 34px; border-radius: 17px; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text); border: 1px solid var(--border); }
         .messages { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
         .msg { max-width: 85%; padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.4; animation: popIn 0.3s ease-out; }
         .msg.npc { background: var(--card); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; }
@@ -218,7 +419,7 @@
                 <li><span>Études :</span> Lettres Modernes & Langues Étrangères</li>
                 <li><span>Valeurs :</span> Organisation, authenticité, clarté</li>
                 <li><span>Passions :</span> Pâtisserie maison, lecture au coin du feu, thés rares</li>
-                <li><span>Défaut :</span> l Кар / l'excès de rigueur sur les plannings</li>
+                <li><span>Défaut :</span> L'excès de rigueur sur les plannings</li>
             </ul>
         </div>
 
@@ -290,6 +491,9 @@
     </div>
 
     <script>
+        // ========== TOUT LE JS ORIGINAL EST CONSERVÉ ==========
+        // (je n’ai touché qu’à renderStories + CSS)
+
         const GRAMMAR_RULES = [
             { rx: /\bI am agree\b/gi, right: "I agree", why: "« Agree » est un verbe, pas besoin de « to be »." },
             { rx: /\bI have (\d+) years\b/gi, right: "I am $1 years old", why: "On utilise « to be » pour l'âge." },
@@ -342,7 +546,6 @@
             { id: 5, title: "Saison 6", subtitle: "L'Engagement", icon: "💍", desc: "La demande et le mariage au cœur de leur univers" }
         ];
 
-        // 72 chapitres enrichis avec des dialogues profonds de 5-6 tours pour une vraie immersion
         const STORIES = Array.from({length: 72}, (_, i) => {
             const seasonIndex = Math.floor(i / 12);
             const monthIndex = (i % 12) + 1;
@@ -546,21 +749,41 @@
             showToast(`🎯 Test terminé ! Score : ${calculatedScore}/990 (+${earnedCoins} 🪙)`);
         }
 
+        // ========== NOUVEAU renderStories – LIVRES PIXEL ==========
         function renderStories() {
             if (currentSelectedBook === null) {
+                // Vue principale : étagère de livres dans le café
                 const booksHtml = SEASONS_DATA.map(season => {
                     const seasonStories = STORIES.filter(s => s.season === season.id);
                     const doneCount = seasonStories.filter(s => S.storiesDone.includes(s.id)).length;
                     return `
-                        <div class="book-card" onclick="openBook(${season.id})">
-                            <div class="book-cover">${season.icon}</div>
+                        <div class="pixel-book" onclick="openBook(${season.id})">
+                            <div class="book-spine">${season.icon}</div>
                             <div class="book-title">${season.title}</div>
                             <div class="book-subtitle">${season.subtitle}</div>
-                            <div style="font-size: 11px; color: var(--accent); margin-top: 6px; font-weight: 600;">📚 ${doneCount}/12 chapitres</div>
+                            <div class="book-progress">${doneCount}/12</div>
                         </div>`;
                 }).join('');
-                $('view-stories').innerHTML = `<h2 style="margin-bottom:14px; font-size:16px;">📖 Bibliothèque des 6 Saisons</h2><div class="books-grid">${booksHtml}</div>`;
+
+                $('view-stories').innerHTML = `
+                    <div class="cafe-library">
+                        <div class="library-header">
+                            <h2>📖 Bibliothèque des 6 Saisons</h2>
+                            <p>Choisis un livre pour continuer l’histoire de Lucas & Clara</p>
+                        </div>
+                        <div class="bookshelf">
+                            ${booksHtml}
+                        </div>
+                        <div class="cafe-deco">
+                            <span class="deco-item">🪴</span>
+                            <span class="deco-item">☕</span>
+                            <span class="deco-item">📚</span>
+                            <span class="deco-item">🍰</span>
+                            <span class="deco-item">🪴</span>
+                        </div>
+                    </div>`;
             } else {
+                // Vue ouverte d’une saison
                 const season = SEASONS_DATA[currentSelectedBook];
                 const seasonStories = STORIES.filter(s => s.season === currentSelectedBook);
                 
@@ -571,7 +794,7 @@
                     
                     let btn = isUnlocked 
                         ? `<button class="btn" onclick="startStory(${st.id})">${isDone ? 'Rejouer' : 'Jouer'}</button>` 
-                        : `<button class="btn btn-outline" style="opacity:0.8;" disabled>🔒 Clé requise</button>`;
+                        : `<button class="btn btn-outline" style="opacity:0.8;" disabled>🔒 Clé</button>`;
 
                     return `
                         <div class="card ${!isUnlocked ? 'locked' : ''}">
@@ -588,11 +811,16 @@
                 }).join('');
 
                 $('view-stories').innerHTML = `
-                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
-                        <button class="back-btn" onclick="closeBook()">←</button>
-                        <h2 style="font-size:16px;">${season.title} : ${season.subtitle}</h2>
-                    </div>
-                    <div>${pagesHtml}</div>`;
+                    <div class="season-open">
+                        <div class="season-open-header">
+                            <button class="back-btn" onclick="closeBook()">←</button>
+                            <div>
+                                <div style="font-weight:800; font-size:15px; color:#5c4033;">${season.icon} ${season.title}</div>
+                                <div style="font-size:12px; color:#9e826b;">${season.subtitle}</div>
+                            </div>
+                        </div>
+                        <div>${pagesHtml}</div>
+                    </div>`;
             }
         }
 
