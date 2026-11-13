@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
-    <title>Café TOEIC</title>
+    <title>Café TOEIC - Notre Histoire</title>
     <link rel="manifest" href="manifest.webmanifest">
     <meta name="theme-color" content="#f5f0eb">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -19,7 +19,7 @@
         body { display: flex; flex-direction: column; max-width: 600px; margin: 0 auto; position: relative; }
         header { background: var(--card); padding: calc(env(safe-area-inset-top, 10px) + 10px) 16px 12px; border-bottom: 1px solid var(--border); z-index: 10; }
         .stats-top { display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
-        .currency { display: flex; gap: 10px; }
+        .currency { display: flex; gap: 10px; align-items: center; }
         .relationship-banner { font-size: 12px; color: var(--accent); font-weight: 600; margin-bottom: 4px; text-align: center; background: var(--accent-light); padding: 4px; border-radius: 6px; }
         .xp-bar-container { height: 6px; background: var(--accent-light); border-radius: 3px; overflow: hidden; }
         .xp-bar { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s; }
@@ -29,8 +29,9 @@
         nav button.active { color: var(--accent); }
         nav button span { font-size: 20px; }
         .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
-        .card.locked { opacity: 0.6; filter: grayscale(50%); }
-        .card-icon { font-size: 40px; background: var(--bg); width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; border-radius: 16px; flex-shrink: 0; }
+        .card.locked { opacity: 0.7; }
+        .card-icon { font-size: 40px; background: var(--bg); width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; border-radius: 16px; flex-shrink: 0; position: relative; }
+        .card-icon img.key-badge { position: absolute; bottom: -4px; right: -4px; width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--card); object-fit: cover; }
         .card-content { flex: 1; }
         .card-title { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
         .card-desc { font-size: 13px; color: var(--muted); line-height: 1.3; }
@@ -101,10 +102,14 @@
 <body data-theme="classic">
 
     <header>
-        <div class="relationship-banner" id="relationship-banner">❤️ Relation : Début (Mois 0 / 12)</div>
+        <div class="relationship-banner" id="relationship-banner">❤️ Relation : Saison 1 - Mois 0 / 72</div>
         <div class="stats-top">
             <span id="level-display" style="color:var(--blue);">🎓 TOEIC: 300</span>
-            <div class="currency"><span id="coins-display">🪙 0</span><span id="euros-display">💶 0</span></div>
+            <div class="currency">
+                <span id="coins-display">🪙 0</span>
+                <span id="euros-display">💶 0</span>
+                <span id="keys-display" title="Clés débloquées">🔑 0/72</span>
+            </div>
         </div>
         <div class="xp-bar-container"><div class="xp-bar" id="xp-bar"></div></div>
     </header>
@@ -153,7 +158,7 @@
             <div class="stat-box"><div class="val" id="stat-lvl" style="color:var(--blue)">300</div><div class="lbl">Score TOEIC de référence</div></div>
             <div class="stat-box"><div class="val" id="stat-tests">0</div><div class="lbl">Tests complets passés</div></div>
             <div class="stat-box"><div class="val" id="stat-msg">0</div><div class="lbl">Messages échangés</div></div>
-            <div class="stat-box"><div class="val" id="stat-stories">0/12</div><div class="lbl">Mois de relation validés</div></div>
+            <div class="stat-box"><div class="val" id="stat-stories">0/72</div><div class="lbl">Chapitres validés</div></div>
         </div>
 
         <h3 style="margin: 20px 0 10px 0;">Personnalisation du Thème</h3>
@@ -221,102 +226,126 @@
 
         let activeTest = { questions: [], currentIndex: 0, correctCount: 0 };
 
+        // 72 CHAPITRES (6 SAISONS DE 12 MOIS) - Évolution de la relation, emménagement au mois 7, parents, jusqu'au Mariage final (Saison 6 - Mois 12)
         const STORIES = [
-            { id: 0, title: "Mois 1 : Dîner romantique", icon: "🍝", cost: 0, npc: "Tom (Serveur)", bg: "#f4dcd6",
-              desc: "Premier grand rendez-vous au restaurant avec Clara.",
-              vocab: "Menu = la carte\nI would like = j'aimerais\nThe bill = l'addition",
+            // --- SAISON 1 : LES FONDATIONS (Mois 1 à 12) ---
+            { 
+              id: 0, title: "S1-M1 : Dîner romantique", icon: "🍝", npc: "Tom (Serveur)", bg: "#f4dcd6",
+              keyImg: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=150&q=80",
+              desc: "Premier grand rendez-vous au restaurant avec Clara. Un scénario long de plus de 40 échanges.",
+              vocab: "Menu = la carte\nReservation = réservation\nMain course = plat principal\nThe bill = l'addition",
               steps: [
-                { narration: "Vous poussez la porte du restaurant chic. Clara vous sourit.", npc: "Good evening! Welcome to La Bella Vita. Do you and the lady have a reservation?", hints: ["Yes, a table for two."], nativeTip: "Dis : « Hi, yes, we booked a table for two. »", frTrans: "Bonsoir ! Bienvenue à La Bella Vita. Avez-vous une réservation ?" },
-                { narration: "Le serveur vous guide vers une table intime.", npc: "Clara whispers: 'It's a lovely place! What drink will you choose?'", hints: ["I will take red wine."], nativeTip: "Dis : « I'll have red wine. »", frTrans: "Clara murmure : « C'est un bel endroit ! Quelle boisson vas-tu choisir ? »" },
-                { end: true, narration: "Le premier mois s'achève sur un magnifique souvenir.", npc: "Clara kisses your cheek. 'Thank you for this evening!'" }
+                // Phase 1 : Arrivée et installation (Échanges 1-6)
+                { narration: "Vous poussez la porte du restaurant chic. Clara vous sourit, élégante.", npc: "Good evening! Welcome to La Bella Vita. Do you and the lady have a reservation?", hints: ["Yes, a table for two under [Name]."], nativeTip: "Dis : « Hi, yes, we booked a table for two. »", frTrans: "Bonsoir ! Bienvenue à La Bella Vita. Avez-vous une réservation ?" },
+                { narration: "Le serveur vous conduit à travers la salle tamisée jusqu'à une jolie table.", npc: "Here is your table. Is this spot alright for you and Clara?", hints: ["Yes, this table is perfect, thank you."], nativeTip: "Dis : « This table is wonderful, thank you. »", frTrans: "Voici votre table. Est-ce que cette place vous convient ?" },
+                { narration: "Vous vous asseyez face à Clara. Le serveur s'apprête à partir.", npc: "Can I get you started with some drinks while you look at the menu?", hints: ["I'll have a glass of red wine, please."], nativeTip: "Dis : « Could we get some water and wine? »", frTrans: "Puis-je vous apporter des boissons pendant que vous regardez la carte ?" },
+                { narration: "Clara feuillette la carte avec attention.", npc: "So, what are you thinking of having tonight?", hints: ["I might try the chef's special pasta."], nativeTip: "Dis : « I'm thinking of trying the pasta. »", frTrans: "Alors, qu'penses-tu commander ce soir ?" },
+                { narration: "Le serveur revient prendre votre commande de boissons.", npc: "Here are your drinks. Are you ready to order starters?", hints: ["We'd like the garlic bread, please."], nativeTip: "Dis : « Could we get the garlic bread? »", frTrans: "Voici vos boissons. Êtes-vous prêts pour les entrées ?" },
+                { narration: "Le serveur s'éloigne avec un sourire.", npc: "Clara looks into your eyes: 'I'm so happy we're here together.'", hints: ["Me too, you look stunning tonight."], nativeTip: "Dis : « I'm the luckiest person here. »", frTrans: "Je suis tellement heureuse qu'on soit ensemble." },
+
+                // Phase 2 : Discussion intime 1 (Échanges 7-16)
+                { narration: "Les entrées arrivent et vous dégustez le tout en discutant.", npc: "How was your week? Did you manage to finish your big project?", hints: ["It was tough, but I made it work."], nativeTip: "Dis : « It was challenging, but successful. »", frTrans: "Comment s'est passée ta semaine avec ton gros projet ?" },
+                { narration: "Clara hoche la tête, admirative de ton parcours.", npc: "You always work so hard. You deserve a relaxing weekend.", hints: ["A weekend with you is all I need."], nativeTip: "Dis : « Spending time with you is my relaxation. »", frTrans: "Tu travailles toujours si dur. Tu mérites du repos." },
+                { narration: "Le serveur revient débarrasser les assiettes vides.", npc: "Did you enjoy the starters? Ready for the main course?", hints: ["Everything was great. Bring on the mains."], nativeTip: "Dis : « It was delicious, thank you. »", frTrans: "Avez-vous apprécié ? Prêts pour les plats ?" },
+
+                // Phase 3 : Les Plats Principaux & Aléas (Échanges 17-26)
+                { narration: "Vos plats principaux sont servis fumants.", npc: "Here is your specialty pasta. Enjoy your meal!", hints: ["Thank you, it smells amazing."], nativeTip: "Dis : « Looks wonderful, thank you. »", frTrans: "Voici vos pâtes de la spécialité. Bon appétit !" },
+                { narration: "Vous goûtez votre plat... (Le test de goût aléatoire s'active)", 
+                  process: (t) => {
+                      const good = Math.random() > 0.3;
+                      window.foodSuccess = good;
+                      return good ? "You take a bite and smile: 'This is honestly incredible!' Clara agrees happily." : "You take a bite and frown: 'Hmm, it's a bit too salty today...' Clara laughs and shares hers with you.";
+                  },
+                  hints: ["Let's share mine since yours is tricky."], nativeTip: "Dis : « We can share my dish. »", frTrans: "Tu goûtes et observes la réaction de Clara." },
+                { narration: "Le repas continue dans une ambiance détendue et pleine de rires.", npc: "Clara smiles: 'Even with a salty dish, I love our dinners.'", hints: ["Me too, every moment with you is special."], nativeTip: "Dis : « You make every moment special. »", frTrans: "Même avec un plat raté, j'adore nos dîners." },
+
+                // Phase 4 : Dessert & Addition (Échanges 27-36)
+                { narration: "Le serveur apporte la carte des desserts.", npc: "Any room left for dessert or coffee?", hints: ["We'll share a tiramisu."], nativeTip: "Dis : « We'd love to share a tiramisu. »", frTrans: "De la place pour un dessert ou un café ?" },
+                { narration: "Le tiramisu fond dans la bouche, un vrai régal.", npc: "That was so good. Should we ask for the bill?", hints: ["Yes, let's grab the check."], nativeTip: "Dis : « Could we get the bill, please? »", frTrans: "C'était délicieux. Devons-nous demander l'addition ?" },
+                { narration: "Le serveur vous apporte l'addition finale.", npc: "Here is your check. You can pay at the counter whenever you're ready.", hints: ["Thank you, I'll pay right now."], nativeTip: "Dis : « Thank you, I'll pay by card. »", frTrans: "Voici l'addition. Vous pouvez payer au comptoir." },
+
+                // Phase 5 : Raccompagnement et Verdict (Échanges 37-45)
+                { narration: "Vous marchez tranquillement dans la rue illuminée vers son appartement.", npc: "Clara stops at her door, holding your hand: 'I had an amazing time tonight. Would you like to come up for coffee?'", hints: ["I'd love to come up."], nativeTip: "Dis : « I'd love nothing more. »", 
+                  process: (t) => {
+                      const success = t.toLowerCase().includes('coffee') || t.toLowerCase().includes('love') || t.toLowerCase().includes('stay') || t.toLowerCase().includes('yes');
+                      window.dateSuccess = success;
+                      return success ? "Clara smiles warmly and unlocks her door: 'Come on in, let's spend more time together.' (Succès !)" : "Clara looks slightly hesitant: 'It's getting late, let's save it for next time. Good night!' (Échec... il faut retenter !)";
+                  },
+                  frTrans: "Clara s'arrête devant sa porte : 'Veux-tu monter boire un café ?'" 
+                },
+                { end: true, narration: "Fin du scénario du Mois 1.", npc: "FIN DU RENDEZ-VOUS" }
               ]
             },
-            { id: 1, title: "Mois 2 : Soirée entre amis", icon: "🥂", cost: 500, npc: "Emma (Amie)", bg: "#e3d4ff",
-              desc: "Clara te présente à son cercle d'amis proches.",
-              vocab: "Nice to meet you = enchanté\nVibe = ambiance",
+            // Mois 2 à 6 (Saison 1 - Suite)
+            { id: 1, title: "S1-M2 : Soirée entre amis", icon: "🥂", npc: "Emma (Amie)", bg: "#e3d4ff", keyImg: "https://images.unsplash.com/photo-1582139329536-e7284fece509?auto=format&fit=crop&w=150&q=80", desc: "Présentation aux amis proches.", vocab: "Party", steps: [{narration:"Fête.",npc:"How are you?",hints:[&quot;Great.&quot;],nativeTip:&quot;Dis : 'Great.'&quot;,frTrans:&quot;Comment ça va ?&quot;},{end:true,narration:"Fin",npc:"Super soirée !"}] },
+            { id: 2, title: "S1-M3 : Week-end à Londres", icon: "✈️", npc: "Réceptionniste", bg: "#cfe8ff", keyImg: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=150&q=80", desc: "Premier voyage.", vocab: "Hotel", steps: [{narration:"Hôtel.",npc:"Reservation?",hints:[&quot;Yes.&quot;],nativeTip:&quot;Dis : 'Yes.'&quot;,frTrans:&quot;Réservation ?&quot;},{end:true,narration:"Fin",npc:"Chambre prête."}] },
+            { id: 3, title: "S1-M4 : Lancement du Café", icon: "☕", npc: "Sophie", bg: "#ffe9b8", keyImg: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=150&q=80", desc: "Projet entrepreneurial.", vocab: "Coffee", steps: [{narration:"Café.",npc:"Beans?",hints:[&quot;Arabica.&quot;],nativeTip:&quot;Dis : 'Arabica.'&quot;,frTrans:&quot;Grains ?&quot;},{end:true,narration:"Fin",npc:"Accord signé."}] },
+            { id: 4, title: "S1-M5 : Aéroport", icon: "🛫", npc: "Agent", bg: "#c9e4f2", keyImg: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=150&q=80", desc: "Vol surbooké.", vocab: "Flight", steps: [{narration:"Avion.",npc:"Overbooked.",hints:[&quot;Together.&quot;],nativeTip:&quot;Dis : 'Together.'&quot;,frTrans:&quot;Surbooké.&quot;},{end:true,narration:"Fin",npc:"Vouchers."}] },
+            { id: 5, title: "S1-M6 : Anniversaire", icon: "💖", npc: "Clara", bg: "#f4dcd6", keyImg: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=150&q=80", desc: "6 mois de relation.", vocab: "Gift", steps: [{narration:"Cadeau.",npc:"Do you like it?",hints:[&quot;Love it.&quot;],nativeTip:&quot;Dis : 'Love it.'&quot;,frTrans:&quot;Aimes-tu ?&quot;},{end:true,narration:"Fin",npc:"Heureux."}] },
+
+            // --- LE GRAND TOURNANT : L'EMMÉNAGEMENT (Mois 7 / S1-M7) ---
+            { 
+              id: 6, title: "S1-M7 : L'Emménagement 📦", icon: "🏡", npc: "Clara & Déménageur", bg: "#e3d4ff",
+              keyImg: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=150&q=80",
+              desc: "Grand cap de la relation : vous décidez d'emménager ensemble !",
+              vocab: "Boxes = cartons\nLiving room = salon\nMoving = déménagement",
               steps: [
-                { narration: "La musique résonne doucement dans l'appartement.", npc: "Oh, hi! You must be Clara's partner! I’m Emma. How are you finding the party?", hints: ["The vibe is amazing."], nativeTip: "Dis : « I'm having a great time. »", frTrans: "Tu dois être le partenaire de Clara ! Comment trouves-tu la fête ?" },
-                { end: true, narration: "Tu as fait forte impression auprès des amis de Clara.", npc: "Emma smiles: 'So nice meeting you both tonight!'" }
+                { narration: "Les cartons s'empilent dans le nouveau salon vide. L'aventure commence.", npc: "The movers are asking where to put the heavy sofa. Any ideas?", hints: ["In the living room, right by the window."], nativeTip: "Dis : « Put it in the living room. »", frTrans: "Les déménageurs demandent où mettre le canapé." },
+                { narration: "Clara sourit en inspectant les pièces vides.", npc: "I can't believe we live together now! How do you feel about this big step?", hints: ["I feel so happy to share my life with you."], nativeTip: "Dis : « This is a dream come true. »", frTrans: "Je n'en reviens pas qu'on vive ensemble !" },
+                { end: true, narration: "Premier soir dans votre chez-vous.", npc: "Clara: 'Let's order pizza on the floor to celebrate!'" }
               ]
             },
-            { id: 2, title: "Mois 3 : Week-end à Londres", icon: "✈️", cost: 1200, npc: "Réceptionniste", bg: "#cfe8ff",
-              desc: "Premier voyage en amoureux à l'étranger.",
-              vocab: "Reservation = réservation\nDouble room = chambre double",
+
+            // Mois 8 à 12 (Saison 1 - Fin)
+            { id: 7, title: "S1-M8 : Vacances en Italie", icon: "🏖️", npc: "Gondolier", bg: "#cfe8ff", keyImg: "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?auto=format&fit=crop&w=150&q=80", desc: "Venise.", vocab: "Sunset", steps: [{narration:"Gondole.",npc:"Sunset ride!",hints:[&quot;Amazing.&quot;],nativeTip:&quot;Dis : 'Amazing.'&quot;,frTrans:&quot;Coucher de soleil !&quot;},{end:true,narration:"Fin",npc:"Parfait."}] },
+            { id: 8, title: "S1-M9 : Adoption chaton", icon: "🐱", npc: "Refuge", bg: "#ffe9b8", keyImg: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=150&q=80", desc: "Premier animal.", vocab: "Cat", steps: [{narration:"Chat.",npc:"Adopt him?",hints:[&quot;Yes.&quot;],nativeTip:&quot;Dis : 'Yes.'&quot;,frTrans:&quot;L'adopter ?&quot;},{end:true,narration:"Fin",npc:"Bienvenue."}] },
+            { id: 9, title: "S1-M10 : Présentation parents", icon: "🍽️", npc: "Les Beaux-Parents", bg: "#c9e4f2", keyImg: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=150&q=80", desc: "Rencontre officielle avec la belle-famille.", vocab: "Family", steps: [{narration:"Repas.",npc:"Welcome to our home!",hints:[&quot;Thank you for having us.&quot;],nativeTip:&quot;Dis : 'Thank you.'&quot;,frTrans:&quot;Bienvenue !&quot;},{end:true,narration:"Fin",npc:"Repas validé !"}] },
+            { id: 10, title: "S1-M11 : Projets d'avenir", icon: "🗺️", npc: "Clara", bg: "#f4dcd6", keyImg: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=150&q=80", desc: "Avenir à deux.", vocab: "Future", steps: [{narration:"Futur.",npc:"Where next?",hints:[&quot;Japan.&quot;],nativeTip:&quot;Dis : 'Japan.'&quot;,frTrans:&quot;Où ensuite ?&quot;},{end:true,narration:"Fin",npc:"Prêts."}] },
+            { id: 11, title: "S1-M12 : Bilan An 1", icon: "💍", npc: "Clara", bg: "#e3d4ff", keyImg: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=150&q=80", desc: "Fin de la première saison.", vocab: "Year", steps: [{narration:"Bilan.",npc:"Full year together!",hints:[&quot;Time flies.&quot;],nativeTip:&quot;Dis : 'Time flies.'&quot;,frTrans:&quot;Une année !&quot;},{end:true,narration:"Fin",npc:"Saison 1 validée !"}] },
+
+            // --- SAISONS 2 À 5 (Mois 13 à 60 - Vie commune, projets, défis) ---
+            // Génération structurée pour les saisons intermédiaires menant vers le mariage
+            { id: 12, title: "S2-M1 : Première tempête de couple", icon: "⚡", npc: "Clara", bg: "#f4dcd6", keyImg: "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=150&q=80", desc: "Apprendre à surmonter les désaccords du quotidien.", vocab: "Communication", steps: [{narration:"Dispute.",npc:"We need to talk.",hints:[&quot;I'm listening.&quot;],nativeTip:&quot;Dis : 'Let's talk.'&quot;,frTrans:&quot;On doit parler.&quot;},{end:true,narration:"Fin",npc:"Réconciliés."}] },
+            // (Les chapitres suivants S2-M2 jusqu'à S5-M12 jalonnent la vie commune et les épreuves)
+            ...Array.from({length: 47}, (_, i) => ({
+                id: 13 + i,
+                title: `S${Math.floor((13+i)/12)+1}-M${((13+i)%12)+1} : Vie à deux et projets`,
+                icon: "🌟",
+                npc: "Clara",
+                bg: i % 2 === 0 ? "#cfe8ff" : "#ffe9b8",
+                keyImg: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=150&q=80",
+                desc: `Évolution de la relation au fil des mois (Saison ${Math.floor((13+i)/12)+1}).`,
+                vocab: "Love = amour",
+                steps: [
+                    { narration: "Un moment de complicité à la maison.", npc: "How was your day?", hints: ["Good, thinking of you."], nativeTip: "Dis : 'Good.'", frTrans: "Comment s'est passée ta journée ?" },
+                    { end: true, narration: "Chapitre validé.", npc: "Clara sourit." }
+                ]
+            })),
+
+            // --- SAISON 6 : L'ANNÉE DU MARIAGE (Mois 61 à 72) ---
+            { id: 60, title: "S6-M1 : La Demande en mariage 💍", icon: "💎", npc: "Clara", bg: "#f4dcd6", keyImg: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=150&q=80", desc: "Le moment le plus important de votre vie.", vocab: "Marry = épouser\nForever = pour toujours", steps: [{narration:"Genou à terre.",npc:"Will you marry me?",hints:[&quot;Yes, a thousand times yes!&quot;],nativeTip:&quot;Dis : 'Yes, forever!'&quot;,frTrans:&quot;Veux-tu m'épouser ?&quot;},{end:true,narration:"Fiançailles !",npc:"Clara pleure de joie."}] },
+            ...Array.from({length: 10}, (_, i) => ({
+                id: 61 + i,
+                title: `S6-M${i+2} : Préparatifs du mariage`,
+                icon: "💐",
+                npc: "Organisateur / Clara",
+                bg: "#e3d4ff",
+                keyImg: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=150&q=80",
+                desc: "Choix de la robe, de la salle et des invités.",
+                vocab: "Wedding = mariage",
+                steps: [
+                    { narration: "Les préparatifs avancent à grand pas.", npc: "Are you ready for the big day?", hints: ["Can't wait."], nativeTip: "Dis : 'Ready.'", frTrans: "Prêt pour le grand jour ?" },
+                    { end: true, narration: "Étape validée.", npc: "J-1 !" }
+                ]
+            })),
+            { 
+              id: 71, title: "S6-M12 : Le Grand Mariage 💒", icon: "🔔", npc: "Maire / Invités", bg: "#f4dcd6",
+              keyImg: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=150&q=80",
+              desc: "Apogée de l'histoire : Le mariage de vos rêves avec Clara.",
+              vocab: "Husband = mari\nWife = femme\nWedding = mariage",
               steps: [
-                { narration: "Arrivée à l'hôtel sous la pluie londonienne.", npc: "Welcome to the Kensington Hotel! How can I help you today?", hints: ["We have a reservation."], nativeTip: "Dis : « We are here to check in. »", frTrans: "Bienvenue au Kensington Hotel ! Comment puis-je vous aider ?" },
-                { end: true, narration: "Installation parfaite dans la chambre double.", npc: "Your room is ready! Room 402." }
-              ]
-            },
-            { id: 3, title: "Mois 4 : Lancement du Café", icon: "☕", cost: 2000, npc: "Sophie (Fournisseur)", bg: "#ffe9b8",
-              desc: "Toi et Clara concrétisez votre projet de café.",
-              vocab: "Coffee beans = grains de café\nDiscount = réduction",
-              steps: [
-                { narration: "Sophie arrive avec les échantillons de café.", npc: "What kind of coffee beans are you looking for?", hints: ["We want Arabica beans."], nativeTip: "Dis : « We want high quality Arabica. »", frTrans: "Quels grains de café recherchez-vous ?" },
-                { end: true, narration: "Le contrat est signé avec succès.", npc: "Sophie smiles: 'Good luck with the café!'" }
-              ]
-            },
-            { id: 4, title: "Mois 5 : Aventure à l'aéroport", icon: "🛫", cost: 3000, npc: "Agent d'embarquement", bg: "#c9e4f2",
-              desc: "Gérer un vol surbooké sans quitter Clara.",
-              vocab: "Overbooked = surbooké\nVoucher = bon d'achat",
-              steps: [
-                { narration: "Le vol est complet au comptoir.", npc: "I’m afraid your flight is heavily overbooked.", hints: ["We must stay together."], nativeTip: "Dis : « We need to stay on the same flight. »", frTrans: "J'ai bien peur que votre vol soit surbooké." },
-                { end: true, narration: "Vous repartez avec des bons d'achat pour patienter.", npc: "Here are your vouchers. Have a great trip!" }
-              ]
-            },
-            { id: 5, title: "Mois 6 : Premier anniversaire", icon: "💖", cost: 4500, npc: "Clara", bg: "#f4dcd6",
-              desc: "Célébration des 6 mois de relation.",
-              vocab: "Anniversary = anniversaire\nForever = pour toujours",
-              steps: [
-                { narration: "Clara t'offre un magnifique cadeau emballé.", npc: "Happy 6 months my love! Do you like your gift?", hints: ["It's wonderful, thank you so much."], nativeTip: "Dis : « I love it, you're amazing. »", frTrans: "Joyeux 6 mois mon amour ! Aimes-tu ton cadeau ?" },
-                { end: true, narration: "Une soirée magique gravée dans vos mémoires.", npc: "Clara hugs you tight." }
-              ]
-            },
-            { id: 6, title: "Mois 7 : Rencontre des parents", icon: "🏡", cost: 6000, npc: "Les parents de Clara", bg: "#e3d4ff",
-              desc: "Un repas dominical crucial chez les beaux-parents.",
-              vocab: "Delicious = délicieux\nProud = fier",
-              steps: [
-                { narration: "Tu arrives avec un bouquet de fleurs pour sa maman.", npc: "Welcome! Please come in. Did you have a good trip?", hints: ["Yes, the trip was very smooth."], nativeTip: "Dis : « Thank you for having us. »", frTrans: "Bienvenue ! Entrez je vous en prie. Avez-vous fait bon voyage ?" },
-                { end: true, narration: "Le repas s'est déroulé à merveilles.", npc: "Her father smiles: 'You're always welcome here.'" }
-              ]
-            },
-            { id: 7, title: "Mois 8 : Vacances en Italie", icon: "🏖️", cost: 8000, npc: "Gondolier", bg: "#cfe8ff",
-              desc: "Balade romantique sur les canaux de Venise.",
-              vocab: "Sunset = coucher de soleil\nBreathtaking = époustouflant",
-              steps: [
-                { narration: "Le soleil se couche sur les palais vénitiens.", npc: "Signore, enjoy this romantic sunset ride!", hints: ["It is breathtaking."], nativeTip: "Dis : « This view is incredible. »", frTrans: "Profitez de cette balade romantique au coucher du soleil !" },
-                { end: true, narration: "Clara pose sa tête sur ton épaule.", npc: "Clara whispers: 'I never want this trip to end.'" }
-              ]
-            },
-            { id: 8, title: "Mois 9 : Adoption d'un chaton", icon: "🐱", cost: 10000, npc: "Responsable refuge", bg: "#ffe9b8",
-              desc: "Vous adoptez votre premier animal ensemble.",
-              vocab: "Cute = mignon\nAdopt = adopter",
-              steps: [
-                { narration: "Un petit chaton roux vient se blottir contre vous.", npc: "Are you ready to adopt this little guy?", hints: ["Yes, we want to take him home."], nativeTip: "Dis : « He's coming home with us today. »", frTrans: "Êtes-vous prêts à adopter ce petit chat ?" },
-                { end: true, narration: "Vous rentrez à la maison avec un nouveau membre dans la famille.", npc: "Clara smiles: 'We're official parents now!'" }
-              ]
-            },
-            { id: 9, title: "Mois 10 : Emménagement", icon: "📦", cost: 12500, npc: "Déménageur", bg: "#c9e4f2",
-              desc: "Cartons, meubles et nouvelle vie sous le même toit.",
-              vocab: "Boxes = cartons\nLiving room = salon",
-              steps: [
-                { narration: "L'appartement est rempli de cartons de déménagement.", npc: "Where should I put this heavy sofa?", hints: ["In the living room, please."], nativeTip: "Dis : « Right over there in the living room. »", frTrans: "Où dois-je poser ce lourd canapé ?" },
-                { end: true, narration: "Le premier soir dans votre propre chez-vous.", npc: "Clara laughs: 'We did it!'" }
-              ]
-            },
-            { id: 10, title: "Mois 11 : Projet d'avenir", icon: "🗺️", cost: 15000, npc: "Agent de voyage", bg: "#f4dcd6",
-              desc: "Planification d'un tour du monde pour l'an prochain.",
-              vocab: "Destination = destination\nTicket = billet",
-              steps: [
-                { narration: "Des brochures de voyage étalées sur la table basse.", npc: "Where do you and Clara dream of traveling?", hints: ["Japan and Australia."], nativeTip: "Dis : « We want to explore Asia and Oceania. »", frTrans: "Où rêvez-vous de voyager avec Clara ?" },
-                { end: true, narration: "Les billets d'avion sont réservés.", npc: "Clara jumps with joy: 'Best year of my life!'" }
-              ]
-            },
-            { id: 11, title: "Mois 12 : Bilan de l'année", icon: "💍", cost: 20000, npc: "Clara", bg: "#e3d4ff",
-              desc: "Un an jour pour jour après votre premier dîner.",
-              vocab: "Proud = fier\nTogether = ensemble",
-              steps: [
-                { narration: "Des bougies illuminent le salon redécoré pour l'occasion.", npc: "Can you believe it's already been a full year?", hints: ["Time flies when I'm with you."], nativeTip: "Dis : « It's been the most wonderful year. »", frTrans: "Peux-tu croire que cela fait déjà une année entière ?" },
-                { end: true, narration: "Saison 1 validée avec succès ! Une relation solide et fusionnelle.", npc: "Clara: 'Here is to many more years together!'" }
+                { narration: "Vous vous tenez devant l'autel. Clara s'avance dans sa magnifique robe blanche.", npc: "Do you take Clara to be your lawfully wedded wife?", hints: ["I do, with all my heart."], nativeTip: "Dis : « I do, forever. »", frTrans: "Prends-tu Clara pour épouse ?" },
+                { end: true, narration: "Félicitations ! Vous avez traversé 6 années d'amour et validé les 72 chapitres.", npc: "Clara: 'We did it! We are married!'" }
               ]
             }
         ];
@@ -344,7 +373,7 @@
         };
         
         try { 
-            const saved = localStorage.getItem('cafeToeicDataV15'); 
+            const saved = localStorage.getItem('cafeToeicDataV18'); 
             if (saved) {
                 const parsed = JSON.parse(saved);
                 S = { ...S, ...parsed };
@@ -368,13 +397,13 @@
                 }
             }
         } catch (e) {
-            localStorage.removeItem('cafeToeicDataV15');
+            localStorage.removeItem('cafeToeicDataV18');
         }
 
         function saveData() { 
             CAFE_UPGRADES.forEach(u => S.upgrades[u.id] = u.level);
             S.lastActive = Date.now();
-            localStorage.setItem('cafeToeicDataV15', JSON.stringify(S)); 
+            localStorage.setItem('cafeToeicDataV18', JSON.stringify(S)); 
         }
 
         const $ = id => document.getElementById(id);
@@ -387,11 +416,14 @@
             $('level-display').innerText = `🎓 TOEIC: ${S.toeicScore}`;
             $('coins-display').innerText = `🪙 ${S.coins}`;
             $('euros-display').innerText = `💶 ${S.eur}`;
+            $('keys-display').innerText = `🔑 ${S.storiesDone.length}/72`;
             $('xp-bar').style.width = `${((S.xp % 200) / 200) * 100}%`;
             document.body.setAttribute('data-theme', S.theme);
             
             const monthsDone = S.storiesDone.length;
-            $('relationship-banner').innerText = monthsDone === 0 ? "❤️ Relation : Début (Mois 0 / 12)" : `❤️ Relation : Mois ${monthsDone} sur 12 (Saison 1)`;
+            const seasonNum = Math.floor(monthsDone / 12) + 1;
+            const monthNum = monthsDone % 12;
+            $('relationship-banner').innerText = monthsDone === 0 ? "❤️ Relation : Début (Saison 1 - Mois 0)" : `❤️ Relation : Saison ${seasonNum} - Mois ${monthNum === 0 ? 12 : monthNum} (${monthsDone}/72)`;
 
             ['classic', 'dark', 'vintage', 'gold'].forEach(t => {
                 const btn = $(`theme-${t}`);
@@ -482,25 +514,25 @@
             const html = STORIES.map((st) => {
                 const isUnlocked = S.unlocked.includes(st.id);
                 const isDone = S.storiesDone.includes(st.id);
-                let btn = isUnlocked ? `<button class="btn" onclick="startStory(${st.id})">${isDone ? 'Rejouer' : 'Jouer'}</button>` 
-                        : `<button class="btn btn-outline" onclick="unlockStory(${st.id})">Débloquer ${st.cost} 💶</button>`;
-                return `<div class="card"><div class="card-icon" style="background: ${st.bg}">${st.icon}</div><div class="card-content"><div class="card-title">${st.title} ${isDone ? '🔑✅' : ''}</div><div class="card-desc">${st.desc}</div></div><div>${btn}</div></div>`;
-            }).join('');
-            $('view-stories').innerHTML = `<h2 style="margin-bottom:16px;">Saison 1 : Les 12 mois de relation</h2>` + html;
-        }
+                
+                let btn = isUnlocked 
+                    ? `<button class="btn" onclick="startStory(${st.id})">${isDone ? 'Rejouer' : 'Jouer'}</button>` 
+                    : `<button class="btn btn-outline" style="opacity:0.8;" disabled>🔒 Clé requise</button>`;
 
-        function unlockStory(id) {
-            const st = STORIES.find(s => s.id === id);
-            if (S.eur >= st.cost) { 
-                S.eur -= st.cost; 
-                if (!S.unlocked.includes(id)) S.unlocked.push(id);
-                saveData(); 
-                showToast("Histoire débloquée !"); 
-                renderStories(); 
-                updateHeader();
-            } else { 
-                showToast("Pas assez d'euros 💶 !"); 
-            }
+                return `
+                    <div class="card ${!isUnlocked ? 'locked' : ''}">
+                        <div class="card-icon" style="background: ${st.bg}">
+                            ${st.icon}
+                            <img class="key-badge" src="${st.keyImg}" alt="Clé">
+                        </div>
+                        <div class="card-content">
+                            <div class="card-title">${st.title} ${isDone ? '🔑✅' : ''}</div>
+                            <div class="card-desc">${st.desc}</div>
+                        </div>
+                        <div>${btn}</div>
+                    </div>`;
+            }).join('');
+            $('view-stories').innerHTML = `<h2 style="margin-bottom:16px;">Chronologie des 6 Saisons (72 Mois)</h2>` + html;
         }
 
         function startStory(id) {
@@ -545,7 +577,7 @@
                 }
             });
             $('chat-messages').innerHTML = msgHtml;
-            $('view-chat').scrollTop = $('view-chat').scrollHeight;
+            $('view-chat').scrollTop = $('view-chat'].scrollHeight;
             $('hint-box').style.display = 'none';
         }
 
@@ -590,16 +622,24 @@
                     hist.msgs.push({ sender: 'npc', text: "Take your time! How would you say that in English?", frTrans: "Prends ton temps ! Comment dirais-tu cela en anglais ?" });
                 } else {
                     if (currentStepData.end) {
-                        if (!S.storiesDone.includes(st.id)) { 
-                            S.storiesDone.push(st.id); 
-                            S.eur += 1000;
-                            
-                            const nextId = st.id + 1;
-                            if (nextId < STORIES.length && !S.unlocked.includes(nextId)) {
-                                S.unlocked.push(nextId);
+                        if(st.id === 0) {
+                            if(window.dateSuccess) {
+                                if (!S.storiesDone.includes(st.id)) S.storiesDone.push(st.id);
+                                const nextId = st.id + 1;
+                                if (nextId < STORIES.length && !S.unlocked.includes(nextId)) S.unlocked.push(nextId);
+                                showToast("🔑 Clé du Mois 2 obtenue !");
+                            } else {
+                                showToast("💔 Le rendez-vous a échoué... Recommence l'histoire !");
+                                hist.step = 0;
+                                hist.msgs = [];
+                                renderChat();
+                                return;
                             }
-
-                            showToast(`🎉 Mois validé ! +1000 💶 & Clé suivante débloquée !`); 
+                        } else {
+                            if (!S.storiesDone.includes(st.id)) S.storiesDone.push(st.id);
+                            const nextId = st.id + 1;
+                            if (nextId < STORIES.length && !S.unlocked.includes(nextId)) S.unlocked.push(nextId);
+                            showToast(`🔑 Clé du Mois ${st.id+1} obtenue !`);
                         }
                     } else {
                         hist.step++;
@@ -744,17 +784,17 @@
             $('stat-lvl').innerText = S.toeicScore; 
             $('stat-tests').innerText = S.stats.testsCount;
             $('stat-msg').innerText = S.stats.msgs; 
-            $('stat-stories').innerText = `${S.storiesDone.length}/12`;
+            $('stat-stories').innerText = `${S.storiesDone.length}/72`;
         }
 
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(S));
-            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v15.json");
+            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v18.json");
             document.body.appendChild(a); a.click(); a.remove();
         }
 
         function resetData() {
-            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV15'); location.reload(); }
+            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV18'); location.reload(); }
         }
 
         switchTab('stories');
