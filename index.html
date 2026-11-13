@@ -35,7 +35,7 @@
         .key-sprite {
             width: 36px;
             height: 36px;
-            background-image: url('keys-sheet.png');
+            background-image: url('keys-sheet.PNG');
             background-size: 900% 800%;
             image-rendering: pixelated;
             position: absolute;
@@ -74,14 +74,20 @@
         .helpers button { flex: 1; font-size: 11px; padding: 8px 4px; }
         .hint-box { background: var(--accent-light); color: var(--accent); padding: 12px; border-radius: 12px; font-size: 13px; margin-top: 10px; display: none; line-height: 1.4; }
         
-        /* Visuel du Café dynamique enrichi */
-        .cafe-display { background: linear-gradient(135deg, #2c221e, #3d3430); border: 2px solid var(--border); border-radius: 16px; height: 220px; position: relative; margin-bottom: 16px; overflow: hidden; box-shadow: inset 0 4px 15px rgba(0,0,0,0.4); }
-        .cafe-floor { position: absolute; bottom: 0; width: 100%; height: 70px; background: #b08d71; border-top: 6px solid #8c6d53; }
-        .cafe-counter { position: absolute; bottom: 30px; left: 15px; right: 15px; height: 40px; background: #5c4033; border-top: 4px solid #8c6d53; border-radius: 6px; z-index: 2; }
-        .cafe-decorations-layer { position: absolute; bottom: 72px; left: 25px; right: 25px; display: flex; justify-content: space-between; align-items: flex-end; z-index: 3; font-size: 24px; }
-        .cafe-door { position: absolute; right: 15px; bottom: 65px; font-size: 35px; z-index: 1; }
+        /* Visuel du Café utilisant cafe-bg.jpg comme image de fond */
+        .cafe-display { 
+            background: url('cafe-bg.jpg') center/cover no-repeat; 
+            border: 2px solid var(--border); 
+            border-radius: 16px; 
+            height: 240px; 
+            position: relative; 
+            margin-bottom: 16px; 
+            overflow: hidden; 
+            box-shadow: inset 0 4px 15px rgba(0,0,0,0.4); 
+        }
+        .cafe-purchased-items { position: absolute; bottom: 70px; left: 20px; display: flex; gap: 10px; z-index: 3; font-size: 22px; }
 
-        .walking-customer { position: absolute; bottom: 60px; right: 20px; width: 32px; height: 45px; z-index: 4; transition: transform linear; display: flex; flex-direction: column; align-items: center; }
+        .walking-customer { position: absolute; bottom: 40px; right: 20px; width: 32px; height: 45px; z-index: 4; transition: transform linear; display: flex; flex-direction: column; align-items: center; }
         .customer-avatar { font-size: 24px; line-height: 1; }
 
         .floating-money { position: absolute; color: #a3b19b; text-shadow: 0 2px 4px rgba(0,0,0,0.6); font-weight: 800; font-size: 18px; animation: floatUp 1.2s ease-out forwards; z-index: 5; }
@@ -148,10 +154,7 @@
     <main id="view-cafe" class="hidden">
         <button class="btn btn-blue" onclick="startFullToeicTest()">📝 Lancer un Test TOEIC complet (10 questions)</button>
         <div class="cafe-display" id="cafe-display">
-            <div class="cafe-floor"></div>
-            <div class="cafe-door">🚪</div>
-            <div class="cafe-counter"></div>
-            <div class="cafe-decorations-layer" id="counter-decorations">☕</div>
+            <div class="cafe-purchased-items" id="counter-decorations"></div>
         </div>
         <div style="background:var(--success-light); color:#2e4a23; padding:12px; border-radius:12px; margin-bottom:16px; font-size:14px; text-align:center;">
             ⏳ Le café tourne en arrière-plan. Améliore tes stats avec des pièces 🪙 !
@@ -254,7 +257,6 @@
         let pendingRewardStoryId = null;
         let lastClientIndex = -1;
 
-        // 10 designs de clients différents
         const CLIENT_AVATARS = ['👦', '👱‍♀️', '👓', '👩‍🦰', '👴', '👩🏾', '🧔', '👵', '🧢', '🎧'];
 
         function getKeySpriteStyle(id) {
@@ -263,7 +265,7 @@
             const row = Math.floor(index / 9);
             const posX = col * (100 / 8);
             const posY = row * (100 / 7);
-            return `background-image: url('keys-sheet.png'); background-size: 900% 800%; background-position: ${posX}% ${posY}%; image-rendering: pixelated;`;
+            return `background-image: url('keys-sheet.PNG'); background-size: 900% 800%; background-position: ${posX}% ${posY}%; image-rendering: pixelated;`;
         }
 
         const STORIES = [
@@ -361,7 +363,7 @@
         };
         
         try { 
-            const saved = localStorage.getItem('cafeToeicDataV23'); 
+            const saved = localStorage.getItem('cafeToeicDataV25'); 
             if (saved) {
                 const parsed = JSON.parse(saved);
                 S = { ...S, ...parsed };
@@ -385,13 +387,13 @@
                 }
             }
         } catch (e) {
-            localStorage.removeItem('cafeToeicDataV23');
+            localStorage.removeItem('cafeToeicDataV25');
         }
 
         function saveData() { 
             CAFE_UPGRADES.forEach(u => S.upgrades[u.id] = u.level);
             S.lastActive = Date.now();
-            localStorage.setItem('cafeToeicDataV23', JSON.stringify(S)); 
+            localStorage.setItem('cafeToeicDataV25', JSON.stringify(S)); 
         }
 
         const $ = id => document.getElementById(id);
@@ -686,8 +688,7 @@
         }
 
         function renderCafe() {
-            // Affichage dynamique des objets achetés dans le visuel du café
-            let itemsHtml = '☕';
+            let itemsHtml = '';
             S.items.forEach(itemId => {
                 const shopItem = SHOP.find(s => s.id === itemId);
                 if (shopItem) {
@@ -753,7 +754,6 @@
             }
         }
 
-        // Boucle passive et gestion des 10 clients différents sans répétition consécutive
         setInterval(() => {
             const priceLevel = CAFE_UPGRADES.find(u => u.id === 'price').level;
             const priceMultiplier = 1 + (priceLevel * 0.3);
@@ -768,7 +768,6 @@
                 const speedLevel = CAFE_UPGRADES.find(u => u.id === 'speed').level;
                 const walkDuration = Math.max(1.5, 3 - (speedLevel * 0.3));
 
-                // Sélection d'un client parmi les 10 en évitant le doublon consécutif
                 let newClientIndex;
                 do {
                     newClientIndex = Math.floor(Math.random() * CLIENT_AVATARS.length);
@@ -787,8 +786,8 @@
                     const money = document.createElement('div');
                     money.className = 'floating-money'; 
                     money.innerText = `+${gain}💶`; 
-                    money.style.right = '160px'; 
-                    money.style.bottom = '90px';
+                    money.style.right = '140px'; 
+                    money.style.bottom = '70px';
                     cafe.appendChild(money); 
                     setTimeout(() => { money.remove(); }, 1200);
                 }, walkDuration * 1000 * 0.4);
@@ -807,12 +806,12 @@
 
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(S));
-            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v23.json");
+            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v25.json");
             document.body.appendChild(a); a.click(); a.remove();
         }
 
         function resetData() {
-            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV23'); location.reload(); }
+            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV25'); location.reload(); }
         }
 
         switchTab('stories');
