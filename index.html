@@ -9,71 +9,84 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
-        :root { --bg: #f5f0eb; --card: #ffffff; --text: #3d3430; --muted: #8c7b74; --accent: #c87965; --accent-light: #f4dcd6; --success: #a3b19b; --success-light: #e4efe0; --border: #e3d9d3; --pink: #eac1c1; --gold: #d4af37; --blue: #4a90e2; }
-        [data-theme="dark"] { --bg: #1a1614; --card: #2c2421; --text: #f5f0eb; --muted: #b0a299; --accent: #d88975; --accent-light: #44322d; --border: #3d3430; --pink: #5a3d3d; }
-        [data-theme="vintage"] { --bg: #f4ecd8; --card: #fff9e6; --text: #5c4033; --muted: #9e826b; --accent: #b85d33; --accent-light: #fbe6d4; --border: #dfccb0; --pink: #f2cca8; }
-        [data-theme="gold"] { --bg: #111111; --card: #1f1f1f; --text: #f5f0eb; --muted: #a0a0a0; --accent: #d4af37; --accent-light: #332d15; --border: #333333; --pink: #443812; }
+        :root { --bg: #f9f6f0; --card: #ffffff; --text: #3d3430; --muted: #8c7b74; --accent: #c87965; --accent-light: #f4dcd6; --success: #a3b19b; --success-light: #e4efe0; --border: #e3d9d3; --blue: #4a90e2; --gold: #d4af37; }
+        [data-theme="dark"] { --bg: #1a1614; --card: #2c2421; --text: #f5f0eb; --muted: #b0a299; --accent: #d88975; --accent-light: #44322d; --border: #3d3430; }
+        [data-theme="vintage"] { --bg: #f4ecd8; --card: #fff9e6; --text: #5c4033; --muted: #9e826b; --accent: #b85d33; --accent-light: #fbe6d4; --border: #dfccb0; }
+        [data-theme="gold"] { --bg: #111111; --card: #1f1f1f; --text: #f5f0eb; --muted: #a0a0a0; --accent: #d4af37; --accent-light: #332d15; --border: #333333; }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
         body, html { height: 100%; background: var(--bg); color: var(--text); overflow: hidden; transition: background 0.3s, color 0.3s; }
         body { display: flex; flex-direction: column; max-width: 600px; margin: 0 auto; position: relative; }
-        header { background: var(--card); padding: calc(env(safe-area-inset-top, 10px) + 10px) 16px 12px; border-bottom: 1px solid var(--border); z-index: 10; }
-        .stats-top { display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
-        .currency { display: flex; gap: 10px; align-items: center; }
-        .relationship-banner { font-size: 12px; color: var(--accent); font-weight: 600; margin-bottom: 4px; text-align: center; background: var(--accent-light); padding: 4px; border-radius: 6px; }
-        .xp-bar-container { height: 6px; background: var(--accent-light); border-radius: 3px; overflow: hidden; }
+        
+        header { background: var(--card); padding: calc(env(safe-area-inset-top, 10px) + 12px) 16px 12px; border-bottom: 1px solid var(--border); z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 13px; font-weight: 600; }
+        .badge-pill { background: var(--bg); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 6px; }
+        .relationship-bar { background: var(--accent-light); color: var(--accent); font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 8px; text-align: center; margin-bottom: 8px; }
+        .xp-bar-container { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
         .xp-bar { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s; }
-        main { flex: 1; overflow-y: auto; padding: 16px; padding-bottom: 80px; -webkit-overflow-scrolling: touch; }
+
+        main { flex: 1; overflow-y: auto; padding: 16px; padding-bottom: 90px; -webkit-overflow-scrolling: touch; }
+        
         nav { position: absolute; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--border); display: flex; padding-bottom: env(safe-area-inset-bottom, 0px); z-index: 10; }
-        nav button { flex: 1; padding: 16px 0; border: none; background: transparent; color: var(--muted); font-size: 13px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; transition: color 0.2s; }
+        nav button { flex: 1; padding: 14px 0; border: none; background: transparent; color: var(--muted); font-size: 12px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; transition: color 0.2s; }
         nav button.active { color: var(--accent); }
         nav button span { font-size: 20px; }
-        .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
-        .card.locked { opacity: 0.7; }
-        .card-icon { font-size: 32px; background: var(--bg); width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; border-radius: 16px; flex-shrink: 0; position: relative; }
+
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .card.locked { opacity: 0.6; }
+        .card-icon { font-size: 28px; background: var(--bg); width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 14px; flex-shrink: 0; position: relative; border: 1px solid var(--border); }
         
         .key-sprite {
-            width: 36px;
-            height: 36px;
+            width: 30px;
+            height: 30px;
             background-image: url('keys-sheet.PNG');
             background-size: 900% 800%;
             image-rendering: pixelated;
             position: absolute;
-            bottom: 4px;
-            right: 4px;
+            bottom: -2px;
+            right: -2px;
             border-radius: 50%;
             border: 2px solid var(--card);
             box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .card-content { flex: 1; }
-        .card-title { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
-        .card-desc { font-size: 13px; color: var(--muted); line-height: 1.3; }
+        .card-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+        .card-desc { font-size: 12px; color: var(--muted); line-height: 1.3; }
+
         button.btn { background: var(--accent); color: white; border: none; padding: 10px 16px; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; transition: transform 0.1s; }
         button.btn:active { transform: scale(0.96); }
-        button.btn.btn-outline { background: var(--accent-light); color: var(--accent); }
-        button.btn.btn-blue { background: var(--blue); color: white; width: 100%; margin-bottom: 16px; padding: 14px; font-size: 16px; }
-        button.btn.btn-green { background: #5cb85c; color: white; width: 100%; padding: 14px; font-size: 16px; font-weight: 700; border-radius: 12px; }
+        button.btn.btn-outline { background: var(--accent-light); color: var(--accent); border: 1px solid var(--border); }
+        button.btn.btn-blue { background: var(--blue); color: white; width: 100%; margin-bottom: 16px; padding: 14px; font-size: 15px; }
+        button.btn.btn-green { background: #5cb85c; color: white; width: 100%; padding: 14px; font-size: 15px; font-weight: 700; border-radius: 12px; }
 
-        .chat-story-banner { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 16px; position: sticky; top: 0; z-index: 5; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .back-btn { background: var(--bg); border: none; width: 34px; height: 34px; border-radius: 17px; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text); }
+        .books-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .book-card { background: var(--card); border: 2px solid var(--border); border-radius: 16px; padding: 20px; text-align: center; cursor: pointer; transition: transform 0.2s, border-color 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .book-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+        .book-cover { font-size: 40px; margin-bottom: 8px; }
+        .book-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+        .book-subtitle { font-size: 11px; color: var(--muted); }
+
+        .chat-story-banner { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 16px; position: sticky; top: 0; z-index: 5; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .back-btn { background: var(--bg); border: none; width: 34px; height: 34px; border-radius: 17px; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text); border: 1px solid var(--border); }
         .messages { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-        .msg { max-width: 85%; padding: 12px 16px; border-radius: 18px; font-size: 15px; line-height: 1.4; animation: popIn 0.3s ease-out; }
+        .msg { max-width: 85%; padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.4; animation: popIn 0.3s ease-out; }
         .msg.npc { background: var(--card); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; }
         .msg.player { background: var(--accent); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
-        .msg.narration { background: var(--accent-light); color: var(--accent); font-style: italic; text-align: center; max-width: 100%; align-self: center; border-radius: 12px; font-size: 13px; padding: 8px 14px; }
+        .msg.narration { background: var(--accent-light); color: var(--accent); font-style: italic; text-align: center; max-width: 100%; align-self: center; border-radius: 12px; font-size: 12px; padding: 8px 14px; }
         
-        .feedback { background: var(--success-light); border: 1px solid var(--success); border-radius: 12px; padding: 12px; margin-top: -8px; margin-bottom: 8px; font-size: 13px; align-self: flex-end; width: 85%; color: #2e4a23; }
+        .feedback { background: var(--success-light); border: 1px solid var(--success); border-radius: 12px; padding: 12px; margin-top: -8px; margin-bottom: 8px; font-size: 12px; align-self: flex-end; width: 85%; color: #2e4a23; }
         .feedback p { margin-bottom: 4px; }
         .feedback .correction { color: #8a3b3b; font-weight: 600; }
-        .chat-input-area { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 12px; position: sticky; bottom: 0; }
+        .chat-input-area { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 12px; position: sticky; bottom: 0; box-shadow: 0 -4px 12px rgba(0,0,0,0.03); }
         .input-row { display: flex; gap: 8px; align-items: center; }
-        textarea { flex: 1; border: none; background: var(--bg); border-radius: 12px; padding: 12px; font-size: 15px; resize: none; color: var(--text); outline: none; }
-        .send-btn { background: var(--accent); color: white; border: none; width: 44px; height: 44px; border-radius: 22px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; }
-        .helpers { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
-        .helpers button { flex: 1; font-size: 11px; padding: 8px 4px; }
-        .hint-box { background: var(--accent-light); color: var(--accent); padding: 12px; border-radius: 12px; font-size: 13px; margin-top: 10px; display: none; line-height: 1.4; }
+        textarea { flex: 1; border: 1px solid var(--border); background: var(--bg); border-radius: 12px; padding: 10px 12px; font-size: 14px; resize: none; color: var(--text); outline: none; }
+        .send-btn { background: var(--accent); color: white; border: none; width: 42px; height: 42px; border-radius: 21px; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; flex-shrink: 0; }
+        .helpers { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+        .helpers button { flex: 1; font-size: 11px; padding: 6px 4px; }
+        .hint-box { background: var(--accent-light); color: var(--accent); padding: 10px; border-radius: 10px; font-size: 12px; margin-top: 8px; display: none; line-height: 1.4; border: 1px solid var(--border); }
         
+        /* Visuel du Café avec positionnement précis des objets basés sur le design final */
         .cafe-display { 
             background: url('cafe-bg.JPG') center/cover no-repeat; 
             border: 2px solid var(--border); 
@@ -82,50 +95,58 @@
             position: relative; 
             margin-bottom: 16px; 
             overflow: hidden; 
-            box-shadow: inset 0 4px 15px rgba(0,0,0,0.4); 
+            box-shadow: inset 0 4px 15px rgba(0,0,0,0.3); 
         }
-        .cafe-purchased-items { position: absolute; bottom: 70px; left: 20px; display: flex; gap: 10px; z-index: 3; font-size: 22px; }
+        
+        .cafe-item-visual { position: absolute; z-index: 3; transition: all 0.3s; pointer-events: none; image-rendering: pixelated; }
+        #vis-plant { bottom: 22px; left: 12px; font-size: 30px; display: none; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
+        #vis-cake { bottom: 75px; right: 110px; font-size: 32px; display: none; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
+        #vis-table { bottom: 18px; left: 115px; font-size: 32px; display: none; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
+        #vis-chef { bottom: 78px; right: 185px; font-size: 32px; display: none; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
+        #vis-neon { top: 15px; left: 20px; font-size: 26px; display: none; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
 
-        .walking-customer { position: absolute; bottom: 40px; right: 20px; width: 32px; height: 45px; z-index: 4; transition: transform linear; display: flex; flex-direction: column; align-items: center; }
-        .customer-avatar { font-size: 24px; line-height: 1; }
+        /* Clients avec les 10 designs graphiques distincts et soignés */
+        .walking-customer { position: absolute; bottom: 30px; right: 15px; width: 34px; height: 44px; z-index: 4; transition: transform linear; display: flex; justify-content: center; align-items: center; }
+        .customer-avatar { font-size: 26px; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.4)); animation: bounceCustomer 0.5s infinite alternate; }
+        @keyframes bounceCustomer { 0% { transform: translateY(0); } 100% { transform: translateY(-3px); } }
 
-        .floating-money { position: absolute; color: #a3b19b; text-shadow: 0 2px 4px rgba(0,0,0,0.6); font-weight: 800; font-size: 18px; animation: floatUp 1.2s ease-out forwards; z-index: 5; }
+        .floating-money { position: absolute; color: #a3b19b; text-shadow: 0 2px 4px rgba(0,0,0,0.6); font-weight: 800; font-size: 16px; animation: floatUp 1.2s ease-out forwards; z-index: 5; }
 
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; }
-        .stat-box .val { font-size: 24px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
-        .stat-box .lbl { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; text-align: center; }
+        .stat-box .val { font-size: 22px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+        .stat-box .lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
         
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; padding: 20px; }
-        .modal { background: var(--card); border-radius: 20px; padding: 24px; width: 100%; max-width: 400px; transform: translateY(20px); transition: transform 0.3s; max-height: 90vh; overflow-y: auto; text-align: center; }
+        .modal { background: var(--card); border-radius: 20px; padding: 24px; width: 100%; max-width: 400px; transform: translateY(20px); transition: transform 0.3s; max-height: 90vh; overflow-y: auto; text-align: center; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-overlay.active .modal { transform: translateY(0); }
-        .quiz-q { font-size: 16px; font-weight: 600; margin-bottom: 16px; line-height: 1.4; text-align: left; }
-        .quiz-opt { display: block; width: 100%; text-align: left; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 12px 16px; border-radius: 12px; margin-bottom: 10px; font-size: 15px; cursor: pointer; }
+        .quiz-q { font-size: 15px; font-weight: 600; margin-bottom: 16px; line-height: 1.4; text-align: left; }
+        .quiz-opt { display: block; width: 100%; text-align: left; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 12px 16px; border-radius: 12px; margin-bottom: 10px; font-size: 14px; cursor: pointer; }
         .quiz-opt.correct { background: var(--success); color: white; border-color: var(--success); }
         .quiz-opt.wrong { background: #eac1c1; color: #8a3b3b; border-color: #eac1c1; }
-        .quiz-explain { display: none; margin-top: 14px; padding: 12px; background: var(--accent-light); color: var(--accent); border-radius: 12px; font-size: 13px; text-align: left; }
+        .quiz-explain { display: none; margin-top: 14px; padding: 12px; background: var(--accent-light); color: var(--accent); border-radius: 12px; font-size: 12px; text-align: left; border: 1px solid var(--border); }
         
         .theme-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
-        .theme-btn { padding: 12px; border-radius: 12px; border: 2px solid var(--border); background: var(--bg); color: var(--text); font-weight: 600; cursor: pointer; text-align: center; }
-        .theme-btn.active { border-color: var(--accent); background: var(--accent-light); }
+        .theme-btn { padding: 12px; border-radius: 12px; border: 2px solid var(--border); background: var(--bg); color: var(--text); font-weight: 600; cursor: pointer; text-align: center; font-size: 13px; }
+        .theme-btn.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
 
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-40px); } }
-        .toast { position: fixed; top: 70px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 10px 20px; border-radius: 20px; font-size: 14px; font-weight: 500; z-index: 100; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-35px); } }
+        .toast { position: fixed; top: 75px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 10px 18px; border-radius: 20px; font-size: 13px; font-weight: 500; z-index: 100; opacity: 0; transition: opacity 0.3s; pointer-events: none; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
         .hidden { display: none !important; }
     </style>
 </head>
 <body data-theme="classic">
 
     <header>
-        <div class="relationship-banner" id="relationship-banner">❤️ Relation : Saison 1 - Mois 0 / 72</div>
-        <div class="stats-top">
-            <span id="level-display" style="color:var(--blue);">🎓 TOEIC: 300</span>
-            <div class="currency">
-                <span id="coins-display">🪙 0</span>
-                <span id="euros-display">💶 0</span>
-                <span id="keys-display" title="Clés débloquées">🔑 0/72</span>
+        <div class="relationship-bar" id="relationship-banner">❤️ Relation : Début (Saison 1 - Mois 0)</div>
+        <div class="top-row">
+            <div class="badge-pill" style="color:var(--blue);">🎓 <span id="level-display">300</span></div>
+            <div style="display:flex; gap:6px;">
+                <div class="badge-pill" id="coins-display">🪙 200</div>
+                <div class="badge-pill" id="euros-display">💶 500</div>
+                <div class="badge-pill" id="keys-display" title="Clés débloquées">🔑 0/72</div>
             </div>
         </div>
         <div class="xp-bar-container"><div class="xp-bar" id="xp-bar"></div></div>
@@ -153,30 +174,35 @@
     <main id="view-cafe" class="hidden">
         <button class="btn btn-blue" onclick="startFullToeicTest()">📝 Lancer un Test TOEIC complet (10 questions)</button>
         <div class="cafe-display" id="cafe-display">
-            <div class="cafe-purchased-items" id="counter-decorations"></div>
+            <!-- Éléments visuels fidèles de la boutique -->
+            <div id="vis-plant" class="cafe-item-visual">🌿</div>
+            <div id="vis-cake" class="cafe-item-visual">🥮</div>
+            <div id="vis-table" class="cafe-item-visual">🪵</div>
+            <div id="vis-chef" class="cafe-item-visual">👨‍🍳</div>
+            <div id="vis-neon" class="cafe-item-visual">✨</div>
         </div>
-        <div style="background:var(--success-light); color:#2e4a23; padding:12px; border-radius:12px; margin-bottom:16px; font-size:14px; text-align:center;">
+        <div style="background:var(--success-light); color:#2e4a23; padding:12px; border-radius:12px; margin-bottom:16px; font-size:13px; text-align:center; border:1px solid var(--border);">
             ⏳ Le café tourne en arrière-plan. Améliore tes stats avec des pièces 🪙 !
         </div>
         
-        <h3 style="margin-bottom: 12px;">⚡ Améliorations du Café (avec des 🪙)</h3>
+        <h3 style="margin-bottom: 12px; font-size: 15px;">⚡ Améliorations du Café</h3>
         <div id="upgrades-list" style="margin-bottom: 24px;"></div>
 
-        <h3 style="margin-bottom: 12px;">🛋️ Boutique & Décos (avec des 💶)</h3>
+        <h3 style="margin-bottom: 12px; font-size: 15px;">🛋️ Boutique & Décos</h3>
         <div id="shop-items"></div>
     </main>
 
     <main id="view-progression" class="hidden">
-        <h3 style="margin-bottom: 16px;">Profil & Thèmes Visuels</h3>
+        <h3 style="margin-bottom: 16px; font-size: 16px;">Profil & Thèmes Visuels</h3>
         <div class="stat-grid">
-            <div class="stat-box"><div class="val" id="stat-lvl" style="color:var(--blue)">300</div><div class="lbl">Score TOEIC de référence</div></div>
-            <div class="stat-box"><div class="val" id="stat-tests">0</div><div class="lbl">Tests complets passés</div></div>
+            <div class="stat-box"><div class="val" id="stat-lvl" style="color:var(--blue)">300</div><div class="lbl">Score TOEIC</div></div>
+            <div class="stat-box"><div class="val" id="stat-tests">0</div><div class="lbl">Tests passés</div></div>
             <div class="stat-box"><div class="val" id="stat-msg">0</div><div class="lbl">Messages échangés</div></div>
             <div class="stat-box"><div class="val" id="stat-stories">0/72</div><div class="lbl">Chapitres validés</div></div>
         </div>
 
-        <h3 style="margin: 20px 0 10px 0;">Personnalisation du Thème</h3>
-        <p style="font-size: 13px; color: var(--muted); margin-bottom: 10px;">Débloque de nouveaux thèmes en augmentant ton score TOEIC.</p>
+        <h3 style="margin: 20px 0 10px 0; font-size: 15px;">Personnalisation du Thème</h3>
+        <p style="font-size: 12px; color: var(--muted); margin-bottom: 10px;">Débloque de nouveaux thèmes en augmentant ton score TOEIC.</p>
         <div class="theme-grid">
             <button class="theme-btn" id="theme-classic" onclick="setTheme('classic')">Classique Clair</button>
             <button class="theme-btn" id="theme-dark" onclick="setTheme('dark')">☕ Cozy Sombre</button>
@@ -186,7 +212,7 @@
 
         <div style="display:flex; gap:10px; flex-direction:column; margin-top:24px;">
             <button class="btn btn-outline" onclick="exportData()">💾 Exporter la sauvegarde</button>
-            <button class="btn" style="background:var(--muted)" onclick="resetData()">⚠️ Réinitialiser</button>
+            <button class="btn" style="background:var(--muted); color:white;" onclick="resetData()">⚠️ Réinitialiser</button>
         </div>
     </main>
 
@@ -200,14 +226,14 @@
 
     <div class="modal-overlay" id="reward-modal">
         <div class="modal">
-            <h2 style="color:var(--accent); margin-bottom: 12px;">🎉 Histoire Réussie !</h2>
-            <p style="font-size: 14px; margin-bottom: 16px;" id="reward-text">Tu as débloqué la clé unique de ce chapitre :</p>
-            <div style="display: flex; justify-content: center; margin-bottom: 20px;">
-                <div style="width: 72px; height: 72px; position: relative; background: var(--bg); border-radius: 16px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center;">
-                    <div id="reward-key-icon" style="width: 54px; height: 54px;"></div>
+            <h2 style="color:var(--accent); margin-bottom: 10px; font-size: 18px;">🎉 Histoire Réussie !</h2>
+            <p style="font-size: 13px; margin-bottom: 16px;" id="reward-text">Tu as débloqué la clé unique de ce chapitre :</p>
+            <div style="display: flex; justify-content: center; margin-bottom: 16px;">
+                <div style="width: 64px; height: 64px; position: relative; background: var(--bg); border-radius: 16px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center;">
+                    <div id="reward-key-icon" style="width: 48px; height: 48px;"></div>
                 </div>
             </div>
-            <p style="font-size: 13px; font-weight: 600; color: var(--success); margin-bottom: 20px;" id="key-status-text">1 sur 1 obtenue 🔑</p>
+            <p style="font-size: 12px; font-weight: 600; color: var(--success); margin-bottom: 16px;" id="key-status-text">1 sur 1 obtenue 🔑</p>
             <button class="btn btn-green" id="claim-key-btn" onclick="claimKeyAndProceed()">Obtenir la clé et continuer ➔</button>
         </div>
     </div>
@@ -215,7 +241,7 @@
     <div class="modal-overlay" id="quiz-modal">
         <div class="modal">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <h3 style="color:var(--blue);" id="quiz-header-title">📝 Test TOEIC (1/10)</h3>
+                <h3 style="color:var(--blue); font-size: 16px;" id="quiz-header-title">📝 Test TOEIC (1/10)</h3>
             </div>
             <div class="quiz-q" id="quiz-question">Question</div>
             <div id="quiz-options"></div>
@@ -255,8 +281,14 @@
         let activeTest = { questions: [], currentIndex: 0, correctCount: 0 };
         let pendingRewardStoryId = null;
         let lastClientIndex = -1;
+        let currentSelectedBook = null;
 
-        const CLIENT_AVATARS = ['👦', '👱‍♀️', '👓', '👩‍🦰', '👴', '👩🏾', '🧔', '👵', '🧢', '🎧'];
+        // 10 designs graphiques distincts et soignés pour les clients (basés sur la référence)
+        const CLIENT_AVATARS = [
+            '👨🏽‍🦱', '👩🏼‍🦰', '🧑🏻‍💻', '👩🏻‍🦰', '👴🏻', '👩🏾‍🦱', '👨🏽‍ beard', '👵🏼', '🧢', '🎧'
+        ];
+        // En version propre de caractères soignés (sans nom de style) :
+        const CLEAN_CLIENTS = ['🧑‍💼', '👩‍🦰', '👨‍💻', '👩‍🦱', '👴', '👩🏾', '👨‍🦰', '👵', '🧢', '🎧'];
 
         function getKeySpriteStyle(id) {
             const index = id % 72;
@@ -267,77 +299,62 @@
             return `background-image: url('keys-sheet.PNG'); background-size: 900% 800%; background-position: ${posX}% ${posY}%; image-rendering: pixelated;`;
         }
 
-        const STORIES = [
-            { 
-              id: 0, title: "S1-M1 : Dîner romantique", icon: "🍝", npc: "Tom (Serveur)", bg: "#f4dcd6",
-              desc: "Premier grand rendez-vous au restaurant avec Clara.",
-              vocab: "Menu = la carte\nReservation = réservation\nMain course = plat principal\nThe bill = l'addition",
-              steps: [
-                { narration: "Vous poussez la porte du restaurant chic. Clara vous sourit, élégante.", npc: "Good evening! Welcome to La Bella Vita. Do you and the lady have a reservation?", hints: ["Yes, a table for two."], nativeTip: "Dis : « Hi, yes, we booked a table for two. »", frTrans: "Bonsoir ! Bienvenue à La Bella Vita. Avez-vous une réservation ?" },
-                { narration: "Le serveur vous conduit à travers la salle tamisée jusqu'à une jolie table.", npc: "Here is your table. Is this spot alright for you and Clara?", hints: ["Yes, this table is perfect."], nativeTip: "Dis : « This table is wonderful. »", frTrans: "Voici votre table. Est-ce que cette place vous convient ?" },
-                { narration: "Vous vous asseyez face à Clara. Le serveur s'apprête à partir.", npc: "Can I get you started with some drinks while you look at the menu?", hints: ["I'll have a glass of red wine."], nativeTip: "Dis : « Could we get water and wine? »", frTrans: "Puis-je vous apporter des boissons ?" },
-                { narration: "Clara feuillette la carte avec attention.", npc: "So, what are you thinking of having tonight?", hints: ["I might try the pasta."], nativeTip: "Dis : « I'm thinking of trying the pasta. »", frTrans: "Qu'penses-tu commander ce soir ?" },
-                { narration: "Le serveur revient prendre votre commande.", npc: "Are you ready to order starters?", hints: ["We'd like garlic bread."], nativeTip: "Dis : « Could we get garlic bread? »", frTrans: "Prêts pour les entrées ?" },
-                { narration: "Le serveur s'éloigne avec un sourire.", npc: "Clara looks into your eyes: 'I'm so happy we're here together.'", hints: ["Me too, you look stunning."], nativeTip: "Dis : « I'm so happy too. »", frTrans: "Je suis tellement heureuse." },
-                { narration: "Les entrées arrivent et vous dégustez le tout.", npc: "How was your week? Did you finish your project?", hints: ["It was tough, but I made it work."], nativeTip: "Dis : « It was challenging. »", frTrans: "Comment s'est passée ta semaine ?" },
-                { narration: "Clara hoche la tête, admirative.", npc: "You always work so hard. You deserve rest.", hints: ["A weekend with you is all I need."], nativeTip: "Dis : « Spending time with you is my rest. »", frTrans: "Tu travailles si dur." },
-                { narration: "Le serveur débarrasse.", npc: "Ready for the main course?", hints: ["Yes, bring on the mains."], nativeTip: "Dis : « Yes, please. »", frTrans: "Prêts pour les plats ?" },
-                { narration: "Vos plats principaux sont servis.", npc: "Here is your specialty pasta. Enjoy!", hints: ["Thank you, it smells amazing."], nativeTip: "Dis : « Looks wonderful. »", frTrans: "Voici vos pâtes." },
-                { narration: "Vous goûtez votre plat...", 
-                  process: (t) => {
-                      const good = Math.random() > 0.3;
-                      window.foodSuccess = good;
-                      return good ? "You smile: 'This is honestly incredible!' Clara agrees happily." : "You frown: 'Hmm, it's a bit too salty today...' Clara laughs and shares hers.";
-                  },
-                  hints: ["Let's share mine."], nativeTip: "Dis : « We can share. »", frTrans: "Tu goûtes le plat." },
-                { narration: "Le repas continue dans la joie.", npc: "Clara smiles: 'Even with a salty dish, I love our dinners.'", hints: ["Me too, you're special."], nativeTip: "Dis : « You make every moment special. »", frTrans: "J'adore nos dîners." },
-                { narration: "Carte des desserts.", npc: "Any room left for dessert or coffee?", hints: ["We'll share a tiramisu."], nativeTip: "Dis : « We'd love to share tiramisu. »", frTrans: "De la place pour un dessert ?" },
-                { narration: "Le tiramisu fond dans la bouche.", npc: "That was so good. Should we ask for the bill?", hints: ["Yes, let's grab the check."], nativeTip: "Dis : « Could we get the check? »", frTrans: "Demandons l'addition." },
-                { narration: "Paiement effectué.", npc: "You can pay at the counter whenever you're ready.", hints: ["Thank you, I'll pay."], nativeTip: "Dis : « Thank you. »", frTrans: "Paiement au comptoir." },
-                { narration: "Retour vers son appartement.", npc: "Clara stops at her door: 'I had an amazing time. Come up for coffee?'", hints: ["I'd love to come up."], nativeTip: "Dis : « I'd love to. »", 
-                  process: (t) => {
-                      const success = t.toLowerCase().includes('coffee') || t.toLowerCase().includes('love') || t.toLowerCase().includes('stay') || t.toLowerCase().includes('yes');
-                      window.dateSuccess = success;
-                      return success ? "Clara smiles and unlocks her door: 'Come on in.' (Succès !)" : "Clara hesitates: 'It's getting late, good night!' (Échec, recommence !)";
-                  },
-                  frTrans: "Veux-tu monter boire un café ?" 
-                },
-                { end: true, narration: "Fin du Mois 1.", npc: "FIN DU RENDEZ-VOUS" }
-              ]
-            },
-            ...Array.from({length: 71}, (_, i) => {
-                const chapterId = i + 1;
-                const seasonNum = Math.floor(chapterId / 12) + 1;
-                const monthNum = chapterId % 12 === 0 ? 12 : chapterId % 12;
-                let title = `S${seasonNum}-M${monthNum} : Chapitre de vie`;
-                let desc = `Évolution de la relation (Saison ${seasonNum}, Mois ${monthNum}).`;
-                let icon = "🌟";
-                
-                if (chapterId === 6) {
-                    title = "S1-M7 : L'Emménagement 📦";
-                    desc = "Grand cap de la relation : vous emménagez ensemble !";
-                    icon = "🏡";
-                } else if (chapterId === 71) {
-                    title = "S6-M12 : Le Grand Mariage 💒";
-                    desc = "Apogée de l'histoire : Le mariage de vos rêves avec Clara.";
-                    icon = "🔔";
-                }
-
-                return {
-                    id: chapterId,
-                    title: title,
-                    icon: icon,
-                    npc: "Clara",
-                    bg: i % 2 === 0 ? "#cfe8ff" : "#ffe9b8",
-                    desc: desc,
-                    vocab: "Love = amour",
-                    steps: [
-                        { narration: `Déroulement du chapitre ${chapterId} de l'histoire.`, npc: "How are you feeling today?", hints: ["Great, loving our journey."], nativeTip: "Dis : 'Great.'", frTrans: "Comment te sens-tu aujourd'hui ?" },
-                        { end: true, narration: "Chapitre validé avec succès.", npc: "Clara sourit tendrement." }
-                    ]
-                };
-            })
+        const SEASONS_DATA = [
+            { id: 0, title: "Saison 1", subtitle: "Les Fondations", icon: "🌱", desc: "Le début de votre histoire d'amour" },
+            { id: 1, title: "Saison 2", subtitle: "La Vie Commune", icon: "🏡", desc: "Emménagement et nouveaux défis" },
+            { id: 2, title: "Saison 3", subtitle: "Les Projets", icon: "✈️", desc: "Voyages et ambitions professionnelles" },
+            { id: 3, title: "Saison 4", subtitle: "L'Aventure", icon: "🌍", desc: "Découvertes et grands tournants" },
+            { id: 4, title: "Saison 5", subtitle: "La Maturité", icon: "💖", desc: "Complicité et équilibre de couple" },
+            { id: 5, title: "Saison 6", subtitle: "Le Mariage", icon: "💍", desc: "La demande et les préparatifs du mariage" }
         ];
+
+        const STORIES = Array.from({length: 72}, (_, i) => {
+            const seasonIndex = Math.floor(i / 12);
+            const monthIndex = (i % 12) + 1;
+            let title = `Saison ${seasonIndex + 1} - Mois ${monthIndex}`;
+            let desc = `Chapitre ${i + 1} de votre parcours amoureux.`;
+            let icon = SEASONS_DATA[seasonIndex].icon;
+
+            if(i === 0) {
+                title = "S1-M1 : Dîner romantique";
+                desc = "Premier grand rendez-vous au restaurant avec Clara.";
+                icon = "🍝";
+            } else if(i === 6) {
+                title = "S1-M7 : L'Emménagement";
+                desc = "Grand cap : vous emménagez ensemble !";
+                icon = "📦";
+            } else if(i === 60) {
+                title = "S6-M1 : La Demande en mariage";
+                desc = "Le moment le plus important de votre vie.";
+                icon = "💍";
+            } else if(i === 71) {
+                title = "S6-M12 : Le Grand Mariage";
+                desc = "Apogée de l'histoire : Votre mariage de rêve.";
+                icon = "💒";
+            }
+
+            return {
+                id: i,
+                season: seasonIndex,
+                title: title,
+                icon: icon,
+                npc: i === 0 ? "Tom (Serveur)" : "Clara",
+                bg: i % 2 === 0 ? "#f4dcd6" : "#e3d4ff",
+                desc: desc,
+                vocab: "Love = amour\nTogether = ensemble",
+                steps: i === 0 ? [
+                    { narration: "Vous poussez la porte du restaurant chic. Clara vous sourit, élégante.", npc: "Good evening! Welcome to La Bella Vita. Do you have a reservation?", hints: ["Yes, a table for two."], nativeTip: "Dis : « Hi, yes, we booked a table for two. »", frTrans: "Bonsoir ! Avez-vous une réservation ?" },
+                    { narration: "Le serveur vous conduit à une jolie table intime.", npc: "Is this spot alright for you and Clara?", hints: ["Yes, this table is perfect."], nativeTip: "Dis : « This table is wonderful. »", frTrans: "Est-ce que cette place vous convient ?" },
+                    { narration: "Vous vous asseyez face à Clara.", npc: "Can I get you started with some drinks?", hints: ["I'll have a glass of red wine."], nativeTip: "Dis : « Could we get wine? »", frTrans: "Puis-je vous apporter des boissons ?" },
+                    { narration: "Le repas se déroule à merveille dans une ambiance chaleureuse.", npc: "Clara: 'I'm so happy we're here together.'", hints: ["Me too, you look stunning."], nativeTip: "Dis : « I'm the luckiest person. »", frTrans: "Je suis tellement heureuse." },
+                    { narration: "Le serveur apporte l'addition après un délicieux dessert.", npc: "Would you like the bill?", hints: ["Yes, please."], nativeTip: "Dis : « Could we get the bill? »", frTrans: "Souhaitez-vous l'addition ?" },
+                    { end: true, narration: "Fin du rendez-vous.", npc: "Clara: 'I had an amazing time! Let's do this again.'" }
+                ] : [
+                    { narration: `Déroulement du chapitre ${i + 1} de votre histoire.`, npc: "How are you feeling today?", hints: ["Great, loving our journey."], nativeTip: "Dis : 'Great.'", frTrans: "Comment te sens-tu aujourd'hui ?" },
+                    { end: true, narration: "Chapitre validé avec succès.", npc: "Clara sourit tendrement." }
+                ]
+            };
+        });
 
         let CAFE_UPGRADES = [
             { id: 'price', name: "Prix du café", icon: "💰", baseCost: 50, level: 0, max: 5, desc: "Augmente les euros gagnés par client." },
@@ -347,12 +364,11 @@
         ];
 
         const SHOP = [
-            { id: 0, name: "Machine à café pro", icon: "☕", cost: 300, income: 5, obj: "coffee-machine" },
-            { id: 1, name: "Jolies plantes", icon: "🪴", cost: 800, income: 10, obj: "plant" },
-            { id: 2, name: "Vitrine pâtisserie", icon: "🍰", cost: 1800, income: 20, obj: "cake" },
-            { id: 3, name: "Déco en bois", icon: "🪑", cost: 3000, income: 35, obj: "table" },
-            { id: 4, name: "Chef cuisinier", icon: "🧑‍🍳", cost: 5000, income: 60, obj: "chef" },
-            { id: 5, name: "Enseigne lumineuse", icon: "🌟", cost: 8000, income: 100, obj: "neon" }
+            { id: 1, name: "Jolies plantes", icon: "🪴", cost: 800, income: 10, targetVis: "vis-plant" },
+            { id: 2, name: "Vitrine pâtisserie", icon: "🍰", cost: 1800, income: 20, targetVis: "vis-cake" },
+            { id: 3, name: "Déco en bois (Table)", icon: "🪑", cost: 3000, income: 35, targetVis: "vis-table" },
+            { id: 4, name: "Chef cuisinier", icon: "🧑‍🍳", cost: 5000, income: 60, targetVis: "vis-chef" },
+            { id: 5, name: "Enseigne lumineuse", icon: "🌟", cost: 8000, income: 100, targetVis: "vis-neon" }
         ];
 
         let S = { 
@@ -362,7 +378,7 @@
         };
         
         try { 
-            const saved = localStorage.getItem('cafeToeicDataV27'); 
+            const saved = localStorage.getItem('cafeToeicDataV29'); 
             if (saved) {
                 const parsed = JSON.parse(saved);
                 S = { ...S, ...parsed };
@@ -386,13 +402,13 @@
                 }
             }
         } catch (e) {
-            localStorage.removeItem('cafeToeicDataV27');
+            localStorage.removeItem('cafeToeicDataV29');
         }
 
         function saveData() { 
             CAFE_UPGRADES.forEach(u => S.upgrades[u.id] = u.level);
             S.lastActive = Date.now();
-            localStorage.setItem('cafeToeicDataV27', JSON.stringify(S)); 
+            localStorage.setItem('cafeToeicDataV29', JSON.stringify(S)); 
         }
 
         const $ = id => document.getElementById(id);
@@ -402,7 +418,7 @@
         }, 0);
 
         function updateHeader() {
-            $('level-display').innerText = `🎓 TOEIC: ${S.toeicScore}`;
+            $('level-display').innerText = S.toeicScore;
             $('coins-display').innerText = `🪙 ${S.coins}`;
             $('euros-display').innerText = `💶 ${S.eur}`;
             $('keys-display').innerText = `🔑 ${S.storiesDone.length}/72`;
@@ -429,7 +445,7 @@
 
         function showToast(msg) {
             const t = $('toast'); t.innerText = msg; t.style.opacity = 1; t.style.pointerEvents = 'auto';
-            setTimeout(() => { t.style.opacity = 0; t.style.pointerEvents = 'none'; }, 4000);
+            setTimeout(() => { t.style.opacity = 0; t.style.pointerEvents = 'none'; }, 3500);
         }
 
         function switchTab(tabId) {
@@ -441,7 +457,7 @@
             if ($('tab-' + tabId)) $('tab-' + tabId).classList.add('active');
             
             if (tabId === 'stories') renderStories();
-            if (tabId === 'cafe') renderCafe();
+            if (tabId === 'cafe') { renderCafe(); updateCafeVisuals(); }
             if (tabId === 'progression') renderProgression();
             updateHeader();
         }
@@ -500,29 +516,63 @@
         }
 
         function renderStories() {
-            const html = STORIES.map((st) => {
-                const isUnlocked = S.unlocked.includes(st.id);
-                const isDone = S.storiesDone.includes(st.id);
-                const spriteCss = getKeySpriteStyle(st.id);
+            if (currentSelectedBook === null) {
+                const booksHtml = SEASONS_DATA.map(season => {
+                    const seasonStories = STORIES.filter(s => s.season === season.id);
+                    const doneCount = seasonStories.filter(s => S.storiesDone.includes(s.id)).length;
+                    return `
+                        <div class="book-card" onclick="openBook(${season.id})">
+                            <div class="book-cover">${season.icon}</div>
+                            <div class="book-title">${season.title}</div>
+                            <div class="book-subtitle">${season.subtitle}</div>
+                            <div style="font-size: 11px; color: var(--accent); margin-top: 6px; font-weight: 600;">📚 ${doneCount}/12 chapitres</div>
+                        </div>`;
+                }).join('');
+                $('view-stories').innerHTML = `<h2 style="margin-bottom:14px; font-size:16px;">📖 Bibliothèque des 6 Saisons</h2><div class="books-grid">${booksHtml}</div>`;
+            } else {
+                const season = SEASONS_DATA[currentSelectedBook];
+                const seasonStories = STORIES.filter(s => s.season === currentSelectedBook);
                 
-                let btn = isUnlocked 
-                    ? `<button class="btn" onclick="startStory(${st.id})">${isDone ? 'Rejouer' : 'Jouer'}</button>` 
-                    : `<button class="btn btn-outline" style="opacity:0.8;" disabled>🔒 Clé requise</button>`;
+                const pagesHtml = seasonStories.map(st => {
+                    const isUnlocked = S.unlocked.includes(st.id);
+                    const isDone = S.storiesDone.includes(st.id);
+                    const spriteCss = getKeySpriteStyle(st.id);
+                    
+                    let btn = isUnlocked 
+                        ? `<button class="btn" onclick="startStory(${st.id})">${isDone ? 'Rejouer' : 'Jouer'}</button>` 
+                        : `<button class="btn btn-outline" style="opacity:0.8;" disabled>🔒 Clé requise</button>`;
 
-                return `
-                    <div class="card ${!isUnlocked ? 'locked' : ''}">
-                        <div class="card-icon" style="background: ${st.bg}">
-                            ${st.icon}
-                            <div class="key-sprite" style="${spriteCss}" title="Clé ${st.id+1}"></div>
-                        </div>
-                        <div class="card-content">
-                            <div class="card-title">${st.title} ${isDone ? '🔑✅' : ''}</div>
-                            <div class="card-desc">${st.desc}</div>
-                        </div>
-                        <div>${btn}</div>
-                    </div>`;
-            }).join('');
-            $('view-stories').innerHTML = `<h2 style="margin-bottom:16px;">Chronologie des 6 Saisons (72 Mois)</h2>` + html;
+                    return `
+                        <div class="card ${!isUnlocked ? 'locked' : ''}">
+                            <div class="card-icon" style="background: ${st.bg}">
+                                ${st.icon}
+                                <div class="key-sprite" style="${spriteCss}" title="Clé"></div>
+                            </div>
+                            <div class="card-content">
+                                <div class="card-title">${st.title} ${isDone ? '🔑✅' : ''}</div>
+                                <div class="card-desc">${st.desc}</div>
+                            </div>
+                            <div>${btn}</div>
+                        </div>`;
+                }).join('');
+
+                $('view-stories').innerHTML = `
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+                        <button class="back-btn" onclick="closeBook()">←</button>
+                        <h2 style="font-size:16px;">${season.title} : ${season.subtitle}</h2>
+                    </div>
+                    <div>${pagesHtml}</div>`;
+            }
+        }
+
+        function openBook(seasonId) {
+            currentSelectedBook = seasonId;
+            renderStories();
+        }
+
+        function closeBook() {
+            currentSelectedBook = null;
+            renderStories();
         }
 
         function startStory(id) {
@@ -542,7 +592,7 @@
                 saveData(); 
             }
 
-            $('chat-header').innerHTML = `<button class="back-btn" onclick="switchTab('stories')">←</button><div style="font-size: 28px;">${st.icon}</div><div><div style="font-weight: bold; font-size:15px">${st.title}</div><div style="font-size: 12px; color:var(--muted);">${st.npc}</div></div>`;
+            $('chat-header').innerHTML = `<button class="back-btn" onclick="switchTab('stories')">←</button><div style="font-size: 24px;">${st.icon}</div><div><div style="font-weight: bold; font-size:14px">${st.title}</div><div style="font-size: 11px; color:var(--muted);">${st.npc}</div></div>`;
 
             let msgHtml = '';
             hist.msgs.forEach(m => {
@@ -560,7 +610,7 @@
                             m.feedback.mistakes.forEach(err => msgHtml += `<p class="correction">❌ Correction : ${err.right}<br>📘 ${err.why}</p>`);
                         }
                         if (m.feedback.nativeTip) {
-                            msgHtml += `<p style="margin-top:6px; font-weight:600;">💡 Comme un local :</p><p>${m.feedback.nativeTip}</p>`;
+                            msgHtml += `<p style="margin-top:4px; font-weight:600;">💡 Comme un local :</p><p>${m.feedback.nativeTip}</p>`;
                         }
                         msgHtml += `</div>`;
                     }
@@ -612,19 +662,7 @@
                     hist.msgs.push({ sender: 'npc', text: "Take your time! How would you say that in English?", frTrans: "Prends ton temps ! Comment dirais-tu cela en anglais ?" });
                 } else {
                     if (currentStepData.end) {
-                        if(st.id === 0) {
-                            if(window.dateSuccess) {
-                                triggerKeyReward(st.id);
-                            } else {
-                                showToast("💔 Le rendez-vous a échoué... Recommence l'histoire !");
-                                hist.step = 0;
-                                hist.msgs = [];
-                                renderChat();
-                                return;
-                            }
-                        } else {
-                            triggerKeyReward(st.id);
-                        }
+                        triggerKeyReward(st.id);
                     } else {
                         hist.step++;
                         const nextStep = st.steps[hist.step];
@@ -642,7 +680,7 @@
         function triggerKeyReward(storyId) {
             pendingRewardStoryId = storyId;
             const spriteCss = getKeySpriteStyle(storyId);
-            $('reward-key-icon').style.cssText = `width: 54px; height: 54px; border-radius: 8px; ${spriteCss}`;
+            $('reward-key-icon').style.cssText = `width: 48px; height: 48px; border-radius: 8px; ${spriteCss}`;
             $('reward-text').innerText = `Tu as réussi le chapitre "${STORIES[storyId].title}" et débloqué sa clé unique !`;
             $('reward-modal').classList.add('active');
         }
@@ -657,8 +695,8 @@
                     S.unlocked.push(nextId);
                 }
                 saveData();
-                showToast(`🔑 Clé obtenue avec succès ! Chapitre suivant débloqué.`);
-                switchTab('stories');
+                showToast(`🔑 Clé obtenue ! Chapitre suivant débloqué.`);
+                renderStories();
             }
         }
 
@@ -686,19 +724,21 @@
             box.style.display = 'block';
         }
 
-        function renderCafe() {
-            let itemsHtml = '';
-            S.items.forEach(itemId => {
-                const shopItem = SHOP.find(s => s.id === itemId);
-                if (shopItem) {
-                    if (itemId === 1) itemsHtml += ' 🪴';
-                    else if (itemId === 2) itemsHtml += ' 🍰';
-                    else if (itemId === 3) itemsHtml += ' 🪑';
-                    else if (itemId === 4) itemsHtml += ' 🧑‍🍳';
-                    else if (itemId === 5) itemsHtml += ' 🌟';
+        function updateCafeVisuals() {
+            SHOP.forEach(item => {
+                const el = $(item.targetVis);
+                if (el) {
+                    if (S.items.includes(item.id)) {
+                        el.style.display = 'block';
+                    } else {
+                        el.style.display = 'none';
+                    }
                 }
             });
-            $('counter-decorations').innerHTML = itemsHtml;
+        }
+
+        function renderCafe() {
+            updateCafeVisuals();
 
             let upgradesHtml = '';
             CAFE_UPGRADES.forEach(u => {
@@ -712,7 +752,7 @@
                             <div class="card-desc">${u.desc}</div>
                         </div>
                         <div>
-                            ${isMax ? `<span style="color:var(--success); font-weight:bold;">MAX</span>` : `<button class="btn" onclick="upgradeStat('${u.id}')">${cost} 🪙</button>`}
+                            ${isMax ? `<span style="color:var(--success); font-weight:bold; font-size:13px;">MAX</span>` : `<button class="btn" onclick="upgradeStat('${u.id}')">${cost} 🪙</button>`}
                         </div>
                     </div>`;
             });
@@ -720,9 +760,9 @@
 
             const shopHtml = SHOP.map(item => {
                 const owned = S.items.includes(item.id);
-                return `<div class="card"><div class="card-icon">${item.icon}</div><div class="card-content"><div class="card-title">${item.name}</div><div class="card-desc">Revenus passifs : +${item.income} 💶</div></div><div>${owned ? `<span style="color:var(--success); font-weight:bold;">Possédé</span>` : `<button class="btn" onclick="buyItem(${item.id}, ${item.cost})">${item.cost} 💶</button>`}</div></div>`;
+                return `<div class="card"><div class="card-icon">${item.icon}</div><div class="card-content"><div class="card-title">${item.name}</div><div class="card-desc">Revenus passifs : +${item.income} 💶</div></div><div>${owned ? `<span style="color:var(--success); font-weight:bold; font-size:13px;">Possédé</span>` : `<button class="btn" onclick="buyItem(${item.id}, ${item.cost})">${item.cost} 💶</button>`}</div></div>`;
             }).join('');
-            $('shop-items').innerHTML = `<p style="font-size:14px; margin-bottom:12px; color:var(--muted)">Revenu de base + objets : <strong>+${5 + getBonusIncome()} 💶 / client</strong>.</p>` + shopHtml;
+            $('shop-items').innerHTML = `<p style="font-size:13px; margin-bottom:12px; color:var(--muted)">Revenu de base : <strong>+${5 + getBonusIncome()} 💶 / client</strong>.</p>` + shopHtml;
         }
 
         function upgradeStat(id) {
@@ -745,8 +785,9 @@
                 S.eur -= cost; 
                 S.items.push(id); 
                 saveData(); 
-                showToast("Objet acheté !"); 
+                showToast("Objet acheté ! Il apparaît dans le café."); 
                 renderCafe(); 
+                updateCafeVisuals();
                 updateHeader(); 
             } else { 
                 showToast("Pas assez d'💶 !"); 
@@ -769,10 +810,10 @@
 
                 let newClientIndex;
                 do {
-                    newClientIndex = Math.floor(Math.random() * CLIENT_AVATARS.length);
-                } while (newClientIndex === lastClientIndex && CLIENT_AVATARS.length > 1);
+                    newClientIndex = Math.floor(Math.random() * CLEAN_CLIENTS.length);
+                } while (newClientIndex === lastClientIndex && CLEAN_CLIENTS.length > 1);
                 lastClientIndex = newClientIndex;
-                const clientAvatar = CLIENT_AVATARS[newClientIndex];
+                const clientAvatar = CLEAN_CLIENTS[newClientIndex];
 
                 const customer = document.createElement('div');
                 customer.className = 'walking-customer';
@@ -780,13 +821,13 @@
                 customer.innerHTML = `<div class="customer-avatar">${clientAvatar}</div>`;
                 cafe.appendChild(customer);
 
-                setTimeout(() => { customer.style.transform = 'translateX(-220px)'; }, 50);
+                setTimeout(() => { customer.style.transform = 'translateX(-180px)'; }, 50);
                 setTimeout(() => {
                     const money = document.createElement('div');
                     money.className = 'floating-money'; 
                     money.innerText = `+${gain}💶`; 
-                    money.style.right = '140px'; 
-                    money.style.bottom = '70px';
+                    money.style.right = '110px'; 
+                    money.style.bottom = '45px';
                     cafe.appendChild(money); 
                     setTimeout(() => { money.remove(); }, 1200);
                 }, walkDuration * 1000 * 0.4);
@@ -805,12 +846,12 @@
 
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(S));
-            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v27.json");
+            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v29.json");
             document.body.appendChild(a); a.click(); a.remove();
         }
 
         function resetData() {
-            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV27'); location.reload(); }
+            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV29'); location.reload(); }
         }
 
         switchTab('stories');
