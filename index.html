@@ -74,9 +74,9 @@
         .helpers button { flex: 1; font-size: 11px; padding: 8px 4px; }
         .hint-box { background: var(--accent-light); color: var(--accent); padding: 12px; border-radius: 12px; font-size: 13px; margin-top: 10px; display: none; line-height: 1.4; }
         
-        /* Visuel du Café utilisant cafe-bg.jpg comme image de fond */
+        /* Visuel du Café utilisant cafe-bg.JPG en majuscules */
         .cafe-display { 
-            background: url('cafe-bg.jpg') center/cover no-repeat; 
+            background: url('cafe-bg.JPG') center/cover no-repeat; 
             border: 2px solid var(--border); 
             border-radius: 16px; 
             height: 240px; 
@@ -363,7 +363,7 @@
         };
         
         try { 
-            const saved = localStorage.getItem('cafeToeicDataV25'); 
+            const saved = localStorage.getItem('cafeToeicDataV26'); 
             if (saved) {
                 const parsed = JSON.parse(saved);
                 S = { ...S, ...parsed };
@@ -387,13 +387,13 @@
                 }
             }
         } catch (e) {
-            localStorage.removeItem('cafeToeicDataV25');
+            localStorage.removeItem('cafeToeicDataV26');
         }
 
         function saveData() { 
             CAFE_UPGRADES.forEach(u => S.upgrades[u.id] = u.level);
             S.lastActive = Date.now();
-            localStorage.setItem('cafeToeicDataV25', JSON.stringify(S)); 
+            localStorage.setItem('cafeToeicDataV26', JSON.stringify(S)); 
         }
 
         const $ = id => document.getElementById(id);
@@ -568,7 +568,7 @@
                 }
             });
             $('chat-messages').innerHTML = msgHtml;
-            $('view-chat').scrollTop = $('view-chat').scrollHeight;
+            $('view-chat').scrollTop = $('view-chat'].scrollHeight;
             $('hint-box').style.display = 'none';
         }
 
@@ -806,12 +806,12 @@
 
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(S));
-            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v25.json");
+            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v26.json");
             document.body.appendChild(a); a.click(); a.remove();
         }
 
         function resetData() {
-            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV25'); location.reload(); }
+            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV26'); location.reload(); }
         }
 
         switchTab('stories');
