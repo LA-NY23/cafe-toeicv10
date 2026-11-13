@@ -9,7 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
-        :root { --bg: #f5f0eb; --card: #ffffff; --text: #3d3430; --muted: #8c7b74; --accent: #c87965; --accent-light: #f4dcd6; --success: #a3b19b; --success-light: #e4efe0; --border: #e3d9d3; --pink: #eac1c1; --gold: #d4af37; }
+        :root { --bg: #f5f0eb; --card: #ffffff; --text: #3d3430; --muted: #8c7b74; --accent: #c87965; --accent-light: #f4dcd6; --success: #a3b19b; --success-light: #e4efe0; --border: #e3d9d3; --pink: #eac1c1; --gold: #d4af37; --blue: #4a90e2; }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
         body, html { height: 100%; background: var(--bg); color: var(--text); overflow: hidden; }
         body { display: flex; flex-direction: column; max-width: 600px; margin: 0 auto; position: relative; }
@@ -28,18 +28,17 @@
         .card-icon { font-size: 40px; background: var(--bg); width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; border-radius: 16px; flex-shrink: 0; }
         .card-content { flex: 1; }
         .card-title { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
-        .card-desc { font-size: 13px; color: var(--muted); }
+        .card-desc { font-size: 13px; color: var(--muted); line-height: 1.3; }
         button.btn { background: var(--accent); color: white; border: none; padding: 10px 16px; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; transition: transform 0.1s; }
         button.btn:active { transform: scale(0.96); }
         button.btn.btn-outline { background: var(--accent-light); color: var(--accent); }
+        button.btn.btn-blue { background: var(--blue); color: white; width: 100%; margin-bottom: 16px; padding: 14px; font-size: 16px; }
         .chat-header { background: var(--pink); border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 16px; position: sticky; top: 0; z-index: 5; }
         .back-btn { background: rgba(255,255,255,0.5); border: none; width: 36px; height: 36px; border-radius: 18px; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .messages { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
         .msg { max-width: 85%; padding: 12px 16px; border-radius: 18px; font-size: 15px; line-height: 1.4; animation: popIn 0.3s ease-out; }
         .msg.npc { background: var(--card); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; }
         .msg.player { background: var(--accent); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
-        .msg-tools { margin-top: 8px; display: flex; gap: 8px; }
-        .tool-btn { background: var(--bg); border: 1px solid var(--border); padding: 4px 8px; border-radius: 8px; font-size: 12px; color: var(--muted); cursor: pointer; }
         .feedback { background: var(--success-light); border: 1px solid var(--success); border-radius: 12px; padding: 12px; margin-top: -8px; margin-bottom: 8px; font-size: 13px; align-self: flex-end; width: 85%; }
         .feedback p { margin-bottom: 4px; }
         .feedback .correction { color: #8a3b3b; font-weight: 600; }
@@ -47,9 +46,9 @@
         .input-row { display: flex; gap: 8px; align-items: center; }
         textarea { flex: 1; border: none; background: var(--bg); border-radius: 12px; padding: 12px; font-size: 15px; resize: none; color: var(--text); outline: none; }
         .send-btn { background: var(--accent); color: white; border: none; width: 44px; height: 44px; border-radius: 22px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; }
-        .helpers { display: flex; gap: 8px; margin-top: 10px; }
-        .helpers button { flex: 1; font-size: 12px; padding: 8px; }
-        .hint-box { background: var(--accent-light); color: var(--accent); padding: 12px; border-radius: 12px; font-size: 13px; margin-top: 10px; display: none; }
+        .helpers { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+        .helpers button { flex: 1; font-size: 11px; padding: 8px 4px; }
+        .hint-box { background: var(--accent-light); color: var(--accent); padding: 12px; border-radius: 12px; font-size: 13px; margin-top: 10px; display: none; line-height: 1.4; }
         .cafe-display { background: linear-gradient(135deg, var(--card), var(--bg)); border: 1px solid var(--border); border-radius: 16px; height: 220px; position: relative; margin-bottom: 16px; overflow: hidden; box-shadow: inset 0 2px 10px rgba(0,0,0,0.05); }
         .cafe-bg { position: absolute; bottom: 0; width: 100%; height: 70px; background: #dcbfa6; border-top: 4px solid #c89b6d; }
         .cafe-door { position: absolute; right: 20px; bottom: 70px; font-size: 40px; }
@@ -60,6 +59,17 @@
         .stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; }
         .stat-box .val { font-size: 24px; font-weight: 700; color: var(--accent); margin-bottom: 4px; }
         .stat-box .lbl { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 100; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; padding: 20px; }
+        .modal { background: var(--card); border-radius: 20px; padding: 24px; width: 100%; max-width: 400px; transform: translateY(20px); transition: transform 0.3s; }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-overlay.active .modal { transform: translateY(0); }
+        .quiz-q { font-size: 18px; font-weight: 600; margin-bottom: 20px; line-height: 1.4; }
+        .quiz-opt { display: block; width: 100%; text-align: left; background: var(--bg); border: 1px solid var(--border); padding: 12px 16px; border-radius: 12px; margin-bottom: 10px; font-size: 16px; cursor: pointer; }
+        .quiz-opt.correct { background: var(--success); color: white; border-color: var(--success); }
+        .quiz-opt.wrong { background: #eac1c1; color: #8a3b3b; border-color: #eac1c1; }
+        .quiz-explain { display: none; margin-top: 16px; padding: 12px; background: var(--accent-light); color: var(--accent); border-radius: 12px; font-size: 14px; }
+        
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-50px); } }
         .toast { position: fixed; top: 70px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 10px 20px; border-radius: 20px; font-size: 14px; font-weight: 500; z-index: 100; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
@@ -70,7 +80,7 @@
 
     <header>
         <div class="stats-top">
-            <span id="level-display">Niveau 1</span>
+            <span id="level-display" style="color:var(--blue);">🎓 TOEIC: 300</span>
             <div class="currency"><span id="coins-display">🪙 0</span><span id="euros-display">💶 0</span></div>
         </div>
         <div class="xp-bar-container"><div class="xp-bar" id="xp-bar"></div></div>
@@ -83,23 +93,25 @@
         <div class="messages" id="chat-messages"></div>
         <div class="chat-input-area">
             <div class="input-row">
-                <textarea id="chat-input" rows="2" placeholder="Write in English..."></textarea>
+                <textarea id="chat-input" rows="2" placeholder="Écris en anglais (ou en français si tu bloques)..."></textarea>
                 <button class="send-btn" onclick="sendMessage()">➤</button>
             </div>
             <div class="helpers">
-                <button class="btn btn-outline" onclick="toggleHint()">💡 Idée de réponse</button>
-                <button class="btn btn-outline" onclick="showVocab()">📚 Vocabulaire</button>
+                <button class="btn btn-outline" onclick="toggleHint()">💡 Idée</button>
+                <button class="btn btn-outline" onclick="showTranslation()">🇫🇷 Traduire</button>
+                <button class="btn btn-outline" onclick="showVocab()">📚 Vocab</button>
             </div>
             <div class="hint-box" id="hint-box"></div>
         </div>
     </main>
 
     <main id="view-cafe" class="hidden">
+        <button class="btn btn-blue" onclick="openQuiz()">📝 Test TOEIC Express (Gagne des 💶)</button>
         <div class="cafe-display" id="cafe-display">
             <div class="cafe-bg"></div><div class="cafe-door">🚪</div>
         </div>
         <div style="background:var(--success-light); color:#2e4a23; padding:12px; border-radius:12px; margin-bottom:16px; font-size:14px; text-align:center;">
-            ⏳ Le café est ouvert ! Les clients entrent tout seuls et l'argent monte en arrière-plan.
+            ⏳ Le café tourne tout seul. Plus tes objets sont chers, plus les clients rapportent gros !
         </div>
         <h3 style="margin-bottom: 12px;">Boutique & Améliorations</h3>
         <div id="shop-items"></div>
@@ -108,136 +120,146 @@
     <main id="view-progression" class="hidden">
         <h3 style="margin-bottom: 16px;">Tes Statistiques</h3>
         <div class="stat-grid">
-            <div class="stat-box"><div class="val" id="stat-lvl">1</div><div class="lbl">Niveau</div></div>
+            <div class="stat-box"><div class="val" id="stat-lvl" style="color:var(--blue)">300</div><div class="lbl">Score TOEIC</div></div>
             <div class="stat-box"><div class="val" id="stat-xp">0</div><div class="lbl">XP Total</div></div>
             <div class="stat-box"><div class="val" id="stat-msg">0</div><div class="lbl">Messages</div></div>
-            <div class="stat-box"><div class="val" id="stat-stories">0/10</div><div class="lbl">Histoires terminées</div></div>
+            <div class="stat-box"><div class="val" id="stat-stories">0/5</div><div class="lbl">Histoires</div></div>
         </div>
         <div style="display:flex; gap:10px; flex-direction:column; margin-top:20px;">
             <button class="btn btn-outline" onclick="exportData()">💾 Exporter la sauvegarde</button>
-            <button class="btn" style="background:var(--muted)" onclick="resetData()">⚠️ Réinitialiser la progression</button>
+            <button class="btn" style="background:var(--muted)" onclick="resetData()">⚠️ Réinitialiser</button>
         </div>
     </main>
 
     <nav>
         <button id="tab-stories" class="active" onclick="switchTab('stories')"><span>📖</span>Histoires</button>
-        <button id="tab-cafe" onclick="switchTab('cafe')"><span>☕</span>Le café</button>
+        <button id="tab-cafe" onclick="switchTab('cafe')"><span>☕</span>Café</button>
         <button id="tab-progression" onclick="switchTab('progression')"><span>📈</span>Profil</button>
     </nav>
+    
     <div class="toast" id="toast">Message</div>
 
+    <div class="modal-overlay" id="quiz-modal">
+        <div class="modal">
+            <h3 style="color:var(--blue); margin-bottom:16px;">📝 Test Express</h3>
+            <div class="quiz-q" id="quiz-question">Question</div>
+            <div id="quiz-options"></div>
+            <div class="quiz-explain" id="quiz-explanation">Explication</div>
+            <button class="btn" style="width:100%; margin-top:16px; display:none;" id="quiz-close-btn" onclick="closeQuiz()">Fermer</button>
+        </div>
+    </div>
+
     <script>
-        // DICTIONNAIRE GRAMMATICAL ÉLARGI (Le hors-ligne fait de son mieux)
         const GRAMMAR_RULES = [
-            { rx: /\bI am agree\b/gi, right: "I agree", why: "'Agree' est un verbe en anglais, on ne met pas 'to be'." },
-            { rx: /\bI have (\d+) years\b/gi, right: "I am $1 years old", why: "On utilise le verbe 'to be' pour donner son âge." },
-            { rx: /\b(people|police) is\b/gi, right: "$1 are", why: "Ce mot est toujours considéré comme un pluriel en anglais." },
-            { rx: /\b(she|he|it) go\b/gi, right: "$1 goes", why: "N'oublie pas le 's' ou 'es' à la 3e personne du singulier." },
-            { rx: /\b(she|he|it) have\b/gi, right: "$1 has", why: "À la 3e personne du singulier, 'have' devient 'has'." },
-            { rx: /\bI didn'?t went\b/gi, right: "I didn't go", why: "Après 'didn't', le verbe reste à l'infinitif." },
-            { rx: /\bexplain me\b/gi, right: "explain to me", why: "'Explain' est suivi de 'to' devant la personne." },
-            { rx: /\blisten music\b/gi, right: "listen to music", why: "Le verbe 'listen' s'accompagne toujours de 'to'." },
-            { rx: /\bdepends of\b/gi, right: "depends on", why: "On dit toujours 'depend ON', jamais 'of'." },
-            { rx: /\blook at to\b/gi, right: "look at", why: "Pas besoin de 'to' après 'look at'." },
-            { rx: /\bfor to (make|do|buy|eat|go)\b/gi, right: "to $1", why: "Pour exprimer le but, on utilise juste 'to' + verbe, pas 'for to'." }
+            { rx: /\bI am agree\b/gi, right: "I agree", why: "'Agree' est un verbe, pas besoin de 'to be'." },
+            { rx: /\bI have (\d+) years\b/gi, right: "I am $1 years old", why: "On utilise 'to be' pour l'âge." },
+            { rx: /\b(people|police) is\b/gi, right: "$1 are", why: "Ce mot est toujours au pluriel." },
+            { rx: /\binformations\b/gi, right: "information", why: "'Information' est indénombrable, pas de 's'." },
+            { rx: /\blugages\b/gi, right: "luggage", why: "'Luggage' s'écrit sans 's'." },
+            { rx: /\binterested by\b/gi, right: "interested in", why: "On dit 'interested IN'." },
+            { rx: /\bwin money\b/gi, right: "earn money", why: "On 'gagne' de l'argent par le travail avec 'earn'." },
+            { rx: /\bwin time\b/gi, right: "save time", why: "Pour gagner du temps, on dit 'save time'." },
+            { rx: /\bexplain me\b/gi, right: "explain to me", why: "'Explain' nécessite 'to' devant la personne." },
+            { rx: /\bdepends of\b/gi, right: "depends on", why: "La préposition correcte est 'on'." },
+            { rx: /\bfor to\b/gi, right: "to", why: "Pour exprimer le but, on utilise juste 'to'." }
         ];
 
-        // HISTOIRES AVEC CLARA INTÉGRÉE & "TIPS LOCAUX" POUR CHAQUE ÉTAPE
+        const QUIZ_BANK = [
+            { q: "We are looking forward _______ you.", opts: ["to meet", "to meeting", "meeting"], ans: 1, why: "'Look forward to' est suivi d'un verbe en -ING." },
+            { q: "Could you tell me where _______ ?", opts: ["the station is", "is the station", "the station be"], ans: 0, why: "Dans une question indirecte, l'ordre est sujet + verbe." },
+            { q: "I have been working here _______ 3 years.", opts: ["since", "for", "during"], ans: 1, why: "'For' indique une durée." },
+            { q: "The meeting was canceled _______ the bad weather.", opts: ["because", "due to", "since"], ans: 1, why: "'Due to' est suivi d'un nom." },
+            { q: "If I _______ you, I would accept the job.", opts: ["was", "were", "am"], ans: 1, why: "Irréel du subjonctif : 'If I were you'." }
+        ];
+        let currentQuiz = null;
+
         const STORIES = [
-            { id: 0, title: "Dîner avec Clara", icon: "🍝", reqLv: 1, cost: 0, npc: "Tom, le serveur", bg: "#f4dcd6",
+            { id: 0, title: "Dîner avec Clara", icon: "🍝", reqLv: 300, cost: 0, npc: "Tom, le serveur", bg: "#f4dcd6",
               desc: "Tu emmènes Clara au restaurant. Gère la commande avec le serveur !",
               vocab: "Menu = la carte\nI would like = j'aimerais\nStarter = entrée\nMain course = plat principal\nThe bill = l'addition",
+              frTrans: "Bonsoir ! Bienvenue à La Bella Vita. Est-ce que vous et la dame avez une réservation ?",
               steps: [
                 { npc: "Good evening! Welcome to La Bella Vita. Do you and the lady have a reservation?", 
                   hints: ["Yes, a reservation for two.", "No, we don't."],
-                  nativeTip: "Au lieu de dire juste 'Yes', les locaux disent souvent : 'Hi, yes, we booked a table for two under [Name].'",
+                  nativeTip: "Les locaux disent souvent : 'Hi, yes, we booked a table for two under [Name].'",
                   process: (t) => /yes|have|for two/i.test(t) ? "Wonderful! Please follow me. Clara, sir, here is your table. Can I get you drinks?" : "No problem! Let me see... Yes, we have a table for you and Clara. What would you like to drink?" },
                 { npc: "Clara says she wants a red wine. What about you? Are you ready to order your food?",
                   hints: ["I will have a beer. We want pasta.", "Water for me. Could we have a few minutes?"],
-                  nativeTip: "Pour commander poliment, utilise 'I'll go for...' ou 'Could I get...?' plutôt que 'I want'.",
-                  process: (t) => /ready|pasta|pizza|yes|have|water|beer/i.test(t) ? "Excellent choice! I'll bring the drinks right away. (A few moments later...) Here is your meal. Enjoy your date!" : "Take your time! I'll bring the wine for Clara. I'll be back in a minute." },
+                  nativeTip: "Utilise 'I'll go for...' ou 'Could I get...?' pour commander.",
+                  process: (t) => /ready|pasta|pizza|yes|have|water|beer/i.test(t) ? "Excellent choice! I'll bring the drinks right away. Enjoy your date!" : "Take your time! I'll bring the wine for Clara." },
                 { npc: "How was everything? Clara seemed to love the pasta. Dessert or the bill?",
                   hints: ["It was delicious. The bill, please.", "No dessert, just the check please."],
-                  nativeTip: "Pour demander l'addition : 'Could we grab the bill, please?' ou juste 'Check, please!' aux USA.",
-                  process: (t) => /bill|check|pay/i.test(t) ? "Here is the bill. You can pay at the counter whenever you're ready. Have a great evening!" : "Certainly. I'll bring the dessert menu right away." },
+                  nativeTip: "Pour l'addition, dis : 'Could we grab the bill, please?'",
+                  process: (t) => /bill|check|pay/i.test(t) ? "Here is the bill. You can pay at the counter. Have a great evening!" : "Certainly. I'll bring the dessert menu." },
                 { end: true, npc: "Thank you for visiting! Have a wonderful evening with Clara!" }
               ]
             },
-            { id: 1, title: "Rencontre des amis de Clara", icon: "🥂", reqLv: 2, cost: 800, npc: "Emma, meilleure amie", bg: "#e3d4ff",
+            { id: 1, title: "Rencontre des amis", icon: "🥂", reqLv: 320, cost: 800, npc: "Emma, meilleure amie", bg: "#e3d4ff",
               desc: "Clara te présente à sa meilleure amie Emma lors d'une soirée.",
-              vocab: "Nice to meet you = enchanté\nI work as = je travaille comme\nHow about you? = et toi ?",
+              vocab: "Nice to meet you = enchanté\nI work as = je travaille comme",
+              frTrans: "Oh salut ! Tu dois être le partenaire de Clara ! Je m'appelle Emma.",
               steps: [
                 { npc: "Oh, hi! You must be Clara's partner! I’m Emma. She talks about you all the time. How are you finding the party?", 
                   hints: ["Hi Emma, nice to meet you! The party is great.", "Hello! I'm enjoying it a lot."],
-                  nativeTip: "En soirée, on dit souvent 'I'm having a blast' (je m'éclate) ou 'It's a great vibe here'.",
-                  process: (t) => /good|great|nice|enjoy/i.test(t) ? "I'm glad! Clara told me you work in a really interesting field. What do you do exactly?" : "Yeah, the music is loud! So, what do you do for a living?" },
-                { npc: "That sounds fascinating! Clara loves hiking, do you have any hobbies you share together?",
+                  nativeTip: "En soirée, on dit 'I'm having a blast' (je m'éclate).",
+                  process: (t) => /good|great|nice|enjoy/i.test(t) ? "I'm glad! Clara told me you work in an interesting field. What do you do?" : "Yeah, the music is loud! What do you do for a living?" },
+                { npc: "That sounds fascinating! Clara loves hiking, do you share hobbies?",
                   hints: ["We love traveling and cooking.", "We like playing sports together."],
-                  nativeTip: "Pour parler de tes passions, utilise 'I'm really into...' (Je suis à fond dans...).",
-                  process: (t) => /travel|read|sport|cook|play|music/i.test(t) ? "Oh, I love that too! We definitely need to double-date soon. I'm going to grab a drink." : "That's cool! You two are perfect for each other. I need a drink." },
-                { npc: "It was so nice finally meeting you! Take care of Clara, okay?",
-                  hints: ["I will! See you later.", "Nice meeting you too, bye!"],
-                  nativeTip: "Pour quitter quelqu'un : 'It was lovely meeting you. Catch you later!'",
-                  process: (t) => /yes|see|bye|nice/i.test(t) ? "See ya! Have fun!" : "Bye!" },
-                { end: true, npc: "See you around!" }
+                  nativeTip: "Utilise 'I'm really into...' (Je suis à fond dans...).",
+                  process: (t) => /travel|read|sport|cook|play|music/i.test(t) ? "Oh, I love that too! We need to double-date soon." : "That's cool! You two are perfect for each other." },
+                { end: true, npc: "It was lovely meeting you! Catch you later!" }
               ]
             },
-            { id: 2, title: "Londres avec Clara", icon: "✈️", reqLv: 3, cost: 2500, npc: "Réceptionniste", bg: "#cfe8ff",
+            { id: 2, title: "Problème d'Hôtel", icon: "✈️", reqLv: 350, cost: 2500, npc: "Réceptionniste", bg: "#cfe8ff",
               desc: "Tu arrives à Londres avec Clara, mais il y a un souci à l'hôtel.",
               vocab: "Check in = s'enregistrer\nBreakfast included = petit-déjeuner inclus",
+              frTrans: "Bienvenue au Kensington Hotel ! Comment puis-je vous aider ?",
               steps: [
                 { npc: "Welcome to the Kensington Hotel! How can I help you and the lady today?", 
                   hints: ["Hello, we would like to check in. I have a reservation.", "Hi, we booked a double room."],
-                  nativeTip: "Expression courante : 'Hi, we're here to check in. The booking is under [Name].'",
-                  process: (t) => /check in|reservation|booked/i.test(t) ? "Perfect. Could I please have your name and both passports?" : "Okay, let me check the system. What name is the reservation under?" },
-                { npc: "Thank you. I see your reservation. However, it seems breakfast is not included. Clara mentioned she loves English breakfast. Add it?",
+                  nativeTip: "Expression courante : 'Hi, we're here to check in.'",
+                  process: (t) => /check in|reservation|booked/i.test(t) ? "Perfect. Could I please have your name and passports?" : "Okay, let me check the system. What name is the reservation under?" },
+                { npc: "Thank you. However, breakfast is not included. Clara loves English breakfast. Add it?",
                   hints: ["Yes please, how much is it?", "No thank you, we'll eat outside."],
-                  nativeTip: "Pour demander le prix : 'How much does it come to?' ou 'What's the extra charge?'",
-                  process: (t) => /yes|add|how much/i.test(t) ? "It's £15 per day. I've added it. Here is your room key." : "Not a problem! There are lovely cafes around here. Here is your key." },
-                { npc: "Your room is 304. Do you need help with your luggage?",
-                  hints: ["No thanks, we can manage.", "Yes please, that would be helpful."],
-                  nativeTip: "Pour dire qu'on se débrouille : 'We're all good, thanks!'",
-                  process: (t) => /no|fine|manage/i.test(t) ? "Alright. Enjoy your stay in London!" : "I will call a porter. Enjoy your stay!" },
+                  nativeTip: "Pour le prix : 'How much does it come to?'",
+                  process: (t) => /yes|add|how much/i.test(t) ? "It's £15 per day. I've added it. Here is your room key." : "Not a problem! There are lovely cafes around here." },
                 { end: true, npc: "Have a wonderful stay with us!" }
               ]
             },
-            { id: 3, title: "Notre Café", icon: "☕", reqLv: 4, cost: 5000, npc: "Sophie, fournisseuse", bg: "#ffe9b8",
+            { id: 3, title: "Négociation", icon: "☕", reqLv: 400, cost: 5000, npc: "Sophie, fournisseuse", bg: "#ffe9b8",
               desc: "Toi et Clara lancez votre propre café. Négocie les grains !",
-              vocab: "Coffee beans = grains de café\nDiscount = réduction\nPlace an order = passer une commande",
+              vocab: "Coffee beans = grains de café\nDiscount = réduction",
+              frTrans: "Salut ! Clara m'a dit que vous ouvriez un café. Quels grains cherchez-vous ?",
               steps: [
-                { npc: "Hi! Clara told me you two are opening this amazing café. What kind of beans are you looking for?", 
+                { npc: "Hi! Clara told me you two are opening a café. What kind of beans are you looking for?", 
                   hints: ["We want Arabica beans, medium roast.", "Do you have organic beans?"],
-                  nativeTip: "Les pros utilisent souvent 'We're aiming for a medium roast profile.'",
-                  process: (t) => /arabica|organic|roast/i.test(t) ? "Great choice. How many kilos for your first order?" : "We have a great selection. How much do you need to start?" },
-                { npc: "For 10 kilos, it's €15 per kilo. Can I offer you a small discount today?",
+                  nativeTip: "Les pros disent : 'We're aiming for a medium roast profile.'",
+                  process: (t) => /arabica|organic|roast/i.test(t) ? "Great choice. How many kilos for your first order?" : "We have a great selection. How much do you need?" },
+                { npc: "For 10 kilos, it's €15 per kilo. Can I offer a small discount?",
                   hints: ["Yes, can you do €13 per kilo?", "That sounds good, but could we get a lower price?"],
-                  nativeTip: "Pour négocier : 'Is there any wiggle room on the price?' (Y a-t-il une marge de manœuvre ?)",
-                  process: (t) => /13|discount|lower|price/i.test(t) ? "Hmm, €14 per kilo to support your new business. When do you want the delivery?" : "Perfect. When would you like us to deliver the beans?" },
-                { npc: "We can deliver this Friday morning. Does that work for you and Clara?",
-                  hints: ["Friday is perfect. Thank you.", "Could you deliver on Thursday instead?"],
-                  nativeTip: "Pour valider un horaire : 'Friday morning works perfectly for us.'",
-                  process: (t) => /thursday/i.test(t) ? "Thursday afternoon is possible. Best of luck with the café!" : "Excellent. See you on Friday. Good luck!" },
+                  nativeTip: "Pour négocier : 'Is there any wiggle room on the price?'",
+                  process: (t) => /13|discount|lower|price/i.test(t) ? "Hmm, €14 per kilo to support your new business." : "Perfect. When would you like delivery?" },
                 { end: true, npc: "Looking forward to working with you!" }
               ]
             },
-            { id: 4, title: "Problème d'aéroport", icon: "🛫", reqLv: 5, cost: 8000, npc: "Agent d'embarquement", bg: "#c9e4f2",
-              desc: "Clara et toi partez en voyage, mais le vol est surbooké.",
-              vocab: "Overbooked = surbooké\nBoarding pass = carte d'embarquement\nVoucher = bon d'achat",
+            { id: 4, title: "Surbooking", icon: "🛫", reqLv: 450, cost: 8000, npc: "Agent d'embarquement", bg: "#c9e4f2",
+              desc: "Le vol avec Clara est surbooké. Gère la crise !",
+              vocab: "Overbooked = surbooké\nVoucher = bon d'achat",
+              frTrans: "Bonjour. Votre vol est surbooké. Il ne nous reste qu'une seule place.",
               steps: [
-                { npc: "Good morning. Passports please. I’m afraid your flight is overbooked. We might only have one seat left.", 
-                  hints: ["Oh no, I am traveling with my girlfriend Clara.", "We need to fly together. What are the options?"],
-                  nativeTip: "Face à un problème : 'We absolutely need to be on the same flight. What can we do?'",
-                  process: (t) => /together|clara|girlfriend|options/i.test(t) ? "I understand you want to stay together. We offer a €500 voucher if you both take the next flight." : "Would you be willing to take a later flight for a voucher?" },
-                { npc: "The next flight is in 4 hours. Will that be acceptable for you both?",
-                  hints: ["Yes, we can wait 4 hours. We'll take the voucher.", "No, we absolutely need to be on this flight."],
-                  nativeTip: "Accepter un dédommagement : 'We'll take the voucher and wait for the next one.'",
-                  process: (t) => /yes|wait|take/i.test(t) ? "Thank you for your flexibility. Here is your new boarding pass. Do you have bags to check?" : "I understand. Let me check... Okay, I managed to find two seats together on this one!" },
+                { npc: "Good morning. I’m afraid your flight is overbooked. We might only have one seat left.", 
+                  hints: ["Oh no, I am traveling with my girlfriend Clara.", "We need to fly together."],
+                  nativeTip: "Face à un problème : 'We absolutely need to be on the same flight.'",
+                  process: (t) => /together|clara|girlfriend|options/i.test(t) ? "We offer a €500 voucher if you take the next flight." : "Would you be willing to take a later flight for a voucher?" },
+                { npc: "The next flight is in 4 hours. Will that be acceptable?",
+                  hints: ["Yes, we can wait 4 hours. We'll take the voucher."],
+                  nativeTip: "Accepter : 'We'll take the voucher and wait for the next one.'",
+                  process: (t) => /yes|wait|take/i.test(t) ? "Thank you for your flexibility. Here is your new boarding pass." : "I understand. I managed to find two seats together!" },
                 { end: true, npc: "Have a safe flight!" }
               ]
             }
         ];
 
-        // BOUTIQUE - PRIX MULTIPLIÉS POUR UNE LONGUE DURÉE DE VIE
         const SHOP = [
             { id: 0, name: "Machine à café pro", icon: "☕", cost: 500, income: 5, obj: "coffee-machine", x: 60, y: 120 },
             { id: 1, name: "Jolies plantes", icon: "🪴", cost: 1500, income: 10, obj: "plant", x: 20, y: 130 },
@@ -247,35 +269,23 @@
             { id: 5, name: "Enseigne lumineuse", icon: "🌟", cost: 25000, income: 100, obj: "neon", x: 150, y: 30 }
         ];
 
-        // GESTION D'ÉTAT
-        let S = {
-            xp: 0, coins: 0, eur: 0, items: [], unlocked: [0], 
-            storiesDone: [], currentStory: null, chatHistory: {}, 
-            stats: { msgs: 0 }
-        };
-
-        try {
-            const saved = localStorage.getItem('cafeToeicDataV2');
-            if (saved) { S = { ...S, ...JSON.parse(saved) }; }
-        } catch (e) {}
+        let S = { xp: 0, coins: 0, eur: 0, items: [], unlocked: [0], storiesDone: [], currentStory: null, chatHistory: {}, stats: { msgs: 0 } };
+        try { const saved = localStorage.getItem('cafeToeicDataV2'); if (saved) S = { ...S, ...JSON.parse(saved) }; } catch (e) {}
         function saveData() { localStorage.setItem('cafeToeicDataV2', JSON.stringify(S)); }
 
         const $ = id => document.getElementById(id);
-        const getLevel = () => Math.floor(S.xp / 150) + 1; // XP plus dur
+        const getToeicScore = () => Math.min(990, 300 + Math.floor(S.xp / 10));
         const getBonusIncome = () => S.items.reduce((acc, id) => acc + SHOP.find(s=>s.id===id).income, 0);
 
         function updateHeader() {
-            $('level-display').innerText = `Niveau ${getLevel()}`;
+            $('level-display').innerText = `🎓 TOEIC: ${getToeicScore()}`;
             $('coins-display').innerText = `🪙 ${S.coins}`;
             $('euros-display').innerText = `💶 ${S.eur}`;
-            $('xp-bar').style.width = `${(S.xp % 150) / 1.5}%`;
+            $('xp-bar').style.width = `${((S.xp % 100) / 100) * 100}%`;
         }
 
         function showToast(msg) {
-            const t = $('toast');
-            t.innerText = msg;
-            t.style.opacity = 1;
-            t.style.pointerEvents = 'auto';
+            const t = $('toast'); t.innerText = msg; t.style.opacity = 1; t.style.pointerEvents = 'auto';
             setTimeout(() => { t.style.opacity = 0; t.style.pointerEvents = 'none'; }, 3000);
         }
 
@@ -293,16 +303,44 @@
             updateHeader();
         }
 
+        function openQuiz() {
+            currentQuiz = QUIZ_BANK[Math.floor(Math.random() * QUIZ_BANK.length)];
+            $('quiz-question').innerText = currentQuiz.q;
+            let optsHtml = '';
+            currentQuiz.opts.forEach((opt, i) => {
+                optsHtml += `<button class="quiz-opt" id="qopt-${i}" onclick="answerQuiz(${i})">${opt}</button>`;
+            });
+            $('quiz-options').innerHTML = optsHtml;
+            $('quiz-explanation').style.display = 'none';
+            $('quiz-close-btn').style.display = 'none';
+            $('quiz-modal').classList.add('active');
+        }
+
+        function answerQuiz(idx) {
+            if ($('quiz-explanation').style.display === 'block') return;
+            const isCorrect = (idx === currentQuiz.ans);
+            $(`qopt-${idx}`).classList.add(isCorrect ? 'correct' : 'wrong');
+            if (!isCorrect) $(`qopt-${currentQuiz.ans}`).classList.add('correct');
+            $('quiz-explanation').innerText = isCorrect ? "✅ Bravo ! " + currentQuiz.why : "❌ Raté ! " + currentQuiz.why;
+            $('quiz-explanation').style.display = 'block';
+            if (isCorrect) {
+                const gainEur = 50 + getBonusIncome() * 2;
+                S.eur += gainEur; S.xp += 20; saveData(); updateHeader();
+                $('quiz-close-btn').innerText = `Fermer (+${gainEur} 💶)`;
+            } else { $('quiz-close-btn').innerText = `Fermer`; }
+            $('quiz-close-btn').style.display = 'block';
+        }
+
+        function closeQuiz() { $('quiz-modal').classList.remove('active'); }
+
         function renderStories() {
             const html = STORIES.map(st => {
                 const isUnlocked = S.unlocked.includes(st.id);
-                const reqMet = getLevel() >= st.reqLv;
+                const reqMet = getToeicScore() >= st.reqLv;
                 const isDone = S.storiesDone.includes(st.id);
-                
                 let btn = isUnlocked ? `<button class="btn" onclick="startStory(${st.id})">${isDone ? 'Rejouer' : 'Jouer'}</button>` 
                         : reqMet ? `<button class="btn btn-outline" onclick="unlockStory(${st.id})">Débloquer ${st.cost} 💶</button>` 
-                        : `<span style="font-size:12px; color:var(--muted)">Niveau ${st.reqLv} requis</span>`;
-
+                        : `<span style="font-size:12px; color:var(--muted)">TOEIC ${st.reqLv} requis</span>`;
                 return `<div class="card ${!isUnlocked ? 'locked' : ''}"><div class="card-icon" style="background: ${st.bg}">${st.icon}</div><div class="card-content"><div class="card-title">${st.title} ${isDone ? '✅' : ''}</div><div class="card-desc">${st.desc}</div></div><div>${btn}</div></div>`;
             }).join('');
             $('view-stories').innerHTML = `<h2 style="margin-bottom:16px;">Toutes les histoires</h2>` + html;
@@ -310,10 +348,8 @@
 
         function unlockStory(id) {
             const st = STORIES.find(s => s.id === id);
-            if (S.eur >= st.cost) {
-                S.eur -= st.cost; S.unlocked.push(id); saveData();
-                showToast(`Histoire ${st.icon} débloquée !`); renderStories(); updateHeader();
-            } else showToast("Pas assez d'euros 💶 ! Laisse le café ouvert.");
+            if (S.eur >= st.cost) { S.eur -= st.cost; S.unlocked.push(id); saveData(); showToast(`Histoire débloquée !`); renderStories(); updateHeader();
+            } else showToast("Pas assez d'euros 💶 ! Fais des Tests Express.");
         }
 
         function startStory(id) {
@@ -325,30 +361,28 @@
         function renderChat() {
             const st = STORIES.find(s => s.id === S.currentStory);
             const hist = S.chatHistory[S.currentStory];
-            
             if (hist.msgs.length === 0) { hist.msgs.push({ sender: 'npc', text: st.steps[0].npc }); saveData(); }
-
             $('chat-header').innerHTML = `<button class="back-btn" onclick="switchTab('stories')">←</button><div style="font-size: 32px;">${st.icon}</div><div><div style="font-weight: bold; font-size:16px">${st.title}</div><div style="font-size: 13px; opacity:0.8">${st.npc}</div></div>`;
 
             let msgHtml = '';
             hist.msgs.forEach(m => {
-                if (m.sender === 'npc') {
-                    msgHtml += `<div class="msg npc">${m.text}</div>`;
-                } else {
+                if (m.sender === 'npc') { msgHtml += `<div class="msg npc">${m.text}</div>`; } 
+                else {
                     msgHtml += `<div class="msg player">${m.text}</div>`;
                     if (m.feedback) {
                         msgHtml += `<div class="feedback">`;
-                        if (m.feedback.mistakes.length > 0) {
+                        if (m.feedback.isFrench) {
+                            msgHtml += `<p style="color:#2e4a23; font-weight:600;">🇫🇷 Traduction :</p><p>${m.feedback.frResponse}</p>`;
+                        } else if (m.feedback.mistakes.length > 0) {
                             m.feedback.mistakes.forEach(err => msgHtml += `<p class="correction">❌ Correction : ${err.right}<br>📘 ${err.why}</p>`);
                         }
                         if (m.feedback.nativeTip) {
-                            msgHtml += `<p style="margin-top:8px; font-weight:600;">💡 Comme un local :</p><p>${m.feedback.nativeTip}</p>`;
+                            msgHtml += `<p style="margin-top:6px; font-weight:600;">💡 Comme un local :</p><p>${m.feedback.nativeTip}</p>`;
                         }
                         msgHtml += `</div>`;
                     }
                 }
             });
-
             $('chat-messages').innerHTML = msgHtml;
             $('view-chat').scrollTop = $('view-chat').scrollHeight;
             $('hint-box').style.display = 'none';
@@ -356,39 +390,53 @@
 
         function analyzeGrammar(text) {
             let mistakes = [];
-            GRAMMAR_RULES.forEach(rule => {
-                if (rule.rx.test(text)) mistakes.push({ wrong: text.match(rule.rx)[0], right: text.replace(rule.rx, rule.right), why: rule.why });
-            });
+            GRAMMAR_RULES.forEach(rule => { if (rule.rx.test(text)) mistakes.push({ wrong: text.match(rule.rx)[0], right: text.replace(rule.rx, rule.right), why: rule.why }); });
             return mistakes;
         }
 
-        function sendMessage() {
-            const input = $('chat-input');
-            const text = input.value.trim();
-            if (!text) return; input.value = '';
+        function isFrenchText(text) {
+            // Détection simple si l'utilisateur tape majoritairement en français
+            const frWords = /\b(je|tu|il|nous|vous|est|sont|pas|le|la|les|un|une|et|mais|pour|avec|comment|combien|oui|non|faire|veux|voudrais|c'est)\b/i;
+            return frWords.test(text);
+        }
 
+        function sendMessage() {
+            const input = $('chat-input'); const text = input.value.trim(); if (!text) return; input.value = '';
             const st = STORIES.find(s => s.id === S.currentStory);
             const hist = S.chatHistory[S.currentStory];
             const currentStepData = st.steps[hist.step];
 
-            let mistakes = analyzeGrammar(text);
-            hist.msgs.push({ sender: 'player', text: text, feedback: { mistakes: mistakes, nativeTip: currentStepData.nativeTip } });
+            let isFr = isFrenchText(text);
+            let mistakes = isFr ? [] : analyzeGrammar(text);
+
+            let feedbackData = {
+                isFrench: isFr,
+                frResponse: isFr ? "J'ai bien compris ton idée en français ! Mais pour avancer dans l'histoire, essaie de reformuler cette phrase en anglais (ou utilise le bouton 'Idée')." : null,
+                mistakes: mistakes,
+                nativeTip: currentStepData.nativeTip
+            };
+
+            hist.msgs.push({ sender: 'player', text: text, feedback: feedbackData });
             S.stats.msgs++;
             
             let coinsGained = 10 + Math.floor(getBonusIncome() / 2);
-            let xpGained = mistakes.length === 0 ? 20 : 10;
+            let xpGained = isFr ? 5 : (mistakes.length === 0 ? 20 : 10);
+            let oldScore = getToeicScore();
 
-            let oldLv = getLevel();
             S.coins += coinsGained; S.xp += xpGained; renderChat();
 
             setTimeout(() => {
-                if (currentStepData.end) {
-                    if (!S.storiesDone.includes(st.id)) { S.storiesDone.push(st.id); S.eur += 500; showToast("Histoire terminée ! Bonus de 500 💶 !"); }
+                if (isFr) {
+                    hist.msgs.push({ sender: 'npc', text: "Take your time! How would you say that in English?" });
                 } else {
-                    hist.msgs.push({ sender: 'npc', text: currentStepData.process(text) });
-                    hist.step++;
+                    if (currentStepData.end) {
+                        if (!S.storiesDone.includes(st.id)) { S.storiesDone.push(st.id); S.eur += 500; showToast("Histoire terminée ! +500 💶 !"); }
+                    } else {
+                        hist.msgs.push({ sender: 'npc', text: currentStepData.process(text) });
+                        hist.step++;
+                    }
                 }
-                if(getLevel() > oldLv) showToast(`+${coinsGained} 🪙  +${xpGained} XP - NIVEAU SUPÉRIEUR ! 🎉`);
+                if(getToeicScore() > oldScore) showToast(`🎓 SCORE TOEIC +${getToeicScore() - oldScore} !`);
                 saveData(); renderChat(); updateHeader();
             }, 800);
         }
@@ -397,14 +445,20 @@
             const box = $('hint-box');
             if (box.style.display === 'block') { box.style.display = 'none'; return; }
             const st = STORIES.find(s => s.id === S.currentStory);
-            const step = S.chatHistory[S.currentStory].step;
-            const hints = st.steps[step]?.hints || ["Continue la conversation naturellement."];
+            const hints = st.steps[S.chatHistory[S.currentStory].step]?.hints || ["Continue en anglais."];
             box.innerHTML = `<strong>Suggestions :</strong><br>` + hints.map(h => `• ${h}`).join('<br>'); box.style.display = 'block';
+        }
+
+        function showTranslation() {
+            const st = STORIES.find(s => s.id === S.currentStory);
+            const box = $('hint-box');
+            box.innerHTML = `<strong>🇫🇷 Traduction de la dernière réplique :</strong><br>${st.frTrans || "Pas de traduction disponible pour cette étape."}`;
+            box.style.display = 'block';
         }
 
         function showVocab() {
             const st = STORIES.find(s => s.id === S.currentStory);
-            $('hint-box').innerHTML = `<strong>Vocabulaire utile :</strong><br>` + st.vocab.replace(/\n/g, '<br>'); $('hint-box').style.display = 'block';
+            $('hint-box').innerHTML = `<strong>📚 Vocabulaire utile :</strong><br>` + st.vocab.replace(/\n/g, '<br>'); $('hint-box').style.display = 'block';
         }
 
         function renderCafe() {
@@ -419,17 +473,16 @@
                 const owned = S.items.includes(item.id);
                 return `<div class="card"><div class="card-icon">${item.icon}</div><div class="card-content"><div class="card-title">${item.name}</div><div class="card-desc">Revenus : +${item.income} 💶</div></div><div>${owned ? `<span style="color:var(--success); font-weight:bold;">Possédé</span>` : `<button class="btn" onclick="buyItem(${item.id}, ${item.cost})">${item.cost} 🪙</button>`}</div></div>`;
             }).join('');
-            $('shop-items').innerHTML = `<p style="font-size:14px; margin-bottom:12px; color:var(--muted)">Puissance actuelle du café : <strong>+${5 + getBonusIncome()} 💶 / client</strong>.</p>` + shopHtml;
+            $('shop-items').innerHTML = `<p style="font-size:14px; margin-bottom:12px; color:var(--muted)">Bonus du café : <strong>+${5 + getBonusIncome()} 💶 / client</strong>.</p>` + shopHtml;
         }
 
         function buyItem(id, cost) {
-            if (S.coins >= cost) { S.coins -= cost; S.items.push(id); saveData(); showToast("Amélioration achetée !"); renderCafe(); updateHeader(); } 
-            else showToast("Pas assez de pièces 🪙 ! Joue des histoires.");
+            if (S.coins >= cost) { S.coins -= cost; S.items.push(id); saveData(); showToast("Achat réussi !"); renderCafe(); updateHeader(); } 
+            else showToast("Pas assez de pièces 🪙 !");
         }
 
-        // AUTO CAFE LOOP
         setInterval(() => {
-            if(document.visibilityState !== 'visible') return; // Ne génère pas si l'app est en fond
+            if(document.visibilityState !== 'visible') return; 
             const cafe = $('cafe-display');
             if(!cafe || $('view-cafe').classList.contains('hidden')) return;
 
@@ -439,27 +492,24 @@
             cafe.appendChild(cus);
 
             setTimeout(() => { cus.style.transform = 'translateX(-200px)'; }, 50);
-            
             setTimeout(() => {
                 const gain = 5 + getBonusIncome();
                 S.eur += gain; saveData(); updateHeader();
                 const money = document.createElement('div');
                 money.className = 'floating-money'; money.innerText = `+${gain}💶`; money.style.right = '220px'; money.style.bottom = '100px';
-                cafe.appendChild(money);
-                setTimeout(() => { money.remove(); }, 1500);
+                cafe.appendChild(money); setTimeout(() => { money.remove(); }, 1500);
             }, 1500);
-
             setTimeout(() => { cus.style.transform = 'translateX(0px)'; }, 3500);
             setTimeout(() => { cus.remove(); }, 6500);
-        }, 5000); // Un client toutes les 5 secondes
+        }, 5000);
 
         function renderProgression() {
-            $('stat-lvl').innerText = getLevel(); $('stat-xp').innerText = S.xp; $('stat-msg').innerText = S.stats.msgs; $('stat-stories').innerText = `${S.storiesDone.length}/5`;
+            $('stat-lvl').innerText = getToeicScore(); $('stat-xp').innerText = S.xp; $('stat-msg').innerText = S.stats.msgs; $('stat-stories').innerText = `${S.storiesDone.length}/5`;
         }
 
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(S));
-            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v2.json");
+            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v5.json");
             document.body.appendChild(a); a.click(); a.remove();
         }
 
