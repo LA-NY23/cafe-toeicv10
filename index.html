@@ -74,20 +74,17 @@
         .helpers button { flex: 1; font-size: 11px; padding: 8px 4px; }
         .hint-box { background: var(--accent-light); color: var(--accent); padding: 12px; border-radius: 12px; font-size: 13px; margin-top: 10px; display: none; line-height: 1.4; }
         
-        .cafe-display { background: linear-gradient(135deg, #2c221e, #3d3430); border: 2px solid var(--border); border-radius: 16px; height: 240px; position: relative; margin-bottom: 16px; overflow: hidden; box-shadow: inset 0 4px 15px rgba(0,0,0,0.4); }
-        .cafe-floor { position: absolute; bottom: 0; width: 100%; height: 80px; background: #b08d71; border-top: 6px solid #8c6d53; transform: rotateX(15deg); transform-origin: bottom; }
-        .cafe-counter { position: absolute; bottom: 35px; left: 20px; right: 20px; height: 45px; background: #5c4033; border-top: 4px solid #8c6d53; border-radius: 6px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); z-index: 2; }
-        .cafe-counter-items { position: absolute; bottom: 82px; left: 30px; display: flex; gap: 16px; z-index: 3; font-size: 28px; }
-        .cafe-door { position: absolute; right: 20px; bottom: 70px; font-size: 45px; z-index: 1; }
-        
-        .walking-customer { position: absolute; bottom: 70px; right: 25px; width: 30px; height: 50px; z-index: 4; transition: transform linear; }
-        .customer-body { width: 24px; height: 28px; background: #c87965; border-radius: 12px 12px 4px 4px; position: absolute; top: 0; left: 3px; }
-        .customer-head { width: 16px; height: 16px; background: #f4dcd6; border-radius: 50%; position: absolute; top: -14px; left: 7px; }
-        .customer-legs { position: absolute; bottom: -8px; width: 100%; display: flex; justify-content: space-around; }
-        .leg { width: 6px; height: 12px; background: #3d3430; border-radius: 3px; animation: walkLegs 0.3s infinite alternate; }
-        @keyframes walkLegs { 0% { transform: rotate(15deg); } 100% { transform: rotate(-15deg); } }
+        /* Visuel du Café dynamique enrichi */
+        .cafe-display { background: linear-gradient(135deg, #2c221e, #3d3430); border: 2px solid var(--border); border-radius: 16px; height: 220px; position: relative; margin-bottom: 16px; overflow: hidden; box-shadow: inset 0 4px 15px rgba(0,0,0,0.4); }
+        .cafe-floor { position: absolute; bottom: 0; width: 100%; height: 70px; background: #b08d71; border-top: 6px solid #8c6d53; }
+        .cafe-counter { position: absolute; bottom: 30px; left: 15px; right: 15px; height: 40px; background: #5c4033; border-top: 4px solid #8c6d53; border-radius: 6px; z-index: 2; }
+        .cafe-decorations-layer { position: absolute; bottom: 72px; left: 25px; right: 25px; display: flex; justify-content: space-between; align-items: flex-end; z-index: 3; font-size: 24px; }
+        .cafe-door { position: absolute; right: 15px; bottom: 65px; font-size: 35px; z-index: 1; }
 
-        .floating-money { position: absolute; color: #a3b19b; text-shadow: 0 2px 4px rgba(0,0,0,0.6); font-weight: 800; font-size: 20px; animation: floatUp 1.2s ease-out forwards; z-index: 5; }
+        .walking-customer { position: absolute; bottom: 60px; right: 20px; width: 32px; height: 45px; z-index: 4; transition: transform linear; display: flex; flex-direction: column; align-items: center; }
+        .customer-avatar { font-size: 24px; line-height: 1; }
+
+        .floating-money { position: absolute; color: #a3b19b; text-shadow: 0 2px 4px rgba(0,0,0,0.6); font-weight: 800; font-size: 18px; animation: floatUp 1.2s ease-out forwards; z-index: 5; }
 
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; }
@@ -154,7 +151,7 @@
             <div class="cafe-floor"></div>
             <div class="cafe-door">🚪</div>
             <div class="cafe-counter"></div>
-            <div class="cafe-counter-items" id="counter-decorations">☕</div>
+            <div class="cafe-decorations-layer" id="counter-decorations">☕</div>
         </div>
         <div style="background:var(--success-light); color:#2e4a23; padding:12px; border-radius:12px; margin-bottom:16px; font-size:14px; text-align:center;">
             ⏳ Le café tourne en arrière-plan. Améliore tes stats avec des pièces 🪙 !
@@ -255,6 +252,10 @@
 
         let activeTest = { questions: [], currentIndex: 0, correctCount: 0 };
         let pendingRewardStoryId = null;
+        let lastClientIndex = -1;
+
+        // 10 designs de clients différents
+        const CLIENT_AVATARS = ['👦', '👱‍♀️', '👓', '👩‍🦰', '👴', '👩🏾', '🧔', '👵', '🧢', '🎧'];
 
         function getKeySpriteStyle(id) {
             const index = id % 72;
@@ -360,7 +361,7 @@
         };
         
         try { 
-            const saved = localStorage.getItem('cafeToeicDataV22'); 
+            const saved = localStorage.getItem('cafeToeicDataV23'); 
             if (saved) {
                 const parsed = JSON.parse(saved);
                 S = { ...S, ...parsed };
@@ -384,13 +385,13 @@
                 }
             }
         } catch (e) {
-            localStorage.removeItem('cafeToeicDataV22');
+            localStorage.removeItem('cafeToeicDataV23');
         }
 
         function saveData() { 
             CAFE_UPGRADES.forEach(u => S.upgrades[u.id] = u.level);
             S.lastActive = Date.now();
-            localStorage.setItem('cafeToeicDataV22', JSON.stringify(S)); 
+            localStorage.setItem('cafeToeicDataV23', JSON.stringify(S)); 
         }
 
         const $ = id => document.getElementById(id);
@@ -685,12 +686,19 @@
         }
 
         function renderCafe() {
-            let itemsHtml = '';
+            // Affichage dynamique des objets achetés dans le visuel du café
+            let itemsHtml = '☕';
             S.items.forEach(itemId => {
                 const shopItem = SHOP.find(s => s.id === itemId);
-                if (shopItem) itemsHtml += `<span style="margin-right: 8px;">${shopItem.icon}</span>`;
+                if (shopItem) {
+                    if (itemId === 1) itemsHtml += ' 🪴';
+                    else if (itemId === 2) itemsHtml += ' 🍰';
+                    else if (itemId === 3) itemsHtml += ' 🪑';
+                    else if (itemId === 4) itemsHtml += ' 🧑‍🍳';
+                    else if (itemId === 5) itemsHtml += ' 🌟';
+                }
             });
-            $('counter-decorations').innerHTML = '☕ ' + itemsHtml;
+            $('counter-decorations').innerHTML = itemsHtml;
 
             let upgradesHtml = '';
             CAFE_UPGRADES.forEach(u => {
@@ -745,6 +753,7 @@
             }
         }
 
+        // Boucle passive et gestion des 10 clients différents sans répétition consécutive
         setInterval(() => {
             const priceLevel = CAFE_UPGRADES.find(u => u.id === 'price').level;
             const priceMultiplier = 1 + (priceLevel * 0.3);
@@ -759,23 +768,27 @@
                 const speedLevel = CAFE_UPGRADES.find(u => u.id === 'speed').level;
                 const walkDuration = Math.max(1.5, 3 - (speedLevel * 0.3));
 
+                // Sélection d'un client parmi les 10 en évitant le doublon consécutif
+                let newClientIndex;
+                do {
+                    newClientIndex = Math.floor(Math.random() * CLIENT_AVATARS.length);
+                } while (newClientIndex === lastClientIndex && CLIENT_AVATARS.length > 1);
+                lastClientIndex = newClientIndex;
+                const clientAvatar = CLIENT_AVATARS[newClientIndex];
+
                 const customer = document.createElement('div');
                 customer.className = 'walking-customer';
                 customer.style.transitionDuration = `${walkDuration}s`;
-                customer.innerHTML = `
-                    <div class="customer-head"></div>
-                    <div class="customer-body"></div>
-                    <div class="customer-legs"><div class="leg"></div><div class="leg"></div></div>
-                `;
+                customer.innerHTML = `<div class="customer-avatar">${clientAvatar}</div>`;
                 cafe.appendChild(customer);
 
-                setTimeout(() => { customer.style.transform = 'translateX(-230px)'; }, 50);
+                setTimeout(() => { customer.style.transform = 'translateX(-220px)'; }, 50);
                 setTimeout(() => {
                     const money = document.createElement('div');
                     money.className = 'floating-money'; 
                     money.innerText = `+${gain}💶`; 
-                    money.style.right = '180px'; 
-                    money.style.bottom = '110px';
+                    money.style.right = '160px'; 
+                    money.style.bottom = '90px';
                     cafe.appendChild(money); 
                     setTimeout(() => { money.remove(); }, 1200);
                 }, walkDuration * 1000 * 0.4);
@@ -794,12 +807,12 @@
 
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(S));
-            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v22.json");
+            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v23.json");
             document.body.appendChild(a); a.click(); a.remove();
         }
 
         function resetData() {
-            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV22'); location.reload(); }
+            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV23'); location.reload(); }
         }
 
         switchTab('stories');
