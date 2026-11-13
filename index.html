@@ -14,7 +14,7 @@
         [data-theme="vintage"] { --bg: #f4ecd8; --card: #fff9e6; --text: #5c4033; --muted: #9e826b; --accent: #b85d33; --accent-light: #fbe6d4; --border: #dfccb0; }
         [data-theme="gold"] { --bg: #111111; --card: #1f1f1f; --text: #f5f0eb; --muted: #a0a0a0; --accent: #d4af37; --accent-light: #332d15; --border: #333333; }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, « Segoe UI », sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
         body, html { height: 100%; background: var(--bg); color: var(--text); overflow: hidden; transition: background 0.3s, color 0.3s; }
         body { display: flex; flex-direction: column; max-width: 600px; margin: 0 auto; position: relative; }
         
@@ -195,20 +195,24 @@
     </main>
 
     <main id="view-bio" class="hidden">
-        <h2 style="margin-bottom: 16px; font-size: 17px;">👤 Fiches Personnages & Paramètre IA</h2>
+        <h2 style="margin-bottom: 16px; font-size: 17px;">👤 Fiches Personnages</h2>
         
         <div class="bio-card">
-            <div class="bio-title">🔑 Configuration Hugging Face (IA Open Source)</div>
-            <p style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">Colle ici ton jeton d'accès Hugging Face (avec droits <strong>Inference</strong>) :</p>
-            <input type="password" id="hf-token-input" placeholder="hf_xxxxxxxxxxxxxxxxxxxxxxxx" style="width:100%; padding:10px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:13px; margin-bottom:8px;">
-            <button class="btn" style="padding:6px 12px; font-size:12px;" onclick="saveHfToken()">Enregistrer la clé API</button>
+            <div class="bio-title">🎨 Lucas (Le Joueur / Personnage principal)</div>
+            <ul class="bio-list">
+                <li><span>Âge :</span> 21 ans</li>
+                <li><span>Métier :</span> Maintenance électrique & apprentissage</li>
+                <li><span>Valeurs :</span> Discipline, technique, autonomie</li>
+                <li><span>Passions :</span> Triathlon, course à pied, vélo, café</li>
+            </ul>
         </div>
 
         <div class="bio-card">
-            <div class="bio-title">🎨 Lucas & 📚 Clara</div>
+            <div class="bio-title">📚 Clara (La Compagne)</div>
             <ul class="bio-list">
-                <li><span>Lucas :</span> Graphiste indépendant, passionné de vinyles.</li>
-                <li><span>Clara :</span> Libraire en littérature anglaise, organisée.</li>
+                <li><span>Métier :</span> Libraire spécialisée en littérature anglaise</li>
+                <li><span>Valeurs :</span> Organisation, lecture, authenticité</li>
+                <li><span>Passions :</span> Pâtisserie, thés rares, littérature</li>
             </ul>
         </div>
     </main>
@@ -239,7 +243,7 @@
     <nav>
         <button id="tab-stories" class="active" onclick="switchTab('stories')"><span>📖</span>Histoires</button>
         <button id="tab-cafe" onclick="switchTab('cafe')"><span>☕</span>Café</button>
-        <button id="tab-bio" onclick="switchTab('bio')"><span>👤</span>Bio & IA</button>
+        <button id="tab-bio" onclick="switchTab('bio')"><span>👤</span>Bio</button>
         <button id="tab-progression" onclick="switchTab('progression')"><span>📈</span>Profil</button>
     </nav>
     
@@ -370,7 +374,7 @@
         };
         
         try { 
-            const saved = localStorage.getItem('cafeToeicDataV33'); 
+            const saved = localStorage.getItem('cafeToeicDataV35'); 
             if (saved) {
                 const parsed = JSON.parse(saved);
                 S = { ...S, ...parsed };
@@ -379,20 +383,16 @@
                 }
             }
         } catch (e) {
-            localStorage.removeItem('cafeToeicDataV33');
+            localStorage.removeItem('cafeToeicDataV35');
         }
 
         function saveData() { 
             CAFE_UPGRADES.forEach(u => S.upgrades[u.id] = u.level);
             S.lastActive = Date.now();
-            localStorage.setItem('cafeToeicDataV33', JSON.stringify(S)); 
+            localStorage.setItem('cafeToeicDataV35', JSON.stringify(S)); 
         }
 
-        function saveHfToken() {
-            const token = $('hf-token-input').value.trim();
-            localStorage.setItem('hf_token', token);
-            showToast("Clé Hugging Face enregistrée avec succès !");
-        }
+        const EMBEDDED_HF_TOKEN = "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";
 
         const $ = id => document.getElementById(id);
         const getBonusIncome = () => S.items.reduce((acc, id) => {
@@ -417,9 +417,6 @@
                 const btn = $(`theme-${t}`);
                 if (btn) btn.classList.toggle('active', S.theme === t);
             });
-
-            const savedToken = localStorage.getItem('hf_token');
-            if (savedToken && $('hf-token-input')) $('hf-token-input').value = savedToken;
         }
 
         function setTheme(t) {
@@ -611,10 +608,7 @@
         }
 
         async function callHuggingFaceAI(userText, chapterTitle) {
-            const token = localStorage.getItem('hf_token');
-            if (!token) {
-                return "⚠️ Veuillez entrer votre clé API Hugging Face (avec droits Inference) dans l'onglet 'Bio & IA'.";
-            }
+            const token = EMBEDDED_HF_TOKEN;
 
             const prompt = `Tu es Clara, une libraire passionnée de littérature anglaise. Tu discutes avec Lucas dans le cadre du chapitre "${chapterTitle}". 
 Lucas vient de t'écrire : "${userText}".
@@ -718,7 +712,7 @@ Format de réponse attendu :
 
         function showTranslation() {
             const box = $('hint-box');
-            box.innerHTML = `<strong>🇫🇷 Mode IA Connectée :</strong><br>L'IA open-source Llama 3 analyse tes phrases en direct. Pense à configurer ta clé Hugging Face dans l'onglet Bio & IA.`;
+            box.innerHTML = `<strong>🇫🇷 Mode IA Connectée :</strong><br>L'IA open-source Llama 3 analyse tes phrases en direct. Clé Hugging Face intégrée de manière invisible.`;
             box.style.display = 'block';
         }
 
@@ -851,12 +845,12 @@ Format de réponse attendu :
 
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(S));
-            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v33.json");
+            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v35.json");
             document.body.appendChild(a); a.click(); a.remove();
         }
 
         function resetData() {
-            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV33'); location.reload(); }
+            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV35'); location.reload(); }
         }
 
         switchTab('stories');
