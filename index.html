@@ -129,7 +129,7 @@
     </main>
 
     <main id="view-cafe" class="hidden">
-        <button class="btn btn-blue" onclick="startFullToeicTest()">📝 Lancer un Test TOEIC complet (20 questions)</button>
+        <button class="btn btn-blue" onclick="startFullToeicTest()">📝 Lancer un Test TOEIC complet (10 questions)</button>
         <div class="cafe-display" id="cafe-display">
             <div class="cafe-floor"></div>
             <div class="cafe-door">🚪</div>
@@ -182,12 +182,12 @@
     <div class="modal-overlay" id="quiz-modal">
         <div class="modal">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <h3 style="color:var(--blue);" id="quiz-header-title">📝 Test TOEIC (1/20)</h3>
+                <h3 style="color:var(--blue);" id="quiz-header-title">📝 Test TOEIC (1/10)</h3>
             </div>
             <div class="quiz-q" id="quiz-question">Question</div>
             <div id="quiz-options"></div>
-            <div class="quiz-explain" id="quiz-explanation">Explication</div>
-            <button class="btn" style="width:100%; margin-top:16px; display:none;" id="quiz-next-btn" onclick="nextQuizQuestion()">Question suivante</button>
+            <div class="quiz-explanation" id="quiz-explanation">Explication</div>
+            <button class="btn" style="width:100%; margin-top:16px; display:none;" id="quiz-next-btn">Question suivante</button>
         </div>
     </div>
 
@@ -208,7 +208,7 @@
 
         const MASTER_QUIZ_BANK = [
             { q: "We are looking forward _______ you at the conference.", opts: ["to meet", "to meeting", "meeting"], ans: 1, why: "« Look forward to » est suivi d'un gérondif en -ING." },
-            { q: "Could you tell me where _______ ?", opts: ["the nearest station is", "is the nearest station", "the station be"], ans: 0, why: "Dans une question indirecte, l'ordre est sujet + verbe." },
+            { q: "Could you tell me where _______ ?", opts: ["the nearest station is", "is the station", "the station be"], ans: 0, why: "Dans une question indirecte, l'ordre est sujet + verbe." },
             { q: "I have been working for this company _______ three years.", opts: ["since", "for", "during"], ans: 1, why: "« For » indique une durée." },
             { q: "The meeting was postponed _______ unexpected technical issues.", opts: ["because", "due to", "since"], ans: 1, why: "« Due to » est suivi d'un groupe nominal." },
             { q: "If I _______ you, I would accept the marketing position.", opts: ["was", "were", "am"], ans: 1, why: "Subjonctif irréel : « If I were you »." },
@@ -221,7 +221,6 @@
 
         let activeTest = { questions: [], currentIndex: 0, correctCount: 0 };
 
-        // SAISON 1 : 12 HISTOIRES REPRÉSENTANT LES 12 MOIS DE RELATION
         const STORIES = [
             { id: 0, title: "Mois 1 : Dîner romantique", icon: "🍝", cost: 0, npc: "Tom (Serveur)", bg: "#f4dcd6",
               desc: "Premier grand rendez-vous au restaurant avec Clara.",
@@ -322,7 +321,6 @@
             }
         ];
 
-        // 4 AMÉLIORATIONS DU CAFÉ (Niveau 1 à 5, prix exponentiel en Pièces 🪙)
         let CAFE_UPGRADES = [
             { id: 'price', name: "Prix du café", icon: "💰", baseCost: 50, level: 0, max: 5, desc: "Augmente les euros gagnés par client." },
             { id: 'spawn', name: "Flux de clients", icon: "🚶", baseCost: 80, level: 0, max: 5, desc: "Accélère l'arrivée des clients." },
@@ -346,7 +344,7 @@
         };
         
         try { 
-            const saved = localStorage.getItem('cafeToeicDataV12'); 
+            const saved = localStorage.getItem('cafeToeicDataV13'); 
             if (saved) {
                 const parsed = JSON.parse(saved);
                 S = { ...S, ...parsed };
@@ -356,8 +354,11 @@
                 if (S.lastActive) {
                     const elapsedSeconds = Math.floor((Date.now() - S.lastActive) / 1000);
                     if (elapsedSeconds > 5) {
-                        const bonus = S.items.reduce((acc, id) => acc + SHOP.find(s=>s.id===id).income, 0);
-                        const priceMultiplier = 1 + (CAFE_UPGRADES.find(u=>u.id==='price').level * 0.3);
+                        const bonus = S.items.reduce((acc, id) => {
+                            const item = SHOP.find(s => s.id === id);
+                            return acc + (item ? item.income : 0);
+                        }, 0);
+                        const priceMultiplier = 1 + ((S.upgrades.price || 0) * 0.3);
                         const offlineEarnings = Math.floor(elapsedSeconds / 5) * Math.round((5 + bonus) * priceMultiplier);
                         if (offlineEarnings > 0) {
                             S.eur += offlineEarnings;
@@ -366,17 +367,21 @@
                     }
                 }
             }
-        } catch (e) {}
+        } catch (e) {
+            localStorage.removeItem('cafeToeicDataV13');
+        }
 
         function saveData() { 
             CAFE_UPGRADES.forEach(u => S.upgrades[u.id] = u.level);
             S.lastActive = Date.now();
-            localStorage.getItem('cafeToeicDataV12');
-            localStorage.setItem('cafeToeicDataV12', JSON.stringify(S)); 
+            localStorage.setItem('cafeToeicDataV13', JSON.stringify(S)); 
         }
 
         const $ = id => document.getElementById(id);
-        const getBonusIncome = () => S.items.reduce((acc, id) => acc + SHOP.find(s=>s.id===id).income, 0);
+        const getBonusIncome = () => S.items.reduce((acc, id) => {
+            const item = SHOP.find(s => s.id === id);
+            return acc + (item ? item.income : 0);
+        }, 0);
 
         function updateHeader() {
             $('level-display').innerText = `🎓 TOEIC: ${S.toeicScore}`;
@@ -451,14 +456,15 @@
             $('quiz-explanation').innerText = isCorrect ? "✅ Correct ! " + qData.why : "❌ Incorrect. " + qData.why;
             $('quiz-explanation').style.display = 'block';
 
+            const nextBtn = $('quiz-next-btn');
             if (activeTest.currentIndex < activeTest.questions.length - 1) {
-                $('quiz-next-btn').innerText = "Question suivante →";
-                $('quiz-next-btn').onclick = () => { activeTest.currentIndex++; loadQuizQuestion(); };
+                nextBtn.innerText = "Question suivante →";
+                nextBtn.onclick = () => { activeTest.currentIndex++; loadQuizQuestion(); };
             } else {
-                $('quiz-next-btn').innerText = "Terminer le test";
-                $('quiz-next-btn').onclick = finishFullToeicTest;
+                nextBtn.innerText = "Terminer le test";
+                nextBtn.onclick = finishFullToeicTest;
             }
-            $('quiz-next-btn').style.display = 'block';
+            nextBtn.style.display = 'block';
         }
 
         function finishFullToeicTest() {
@@ -473,11 +479,11 @@
         }
 
         function renderStories() {
-            const html = STORIES.map((st, index) => {
+            const html = STORIES.map((st) => {
                 const isUnlocked = S.unlocked.includes(st.id);
                 const isDone = S.storiesDone.includes(st.id);
                 let btn = isUnlocked ? `<button class="btn" onclick="startStory(${st.id})">${isDone ? 'Rejouer' : 'Jouer'}</button>` 
-                        : `<button class="btn btn-outline" onclick="unlockStory(${st.id})">Débloquer ${st.cost} 💶 (Clé requise)</button>`;
+                        : `<button class="btn btn-outline" onclick="unlockStory(${st.id})">Débloquer ${st.cost} 💶</button>`;
                 return `<div class="card"><div class="card-icon" style="background: ${st.bg}">${st.icon}</div><div class="card-content"><div class="card-title">${st.title} ${isDone ? '🔑✅' : ''}</div><div class="card-desc">${st.desc}</div></div><div>${btn}</div></div>`;
             }).join('');
             $('view-stories').innerHTML = `<h2 style="margin-bottom:16px;">Saison 1 : Les 12 mois de relation</h2>` + html;
@@ -487,9 +493,9 @@
             const st = STORIES.find(s => s.id === id);
             if (S.eur >= st.cost) { 
                 S.eur -= st.cost; 
-                S.unlocked.push(id); 
+                if (!S.unlocked.includes(id)) S.unlocked.push(id);
                 saveData(); 
-                showToast("Histoire et clé débloquées !"); 
+                showToast("Histoire débloquée !"); 
                 renderStories(); 
                 updateHeader();
             } else { 
@@ -573,7 +579,7 @@
             hist.msgs.push({ sender: 'player', text: text, feedback: feedbackData });
             S.stats.msgs++;
             
-            let xpBonus = 1 + (CAFE_UPGRADES.find(u=>u.id==='xp').level * 0.2);
+            let xpBonus = 1 + ((S.upgrades.xp || 0) * 0.2);
             let earnedCoins = 10;
             S.coins += earnedCoins; 
             S.xp += Math.round((isFr ? 5 : (mistakes.length === 0 ? 25 : 12)) * xpBonus); 
@@ -586,15 +592,14 @@
                     if (currentStepData.end) {
                         if (!S.storiesDone.includes(st.id)) { 
                             S.storiesDone.push(st.id); 
-                            S.eur += 1000; // Récompense généreuse en euros pour acheter les objets
+                            S.eur += 1000;
                             
-                            // Déblocage automatique de l'histoire suivante (clé)
                             const nextId = st.id + 1;
                             if (nextId < STORIES.length && !S.unlocked.includes(nextId)) {
                                 S.unlocked.push(nextId);
                             }
 
-                            showToast(`🎉 Mois validé ! +1000 💶 & Clé du mois suivant débloquée !`); 
+                            showToast(`🎉 Mois validé ! +1000 💶 & Clé suivante débloquée !`); 
                         }
                     } else {
                         hist.step++;
@@ -635,7 +640,6 @@
         }
 
         function renderCafe() {
-            // Affichage des décos achetées avec des euros
             let itemsHtml = '';
             S.items.forEach(itemId => {
                 const shopItem = SHOP.find(s => s.id === itemId);
@@ -643,7 +647,6 @@
             });
             $('counter-decorations').innerHTML = '☕ ' + itemsHtml;
 
-            // Rendu des améliorations de stats (achetées avec des Pièces 🪙)
             let upgradesHtml = '';
             CAFE_UPGRADES.forEach(u => {
                 const cost = Math.round(u.baseCost * Math.pow(2.2, u.level));
@@ -662,7 +665,6 @@
             });
             $('upgrades-list').innerHTML = upgradesHtml;
 
-            // Rendu de la boutique (objets achetés avec des Euros 💶)
             const shopHtml = SHOP.map(item => {
                 const owned = S.items.includes(item.id);
                 return `<div class="card"><div class="card-icon">${item.icon}</div><div class="card-content"><div class="card-title">${item.name}</div><div class="card-desc">Revenus passifs : +${item.income} 💶</div></div><div>${owned ? `<span style="color:var(--success); font-weight:bold;">Possédé</span>` : `<button class="btn" onclick="buyItem(${item.id}, ${item.cost})">${item.cost} 💶</button>`}</div></div>`;
@@ -698,7 +700,6 @@
             }
         }
 
-        // BOUCLE PASSIVE DU CAFÉ
         setInterval(() => {
             const priceLevel = CAFE_UPGRADES.find(u => u.id === 'price').level;
             const priceMultiplier = 1 + (priceLevel * 0.3);
@@ -748,12 +749,12 @@
 
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(S));
-            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v12.json");
+            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v13.json");
             document.body.appendChild(a); a.click(); a.remove();
         }
 
         function resetData() {
-            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV12'); location.reload(); }
+            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV13'); location.reload(); }
         }
 
         switchTab('stories');
