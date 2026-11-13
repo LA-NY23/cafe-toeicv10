@@ -344,7 +344,7 @@
         };
         
         try { 
-            const saved = localStorage.getItem('cafeToeicDataV14'); 
+            const saved = localStorage.getItem('cafeToeicDataV15'); 
             if (saved) {
                 const parsed = JSON.parse(saved);
                 S = { ...S, ...parsed };
@@ -368,13 +368,13 @@
                 }
             }
         } catch (e) {
-            localStorage.removeItem('cafeToeicDataV14');
+            localStorage.removeItem('cafeToeicDataV15');
         }
 
         function saveData() { 
             CAFE_UPGRADES.forEach(u => S.upgrades[u.id] = u.level);
             S.lastActive = Date.now();
-            localStorage.setItem('cafeToeicDataV14', JSON.stringify(S)); 
+            localStorage.setItem('cafeToeicDataV15', JSON.stringify(S)); 
         }
 
         const $ = id => document.getElementById(id);
@@ -545,7 +545,7 @@
                 }
             });
             $('chat-messages').innerHTML = msgHtml;
-            $('view-chat').scrollTop = $('view-chat'].scrollHeight;
+            $('view-chat').scrollTop = $('view-chat').scrollHeight;
             $('hint-box').style.display = 'none';
         }
 
@@ -749,12 +749,12 @@
 
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(S));
-            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v14.json");
+            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v15.json");
             document.body.appendChild(a); a.click(); a.remove();
         }
 
         function resetData() {
-            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV14'); location.reload(); }
+            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV15'); location.reload(); }
         }
 
         switchTab('stories');
