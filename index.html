@@ -5,42 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
     <title>Café TOEIC - Notre Histoire</title>
     <link rel="manifest" href="manifest.webmanifest">
-    <meta name="theme-color" content="#f5f0eb">
+    <meta name="theme-color" content="#f9f6f0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
-        :root {
-            --bg: #f4ecd8;
-            --card: #fff9e6;
-            --text: #5c4033;
-            --muted: #9e826b;
-            --accent: #b85d33;
-            --accent-light: #fbe6d4;
-            --success: #a3b19b;
-            --success-light: #e4efe0;
-            --border: #dfccb0;
-            --wood: #c4a574;
-            --wood-dark: #8b6b4a;
-            --cream: #f9f1e0;
-        }
-        [data-theme="dark"] {
-            --bg: #1a1614; --card: #2c2421; --text: #f5f0eb; --muted: #b0a299;
-            --accent: #d88975; --accent-light: #44322d; --border: #3d3430;
-        }
-        [data-theme="vintage"] {
-            --bg: #f4ecd8; --card: #fff9e6; --text: #5c4033; --muted: #9e826b;
-            --accent: #b85d33; --accent-light: #fbe6d4; --border: #dfccb0;
-        }
-        [data-theme="gold"] {
-            --bg: #111111; --card: #1f1f1f; --text: #f5f0eb; --muted: #a0a0a0;
-            --accent: #d4af37; --accent-light: #332d15; --border: #333333;
-        }
+        :root { --bg: #f9f6f0; --card: #ffffff; --text: #3d3430; --muted: #8c7b74; --accent: #c87965; --accent-light: #f4dcd6; --success: #a3b19b; --success-light: #e4efe0; --border: #e3d9d3; --blue: #4a90e2; --gold: #d4af37; }
+        [data-theme="dark"] { --bg: #1a1614; --card: #2c2421; --text: #f5f0eb; --muted: #b0a299; --accent: #d88975; --accent-light: #44322d; --border: #3d3430; }
+        [data-theme="vintage"] { --bg: #f4ecd8; --card: #fff9e6; --text: #5c4033; --muted: #9e826b; --accent: #b85d33; --accent-light: #fbe6d4; --border: #dfccb0; }
+        [data-theme="gold"] { --bg: #111111; --card: #1f1f1f; --text: #f5f0eb; --muted: #a0a0a0; --accent: #d4af37; --accent-light: #332d15; --border: #333333; }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, « Segoe UI », sans-serif; }
         body, html { height: 100%; background: var(--bg); color: var(--text); overflow: hidden; transition: background 0.3s, color 0.3s; }
         body { display: flex; flex-direction: column; max-width: 600px; margin: 0 auto; position: relative; }
         
-        header { background: var(--card); padding: calc(env(safe-area-inset-top, 10px) + 12px) 16px 12px; border-bottom: 1px solid var(--border); z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.04); }
+        header { background: var(--card); padding: calc(env(safe-area-inset-top, 10px) + 12px) 16px 12px; border-bottom: 1px solid var(--border); z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
         .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 13px; font-weight: 600; }
         .badge-pill { background: var(--bg); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 6px; }
         .relationship-bar { background: var(--accent-light); color: var(--accent); font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 8px; text-align: center; margin-bottom: 8px; }
@@ -54,231 +32,52 @@
         nav button.active { color: var(--accent); }
         nav button span { font-size: 18px; }
 
-        /* ========== NOUVEAU MENU PRINCIPAL PIXEL CAFÉ ========== */
-        .cafe-library {
-            background: linear-gradient(180deg, #e8d9b8 0%, #d4c09a 40%, #c4a574 100%);
-            border-radius: 20px;
-            padding: 18px 14px 24px;
-            border: 3px solid var(--wood-dark);
-            box-shadow: 
-                inset 0 0 0 2px #f0e0c0,
-                0 8px 24px rgba(92,64,51,0.25);
-            position: relative;
-            overflow: hidden;
-            image-rendering: pixelated;
-        }
-
-        .cafe-library::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: 
-                radial-gradient(ellipse at 20% 10%, rgba(255,240,200,0.4) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 20%, rgba(255,220,160,0.3) 0%, transparent 40%);
-            pointer-events: none;
-        }
-
-        .library-header {
-            text-align: center;
-            margin-bottom: 16px;
-            position: relative;
-            z-index: 2;
-        }
-        .library-header h2 {
-            font-size: 17px;
-            font-weight: 800;
-            color: #5c4033;
-            letter-spacing: 0.5px;
-            text-shadow: 1px 1px 0 #f5e6c8;
-        }
-        .library-header p {
-            font-size: 11px;
-            color: #8b6b4a;
-            margin-top: 4px;
-        }
-
-        /* Étagère de livres */
-        .bookshelf {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px 10px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .pixel-book {
-            background: #fff9e6;
-            border: 3px solid #8b6b4a;
-            border-radius: 6px 6px 4px 4px;
-            padding: 10px 6px 12px;
-            text-align: center;
-            cursor: pointer;
-            position: relative;
-            transition: transform 0.18s, box-shadow 0.18s;
-            box-shadow: 
-                3px 3px 0 #5c4033,
-                inset 0 0 0 1px rgba(255,255,255,0.4);
-            image-rendering: pixelated;
-        }
-        .pixel-book:active {
-            transform: translate(2px, 2px);
-            box-shadow: 1px 1px 0 #5c4033;
-        }
-        .pixel-book:hover {
-            transform: translateY(-4px);
-        }
-
-        .book-spine {
-            font-size: 28px;
-            margin-bottom: 6px;
-            filter: drop-shadow(1px 1px 0 rgba(0,0,0,0.15));
-        }
-        .book-title {
-            font-size: 12px;
-            font-weight: 800;
-            color: #5c4033;
-            line-height: 1.2;
-            margin-bottom: 3px;
-        }
-        .book-subtitle {
-            font-size: 9px;
-            color: #9e826b;
-            line-height: 1.25;
-            margin-bottom: 6px;
-            min-height: 24px;
-        }
-        .book-progress {
-            font-size: 10px;
-            font-weight: 700;
-            color: var(--accent);
-            background: var(--accent-light);
-            border-radius: 10px;
-            padding: 2px 6px;
-            display: inline-block;
-        }
-
-        /* Décor pixel café autour */
-        .cafe-deco {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin-top: 18px;
-            padding: 0 4px;
-            position: relative;
-            z-index: 2;
-        }
-        .deco-item {
-            font-size: 22px;
-            filter: drop-shadow(1px 1px 0 rgba(0,0,0,0.2));
-            opacity: 0.9;
-        }
-
-        /* Vue ouverte d’une saison */
-        .season-open {
-            background: #fff9e6;
-            border: 3px solid #8b6b4a;
-            border-radius: 16px;
-            padding: 14px;
-            box-shadow: 4px 4px 0 #5c4033;
-        }
-        .season-open-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 14px;
-            padding-bottom: 10px;
-            border-bottom: 2px dashed #dfccb0;
-        }
-        .back-btn {
-            background: #f4ecd8;
-            border: 2px solid #8b6b4a;
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: #5c4033;
-            box-shadow: 2px 2px 0 #5c4033;
-        }
-        .back-btn:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 #5c4033; }
-
-        .card {
-            background: #fff9e6;
-            border: 2px solid #dfccb0;
-            border-radius: 14px;
-            padding: 12px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 2px 2px 0 rgba(92,64,51,0.12);
-        }
-        .card.locked { opacity: 0.55; }
-        .card-icon {
-            font-size: 26px;
-            background: #f4ecd8;
-            width: 52px;
-            height: 52px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 12px;
-            flex-shrink: 0;
-            border: 2px solid #dfccb0;
-            position: relative;
-        }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .card.locked { opacity: 0.6; }
+        .card-icon { font-size: 28px; background: var(--bg); width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 14px; flex-shrink: 0; position: relative; border: 1px solid var(--border); }
+        
         .key-sprite {
-            width: 28px;
-            height: 28px;
+            width: 30px;
+            height: 30px;
             background-image: url('keys-sheet.PNG');
             background-size: 900% 800%;
             image-rendering: pixelated;
             position: absolute;
-            bottom: -3px;
-            right: -3px;
+            bottom: -2px;
+            right: -2px;
             border-radius: 50%;
-            border: 2px solid #fff9e6;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+            border: 2px solid var(--card);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
+
         .card-content { flex: 1; }
-        .card-title { font-weight: 700; font-size: 14px; margin-bottom: 3px; color: #5c4033; }
-        .card-desc { font-size: 11px; color: #9e826b; line-height: 1.3; }
+        .card-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+        .card-desc { font-size: 12px; color: var(--muted); line-height: 1.3; }
 
-        button.btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 9px 14px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            box-shadow: 2px 2px 0 #8b3a1a;
-        }
-        button.btn:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 #8b3a1a; }
-        button.btn.btn-outline {
-            background: #fbe6d4;
-            color: var(--accent);
-            border: 2px solid #dfccb0;
-            box-shadow: 2px 2px 0 #c4a574;
-        }
-        button.btn.btn-blue { background: #4a90e2; color: white; width: 100%; margin-bottom: 16px; padding: 14px; font-size: 15px; box-shadow: 2px 2px 0 #2a5a9e; }
-        button.btn.btn-green { background: #5cb85c; color: white; width: 100%; padding: 14px; font-size: 15px; font-weight: 700; border-radius: 12px; box-shadow: 2px 2px 0 #3a7a3a; }
+        button.btn { background: var(--accent); color: white; border: none; padding: 10px 16px; border-radius: 12px; font-weight: 600; font-size: 14px; cursor: pointer; transition: transform 0.1s; }
+        button.btn:active { transform: scale(0.96); }
+        button.btn.btn-outline { background: var(--accent-light); color: var(--accent); border: 1px solid var(--border); }
+        button.btn.btn-blue { background: var(--blue); color: white; width: 100%; margin-bottom: 16px; padding: 14px; font-size: 15px; }
+        button.btn.btn-green { background: #5cb85c; color: white; width: 100%; padding: 14px; font-size: 15px; font-weight: 700; border-radius: 12px; }
 
-        /* Reste du CSS original (chat, café, bio, etc.) */
+        .books-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .book-card { background: var(--card); border: 2px solid var(--border); border-radius: 16px; padding: 20px; text-align: center; cursor: pointer; transition: transform 0.2s, border-color 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .book-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+        .book-cover { font-size: 40px; margin-bottom: 8px; }
+        .book-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+        .book-subtitle { font-size: 11px; color: var(--muted); }
+
         .chat-story-banner { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 16px; position: sticky; top: 0; z-index: 5; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .back-btn { background: var(--bg); border: none; width: 34px; height: 34px; border-radius: 17px; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text); border: 1px solid var(--border); }
         .messages { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
         .msg { max-width: 85%; padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.4; animation: popIn 0.3s ease-out; }
         .msg.npc { background: var(--card); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; }
         .msg.player { background: var(--accent); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
         .msg.narration { background: var(--accent-light); color: var(--accent); font-style: italic; text-align: center; max-width: 100%; align-self: center; border-radius: 12px; font-size: 12px; padding: 8px 14px; }
         
-        .feedback { background: var(--success-light); border: 1px solid var(--success); border-radius: 12px; padding: 12px; margin-top: -8px; margin-bottom: 8px; font-size: 12px; align-self: flex-end; width: 85%; color: #2e4a23; }
+        .feedback { background: var(--success-light); border: 1px solid var(--success); border-radius: 12px; padding: 12px; margin-top: 6px; font-size: 12px; width: 100%; color: #2e4a23; border: 1px solid var(--success); }
         .feedback p { margin-bottom: 4px; }
-        .feedback .correction { color: #8a3b3b; font-weight: 600; }
+
         .chat-input-area { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 12px; position: sticky; bottom: 0; box-shadow: 0 -4px 12px rgba(0,0,0,0.03); }
         .input-row { display: flex; gap: 8px; align-items: center; }
         textarea { flex: 1; border: 1px solid var(--border); background: var(--bg); border-radius: 12px; padding: 10px 12px; font-size: 14px; resize: none; color: var(--text); outline: none; }
@@ -299,15 +98,14 @@
         }
         
         .cafe-item-visual { position: absolute; z-index: 3; transition: all 0.3s; pointer-events: none; image-rendering: pixelated; }
-        #vis-plant { bottom: 22px; left: 12px; font-size: 30px; display: none; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
-        #vis-cake { bottom: 75px; right: 110px; font-size: 32px; display: none; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
-        #vis-table { bottom: 18px; left: 115px; font-size: 32px; display: none; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
-        #vis-chef { bottom: 78px; right: 185px; font-size: 32px; display: none; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
-        #vis-neon { top: 15px; left: 20px; font-size: 26px; display: none; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3)); }
+        #vis-plant { bottom: 22px; left: 12px; font-size: 30px; display: none; }
+        #vis-cake { bottom: 75px; right: 110px; font-size: 32px; display: none; }
+        #vis-table { bottom: 18px; left: 115px; font-size: 32px; display: none; }
+        #vis-chef { bottom: 78px; right: 185px; font-size: 32px; display: none; }
+        #vis-neon { top: 15px; left: 20px; font-size: 26px; display: none; }
 
         .walking-customer { position: absolute; bottom: 30px; right: 15px; width: 34px; height: 44px; z-index: 4; transition: transform linear; display: flex; justify-content: center; align-items: center; }
-        .customer-avatar { font-size: 26px; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.4)); animation: bounceCustomer 0.5s infinite alternate; }
-        @keyframes bounceCustomer { 0% { transform: translateY(0); } 100% { transform: translateY(-3px); } }
+        .customer-avatar { font-size: 26px; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.4)); }
 
         .floating-money { position: absolute; color: #a3b19b; text-shadow: 0 2px 4px rgba(0,0,0,0.6); font-weight: 800; font-size: 16px; animation: floatUp 1.2s ease-out forwards; z-index: 5; }
 
@@ -364,7 +162,7 @@
         <div class="messages" id="chat-messages"></div>
         <div class="chat-input-area">
             <div class="input-row">
-                <textarea id="chat-input" rows="2" placeholder="Réponds librement en anglais..."></textarea>
+                <textarea id="chat-input" rows="2" placeholder="Réponds en anglais à Clara..."></textarea>
                 <button class="send-btn" onclick="sendMessage()">➤</button>
             </div>
             <div class="helpers">
@@ -397,37 +195,21 @@
     </main>
 
     <main id="view-bio" class="hidden">
-        <h2 style="margin-bottom: 16px; font-size: 17px;">👤 Fiches Personnages & Séduction</h2>
+        <h2 style="margin-bottom: 16px; font-size: 17px;">👤 Fiches Personnages & Paramètre IA</h2>
         
         <div class="bio-card">
-            <div class="bio-title">🎨 Lucas (Le Joueur / Personnage principal)</div>
-            <ul class="bio-list">
-                <li><span>Âge :</span> 24 ans</li>
-                <li><span>Métier :</span> Graphiste indépendant & passionné de vinyles</li>
-                <li><span>Études :</span> Arts Appliqués & Design visuel</li>
-                <li><span>Valeurs :</span> Liberté créative, esthétisme, spontanéité</li>
-                <li><span>Passions :</span> Musique rétro, chiner des objets vintage, café filtre</li>
-                <li><span>Défaut :</span> Tête en l'air, incapable de plier un drap</li>
-            </ul>
+            <div class="bio-title">🔑 Configuration Hugging Face (IA Open Source)</div>
+            <p style="font-size: 12px; color: var(--muted); margin-bottom: 8px;">Colle ici ton jeton d'accès Hugging Face (avec droits <strong>Inference</strong>) :</p>
+            <input type="password" id="hf-token-input" placeholder="hf_xxxxxxxxxxxxxxxxxxxxxxxx" style="width:100%; padding:10px; border-radius:8px; border:1px solid var(--border); background:var(--bg); color:var(--text); font-size:13px; margin-bottom:8px;">
+            <button class="btn" style="padding:6px 12px; font-size:12px;" onclick="saveHfToken()">Enregistrer la clé API</button>
         </div>
 
         <div class="bio-card">
-            <div class="bio-title">📚 Clara (La Compagne)</div>
+            <div class="bio-title">🎨 Lucas & 📚 Clara</div>
             <ul class="bio-list">
-                <li><span>Âge :</span> 25 ans</li>
-                <li><span>Métier :</span> Libraire spécialisée en littérature anglaise</li>
-                <li><span>Études :</span> Lettres Modernes & Langues Étrangères</li>
-                <li><span>Valeurs :</span> Organisation, authenticité, clarté</li>
-                <li><span>Passions :</span> Pâtisserie maison, lecture au coin du feu, thés rares</li>
-                <li><span>Défaut :</span> L'excès de rigueur sur les plannings</li>
+                <li><span>Lucas :</span> Graphiste indépendant, passionné de vinyles.</li>
+                <li><span>Clara :</span> Libraire en littérature anglaise, organisée.</li>
             </ul>
-        </div>
-
-        <div class="bio-card" style="background: var(--accent-light); border-color: var(--accent);">
-            <div class="bio-title" style="color: var(--accent);">💡 Clés de Séduction & Affinités</div>
-            <p style="font-size: 13px; line-height: 1.4; color: var(--text);">
-                Pour séduire Clara et réussir vos interactions dans le jeu, montrez-vous à l'écoute de sa rigueur littéraire, valorisez son amour pour la pâtisserie, et prouvez-lui que votre côté artistique peut s'associer à son sens de l'organisation pour faire réussir votre café-librairie !
-            </p>
         </div>
     </main>
 
@@ -441,7 +223,6 @@
         </div>
 
         <h3 style="margin: 20px 0 10px 0; font-size: 15px;">Personnalisation du Thème</h3>
-        <p style="font-size: 12px; color: var(--muted); margin-bottom: 10px;">Débloque de nouveaux thèmes en augmentant ton score TOEIC.</p>
         <div class="theme-grid">
             <button class="theme-btn" id="theme-classic" onclick="setTheme('classic')">Classique Clair</button>
             <button class="theme-btn" id="theme-dark" onclick="setTheme('dark')">☕ Cozy Sombre</button>
@@ -458,7 +239,7 @@
     <nav>
         <button id="tab-stories" class="active" onclick="switchTab('stories')"><span>📖</span>Histoires</button>
         <button id="tab-cafe" onclick="switchTab('cafe')"><span>☕</span>Café</button>
-        <button id="tab-bio" onclick="switchTab('bio')"><span>👤</span>Bio</button>
+        <button id="tab-bio" onclick="switchTab('bio')"><span>👤</span>Bio & IA</button>
         <button id="tab-progression" onclick="switchTab('progression')"><span>📈</span>Profil</button>
     </nav>
     
@@ -491,23 +272,6 @@
     </div>
 
     <script>
-        // ========== TOUT LE JS ORIGINAL EST CONSERVÉ ==========
-        // (je n’ai touché qu’à renderStories + CSS)
-
-        const GRAMMAR_RULES = [
-            { rx: /\bI am agree\b/gi, right: "I agree", why: "« Agree » est un verbe, pas besoin de « to be »." },
-            { rx: /\bI have (\d+) years\b/gi, right: "I am $1 years old", why: "On utilise « to be » pour l'âge." },
-            { rx: /\b(people|police) is\b/gi, right: "$1 are", why: "Ce mot est toujours au pluriel." },
-            { rx: /\binformations\b/gi, right: "information", why: "« Information » est indénombrable, pas de « s »." },
-            { rx: /\blugages\b/gi, right: "luggage", why: "« Luggage » s'écrit sans « s »." },
-            { rx: /\binterested by\b/gi, right: "interested in", why: "On dit « interested IN »." },
-            { rx: /\bwin money\b/gi, right: "earn money", why: "On « gagne » de l'argent par le travail avec « earn »." },
-            { rx: /\bwin time\b/gi, right: "save time", why: "Pour gagner du temps, on dit « save time »." },
-            { rx: /\bexplain me\b/gi, right: "explain to me", why: "« Explain » nécessite « to » devant la personne." },
-            { rx: /\bdepends of\b/gi, right: "depends on", why: "La préposition correcte est « on »." },
-            { rx: /\bfor to\b/gi, right: "to", why: "Pour exprimer le but, on utilise juste « to »." }
-        ];
-
         const MASTER_QUIZ_BANK = [
             { q: "We are looking forward _______ you at the conference.", opts: ["to meet", "to meeting", "meeting"], ans: 1, why: "« Look forward to » est suivi d'un gérondif en -ING." },
             { q: "Could you tell me where _______ ?", opts: ["the nearest station is", "is the station", "the station be"], ans: 0, why: "Dans une question indirecte, l'ordre est sujet + verbe." },
@@ -555,7 +319,7 @@
 
             if(i === 0) {
                 title = "S1-M1 : L'Accrochage à la librairie";
-                desc = "Lucas bouscule Clara dans sa librairie et renverse des piles de livres de poésie.";
+                desc = "Lucas bouscule Clara dans sa librairie et renverse des piles de livres.";
                 icon = "📚";
             } else if(i === 6) {
                 title = "S1-M7 : L'Idée folle du Café-Librairie";
@@ -579,14 +343,8 @@
                 npc: "Clara",
                 bg: i % 2 === 0 ? "#f4dcd6" : "#e3d4ff",
                 desc: desc,
-                vocab: "Bookstore = librairie\nCoffee = café\nFuture = avenir",
-                steps: [
-                    { narration: `Chapitre ${i + 1} : Clara trie ses ouvrages pendant que Lucas feuillette un vieux recueil.`, npc: "Hello! Are you looking for a specific author today?", hints: ["Yes, I love vintage poetry books."], nativeTip: "Dis : « Hi, I'm searching for classic poetry. »", frTrans: "Bonjour ! Cherchez-vous un auteur spécifique aujourd'hui ?" },
-                    { narration: "Le ton est amical et détendu entre les rayonnages.", npc: "Poetry requires time and patience, don't you think?", hints: ["Absolutely, just like good design."], nativeTip: "Dis : « Exactly, it takes time. »", frTrans: "La poésie demande du temps et de la patience, vous ne trouvez pas ?" },
-                    { narration: "Vous discutez de vos projets respectifs et de votre vision de la vie.", npc: "What brought you to this neighborhood?", hints: ["I'm opening a creative studio nearby."], nativeTip: "Dis : « I work around here as a designer. »", frTrans: "Qu'est-ce qui vous a amené dans ce quartier ?" },
-                    { narration: "Clara esquisse un sourire bienveillant.", npc: "That sounds fascinating! We should talk about it over a coffee sometime.", hints: ["I'd love that very much."], nativeTip: "Dis : « I would love to share a coffee. »", frTrans: "Ça a l'air fascinant ! On devrait en parler autour d'un café." },
-                    { end: true, narration: "Échange validé avec succès.", npc: "Clara: 'See you very soon, Lucas!'" }
-                ]
+                initialNpcMsg: "Hello! Welcome to our space. What is on your mind today?",
+                frTrans: "Bonjour ! Bienvenue dans notre espace. Qu'as-tu en tête aujourd'hui ?"
             };
         });
 
@@ -612,37 +370,28 @@
         };
         
         try { 
-            const saved = localStorage.getItem('cafeToeicDataV30'); 
+            const saved = localStorage.getItem('cafeToeicDataV33'); 
             if (saved) {
                 const parsed = JSON.parse(saved);
                 S = { ...S, ...parsed };
                 if (S.upgrades) {
                     CAFE_UPGRADES.forEach(u => { if (S.upgrades[u.id] !== undefined) u.level = S.upgrades[u.id]; });
                 }
-                if (S.lastActive) {
-                    const elapsedSeconds = Math.floor((Date.now() - S.lastActive) / 1000);
-                    if (elapsedSeconds > 5) {
-                        const bonus = S.items.reduce((acc, id) => {
-                            const item = SHOP.find(s => s.id === id);
-                            return acc + (item ? item.income : 0);
-                        }, 0);
-                        const priceMultiplier = 1 + ((S.upgrades.price || 0) * 0.3);
-                        const offlineEarnings = Math.floor(elapsedSeconds / 5) * Math.round((5 + bonus) * priceMultiplier);
-                        if (offlineEarnings > 0) {
-                            S.eur += offlineEarnings;
-                            setTimeout(() => { showToast(`☕ Absent : +${offlineEarnings} 💶 gagnés !`); }, 1500);
-                        }
-                    }
-                }
             }
         } catch (e) {
-            localStorage.removeItem('cafeToeicDataV30');
+            localStorage.removeItem('cafeToeicDataV33');
         }
 
         function saveData() { 
             CAFE_UPGRADES.forEach(u => S.upgrades[u.id] = u.level);
             S.lastActive = Date.now();
-            localStorage.setItem('cafeToeicDataV30', JSON.stringify(S)); 
+            localStorage.setItem('cafeToeicDataV33', JSON.stringify(S)); 
+        }
+
+        function saveHfToken() {
+            const token = $('hf-token-input').value.trim();
+            localStorage.setItem('hf_token', token);
+            showToast("Clé Hugging Face enregistrée avec succès !");
         }
 
         const $ = id => document.getElementById(id);
@@ -668,6 +417,9 @@
                 const btn = $(`theme-${t}`);
                 if (btn) btn.classList.toggle('active', S.theme === t);
             });
+
+            const savedToken = localStorage.getItem('hf_token');
+            if (savedToken && $('hf-token-input')) $('hf-token-input').value = savedToken;
         }
 
         function setTheme(t) {
@@ -749,41 +501,21 @@
             showToast(`🎯 Test terminé ! Score : ${calculatedScore}/990 (+${earnedCoins} 🪙)`);
         }
 
-        // ========== NOUVEAU renderStories – LIVRES PIXEL ==========
         function renderStories() {
             if (currentSelectedBook === null) {
-                // Vue principale : étagère de livres dans le café
                 const booksHtml = SEASONS_DATA.map(season => {
                     const seasonStories = STORIES.filter(s => s.season === season.id);
                     const doneCount = seasonStories.filter(s => S.storiesDone.includes(s.id)).length;
                     return `
-                        <div class="pixel-book" onclick="openBook(${season.id})">
-                            <div class="book-spine">${season.icon}</div>
+                        <div class="book-card" onclick="openBook(${season.id})">
+                            <div class="book-cover">${season.icon}</div>
                             <div class="book-title">${season.title}</div>
                             <div class="book-subtitle">${season.subtitle}</div>
-                            <div class="book-progress">${doneCount}/12</div>
+                            <div style="font-size: 11px; color: var(--accent); margin-top: 6px; font-weight: 600;">📚 ${doneCount}/12 chapitres</div>
                         </div>`;
                 }).join('');
-
-                $('view-stories').innerHTML = `
-                    <div class="cafe-library">
-                        <div class="library-header">
-                            <h2>📖 Bibliothèque des 6 Saisons</h2>
-                            <p>Choisis un livre pour continuer l’histoire de Lucas & Clara</p>
-                        </div>
-                        <div class="bookshelf">
-                            ${booksHtml}
-                        </div>
-                        <div class="cafe-deco">
-                            <span class="deco-item">🪴</span>
-                            <span class="deco-item">☕</span>
-                            <span class="deco-item">📚</span>
-                            <span class="deco-item">🍰</span>
-                            <span class="deco-item">🪴</span>
-                        </div>
-                    </div>`;
+                $('view-stories').innerHTML = `<h2 style="margin-bottom:14px; font-size:16px;">📖 Bibliothèque des 6 Saisons</h2><div class="books-grid">${booksHtml}</div>`;
             } else {
-                // Vue ouverte d’une saison
                 const season = SEASONS_DATA[currentSelectedBook];
                 const seasonStories = STORIES.filter(s => s.season === currentSelectedBook);
                 
@@ -794,7 +526,7 @@
                     
                     let btn = isUnlocked 
                         ? `<button class="btn" onclick="startStory(${st.id})">${isDone ? 'Rejouer' : 'Jouer'}</button>` 
-                        : `<button class="btn btn-outline" style="opacity:0.8;" disabled>🔒 Clé</button>`;
+                        : `<button class="btn btn-outline" style="opacity:0.8;" disabled>🔒 Clé requise</button>`;
 
                     return `
                         <div class="card ${!isUnlocked ? 'locked' : ''}">
@@ -811,16 +543,11 @@
                 }).join('');
 
                 $('view-stories').innerHTML = `
-                    <div class="season-open">
-                        <div class="season-open-header">
-                            <button class="back-btn" onclick="closeBook()">←</button>
-                            <div>
-                                <div style="font-weight:800; font-size:15px; color:#5c4033;">${season.icon} ${season.title}</div>
-                                <div style="font-size:12px; color:#9e826b;">${season.subtitle}</div>
-                            </div>
-                        </div>
-                        <div>${pagesHtml}</div>
-                    </div>`;
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+                        <button class="back-btn" onclick="closeBook()">←</button>
+                        <h2 style="font-size:16px;">${season.title} : ${season.subtitle}</h2>
+                    </div>
+                    <div>${pagesHtml}</div>`;
             }
         }
 
@@ -836,7 +563,9 @@
 
         function startStory(id) {
             S.currentStory = id;
-            if (!S.chatHistory[id] || S.storiesDone.includes(id)) S.chatHistory[id] = { step: 0, msgs: [] };
+            if (!S.chatHistory[id] || S.storiesDone.includes(id)) {
+                S.chatHistory[id] = { step: 0, msgs: [] };
+            }
             switchTab('chat'); renderChat();
         }
 
@@ -845,31 +574,27 @@
             const hist = S.chatHistory[S.currentStory];
             
             if (hist.msgs.length === 0) { 
-                const firstStep = st.steps[0];
-                if (firstStep.narration) hist.msgs.push({ sender: 'narration', text: firstStep.narration });
-                hist.msgs.push({ sender: 'npc', text: firstStep.npc, frTrans: firstStep.frTrans }); 
+                hist.msgs.push({ sender: 'narration', text: `Début du chapitre : ${st.title}.` });
+                hist.msgs.push({ sender: 'npc', text: st.initialNpcMsg, frTrans: st.frTrans }); 
                 saveData(); 
             }
 
-            $('chat-header').innerHTML = `<button class="back-btn" onclick="switchTab('stories')">←</button><div style="font-size: 24px;">${st.icon}</div><div><div style="font-weight: bold; font-size:14px">${st.title}</div><div style="font-size: 11px; color:var(--muted);">${st.npc}</div></div>`;
+            $('chat-header').innerHTML = `<button class="back-btn" onclick="switchTab('stories')">←</button><div style="font-size: 24px;">${st.icon}</div><div><div style="font-weight: bold; font-size:14px">${st.title}</div><div style="font-size: 11px; color:var(--muted);">${hist.step + 1} / 40 échanges</div></div>`;
 
             let msgHtml = '';
             hist.msgs.forEach(m => {
                 if (m.sender === 'narration') {
                     msgHtml += `<div class="msg narration">${m.text}</div>`;
                 } else if (m.sender === 'npc') {
-                    msgHtml += `<div class="msg npc" data-fr="${m.frTrans || ''}">${m.text}</div>`;
+                    msgHtml += `<div class="msg npc">${m.text}</div>`;
                 } else {
                     msgHtml += `<div class="msg player">${m.text}</div>`;
                     if (m.feedback) {
                         msgHtml += `<div class="feedback">`;
                         if (m.feedback.isFrench) {
                             msgHtml += `<p style="font-weight:600;">🇫🇷 Traduction :</p><p>${m.feedback.frResponse}</p>`;
-                        } else if (m.feedback.mistakes.length > 0) {
-                            m.feedback.mistakes.forEach(err => msgHtml += `<p class="correction">❌ Correction : ${err.right}<br>📘 ${err.why}</p>`);
-                        }
-                        if (m.feedback.nativeTip) {
-                            msgHtml += `<p style="margin-top:4px; font-weight:600;">💡 Comme un local :</p><p>${m.feedback.nativeTip}</p>`;
+                        } else {
+                            msgHtml += `<p><strong>Réponse IA :</strong> ${m.feedback.aiReply}</p>`;
                         }
                         msgHtml += `</div>`;
                     }
@@ -880,31 +605,66 @@
             $('hint-box').style.display = 'none';
         }
 
-        function analyzeGrammar(text) {
-            let mistakes = [];
-            GRAMMAR_RULES.forEach(rule => { if (rule.rx.test(text)) mistakes.push({ wrong: text.match(rule.rx)[0], right: text.replace(rule.rx, rule.right), why: rule.why }); });
-            return mistakes;
-        }
-
         function isFrenchText(text) {
             const frWords = /\b(je|tu|il|nous|vous|est|sont|pas|le|la|les|un|une|et|mais|pour|avec|comment|combien|oui|non|faire|veux|voudrais|c'est)\b/i;
             return frWords.test(text);
         }
 
-        function sendMessage() {
+        async function callHuggingFaceAI(userText, chapterTitle) {
+            const token = localStorage.getItem('hf_token');
+            if (!token) {
+                return "⚠️ Veuillez entrer votre clé API Hugging Face (avec droits Inference) dans l'onglet 'Bio & IA'.";
+            }
+
+            const prompt = `Tu es Clara, une libraire passionnée de littérature anglaise. Tu discutes avec Lucas dans le cadre du chapitre "${chapterTitle}". 
+Lucas vient de t'écrire : "${userText}".
+Réponds-lui en anglais de manière naturelle pour faire avancer la conversation. Si Lucas fait des fautes en anglais, corrige-les brièvement et donne une astuce de local (native tip).
+Format de réponse attendu : 
+[Réponse de Clara en anglais] 
+--- 
+[Correction & Astuce en français si nécessaire]`;
+
+            try {
+                const response = await fetch("https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8B-Instruct", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ inputs: prompt, parameters: { max_new_tokens: 200 } })
+                });
+
+                const data = await response.json();
+                if (data && data[0] && data[0].generated_text) {
+                    let fullText = data[0].generated_text;
+                    return fullText.replace(prompt, "").trim();
+                } else if (data.error) {
+                    return "Erreur API Hugging Face : " + data.error;
+                }
+                return "Réponse de l'IA indisponible pour le moment.";
+            } catch (err) {
+                return "Erreur de connexion réseau avec l'API Hugging Face.";
+            }
+        }
+
+        async function sendMessage() {
             const input = $('chat-input'); const text = input.value.trim(); if (!text) return; input.value = '';
             const st = STORIES.find(s => s.id === S.currentStory);
             const hist = S.chatHistory[S.currentStory];
-            const currentStepData = st.steps[hist.step];
 
             let isFr = isFrenchText(text);
-            let mistakes = isFr ? [] : analyzeGrammar(text);
+            let aiResponse = "";
+
+            if (isFr) {
+                aiResponse = "Please write in English so we can practice together! / S'il te plaît, écris en anglais !";
+            } else {
+                showToast("Interrogation de l'IA open-source...");
+                aiResponse = await callHuggingFaceAI(text, st.title);
+            }
 
             let feedbackData = {
                 isFrench: isFr,
-                frResponse: isFr ? "J'ai bien compris ton idée ! Essaie de reformuler en anglais pour progresser." : null,
-                mistakes: mistakes,
-                nativeTip: currentStepData.nativeTip
+                aiReply: aiResponse
             };
 
             hist.msgs.push({ sender: 'player', text: text, feedback: feedbackData });
@@ -913,34 +673,24 @@
             let xpBonus = 1 + ((S.upgrades.xp || 0) * 0.2);
             let earnedCoins = 10;
             S.coins += earnedCoins; 
-            S.xp += Math.round((isFr ? 5 : (mistakes.length === 0 ? 25 : 12)) * xpBonus); 
+            S.xp += Math.round((isFr ? 5 : 25) * xpBonus); 
             renderChat();
 
-            setTimeout(() => {
-                if (isFr) {
-                    hist.msgs.push({ sender: 'npc', text: "Take your time! How would you say that in English?", frTrans: "Prends ton temps ! Comment dirais-tu cela en anglais ?" });
-                } else {
-                    if (currentStepData.end) {
-                        triggerKeyReward(st.id);
-                    } else {
-                        hist.step++;
-                        const nextStep = st.steps[hist.step];
-                        if (nextStep.narration) {
-                            hist.msgs.push({ sender: 'narration', text: nextStep.narration });
-                        }
-                        let reply = nextStep.process ? nextStep.process(text) : nextStep.npc;
-                        hist.msgs.push({ sender: 'npc', text: reply, frTrans: nextStep.frTrans });
-                    }
+            if (!isFr) {
+                hist.step++;
+                if (hist.step >= 40) {
+                    triggerKeyReward(st.id);
+                    return;
                 }
-                saveData(); renderChat(); updateHeader();
-            }, 800);
+            }
+            saveData(); updateHeader();
         }
 
         function triggerKeyReward(storyId) {
             pendingRewardStoryId = storyId;
             const spriteCss = getKeySpriteStyle(storyId);
             $('reward-key-icon').style.cssText = `width: 48px; height: 48px; border-radius: 8px; ${spriteCss}`;
-            $('reward-text').innerText = `Tu as réussi le chapitre "${STORIES[storyId].title}" et débloqué sa clé unique !`;
+            $('reward-text').innerText = `Tu as complété les 40 échanges du chapitre "${STORIES[storyId].title}" et débloqué ta clé unique !`;
             $('reward-modal').classList.add('active');
         }
 
@@ -962,24 +712,20 @@
         function toggleHint() {
             const box = $('hint-box');
             if (box.style.display === 'block') { box.style.display = 'none'; return; }
-            const st = STORIES.find(s => s.id === S.currentStory);
-            const hints = st.steps[S.chatHistory[S.currentStory].step]?.hints || ["Continue en anglais."];
-            box.innerHTML = `<strong>Suggestions :</strong><br>` + hints.map(h => `• ${h}`).join('<br>'); box.style.display = 'block';
+            box.innerHTML = `<strong>Suggestions :</strong><br>• Parle de ton café préféré<br>• Discute de tes projets créatifs<br>• Exprime ton ressenti du moment`;
+            box.style.display = 'block';
         }
 
         function showTranslation() {
-            const st = STORIES.find(s => s.id === S.currentStory);
-            const hist = S.chatHistory[S.currentStory];
-            const currentStep = st.steps[hist.step];
             const box = $('hint-box');
-            box.innerHTML = `<strong>🇫🇷 Traduction exacte :</strong><br>${currentStep.frTrans || "Pas de traduction disponible."}`;
+            box.innerHTML = `<strong>🇫🇷 Mode IA Connectée :</strong><br>L'IA open-source Llama 3 analyse tes phrases en direct. Pense à configurer ta clé Hugging Face dans l'onglet Bio & IA.`;
             box.style.display = 'block';
         }
 
         function showVocab() {
             const st = STORIES.find(s => s.id === S.currentStory);
             const box = $('hint-box');
-            box.innerHTML = `<strong>📚 Vocabulaire :</strong><br>` + st.vocab.replace(/\n/g, '<br>');
+            box.innerHTML = `<strong>📚 Vocabulaire du chapitre :</strong><br>Bookstore = librairie<br>Coffee = café<br>Future = avenir`;
             box.style.display = 'block';
         }
 
@@ -1105,12 +851,12 @@
 
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(S));
-            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v30.json");
+            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v33.json");
             document.body.appendChild(a); a.click(); a.remove();
         }
 
         function resetData() {
-            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV30'); location.reload(); }
+            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV33'); location.reload(); }
         }
 
         switchTab('stories');
