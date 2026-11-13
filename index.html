@@ -344,7 +344,7 @@
         };
         
         try { 
-            const saved = localStorage.getItem('cafeToeicDataV13'); 
+            const saved = localStorage.getItem('cafeToeicDataV14'); 
             if (saved) {
                 const parsed = JSON.parse(saved);
                 S = { ...S, ...parsed };
@@ -368,13 +368,13 @@
                 }
             }
         } catch (e) {
-            localStorage.removeItem('cafeToeicDataV13');
+            localStorage.removeItem('cafeToeicDataV14');
         }
 
         function saveData() { 
             CAFE_UPGRADES.forEach(u => S.upgrades[u.id] = u.level);
             S.lastActive = Date.now();
-            localStorage.setItem('cafeToeicDataV13', JSON.stringify(S)); 
+            localStorage.setItem('cafeToeicDataV14', JSON.stringify(S)); 
         }
 
         const $ = id => document.getElementById(id);
@@ -683,7 +683,7 @@
                 updateHeader();
                 showToast(`Amélioration « ${u.name} » passée au niveau ${u.level} !`);
             } else {
-                showToast("Pas assez de pièces 🪙 !");
+                showToast("Pas assez d'🪙 !");
             }
         }
 
@@ -692,11 +692,11 @@
                 S.eur -= cost; 
                 S.items.push(id); 
                 saveData(); 
-                showToast("Objet du café acheté avec succès !"); 
+                showToast("Objet acheté !"); 
                 renderCafe(); 
                 updateHeader(); 
             } else { 
-                showToast("Pas assez d'euros 💶 !"); 
+                showToast("Pas assez d'💶 !"); 
             }
         }
 
@@ -749,12 +749,12 @@
 
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(S));
-            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v13.json");
+            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v14.json");
             document.body.appendChild(a); a.click(); a.remove();
         }
 
         function resetData() {
-            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV13'); location.reload(); }
+            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV14'); location.reload(); }
         }
 
         switchTab('stories');
