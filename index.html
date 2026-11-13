@@ -18,9 +18,10 @@
         body, html { height: 100%; background: var(--bg); color: var(--text); overflow: hidden; transition: background 0.3s, color 0.3s; }
         body { display: flex; flex-direction: column; max-width: 600px; margin: 0 auto; position: relative; }
         header { background: var(--card); padding: calc(env(safe-area-inset-top, 10px) + 10px) 16px 12px; border-bottom: 1px solid var(--border); z-index: 10; }
-        .stats-top { display: flex; justify-content: space-between; font-size: 15px; font-weight: 600; margin-bottom: 8px; }
-        .currency { display: flex; gap: 12px; }
-        .xp-bar-container { height: 8px; background: var(--accent-light); border-radius: 4px; overflow: hidden; }
+        .stats-top { display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+        .currency { display: flex; gap: 10px; }
+        .relationship-banner { font-size: 12px; color: var(--accent); font-weight: 600; margin-bottom: 4px; text-align: center; background: var(--accent-light); padding: 4px; border-radius: 6px; }
+        .xp-bar-container { height: 6px; background: var(--accent-light); border-radius: 3px; overflow: hidden; }
         .xp-bar { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s; }
         main { flex: 1; overflow-y: auto; padding: 16px; padding-bottom: 80px; -webkit-overflow-scrolling: touch; }
         nav { position: absolute; bottom: 0; left: 0; right: 0; background: var(--card); border-top: 1px solid var(--border); display: flex; padding-bottom: env(safe-area-inset-bottom, 0px); z-index: 10; }
@@ -37,12 +38,15 @@
         button.btn:active { transform: scale(0.96); }
         button.btn.btn-outline { background: var(--accent-light); color: var(--accent); }
         button.btn.btn-blue { background: var(--blue); color: white; width: 100%; margin-bottom: 16px; padding: 14px; font-size: 16px; }
-        .chat-header { background: var(--pink); border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 16px; position: sticky; top: 0; z-index: 5; }
-        .back-btn { background: rgba(255,255,255,0.5); border: none; width: 36px; height: 36px; border-radius: 18px; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        
+        .chat-story-banner { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; margin-bottom: 16px; position: sticky; top: 0; z-index: 5; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .back-btn { background: var(--bg); border: none; width: 34px; height: 34px; border-radius: 17px; font-size: 16px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text); }
         .messages { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
         .msg { max-width: 85%; padding: 12px 16px; border-radius: 18px; font-size: 15px; line-height: 1.4; animation: popIn 0.3s ease-out; }
         .msg.npc { background: var(--card); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; }
         .msg.player { background: var(--accent); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .msg.narration { background: var(--accent-light); color: var(--accent); font-style: italic; text-align: center; max-width: 100%; align-self: center; border-radius: 12px; font-size: 13px; padding: 8px 14px; }
+        
         .feedback { background: var(--success-light); border: 1px solid var(--success); border-radius: 12px; padding: 12px; margin-top: -8px; margin-bottom: 8px; font-size: 13px; align-self: flex-end; width: 85%; color: #2e4a23; }
         .feedback p { margin-bottom: 4px; }
         .feedback .correction { color: #8a3b3b; font-weight: 600; }
@@ -59,7 +63,14 @@
         .cafe-counter { position: absolute; bottom: 35px; left: 20px; right: 20px; height: 45px; background: #5c4033; border-top: 4px solid #8c6d53; border-radius: 6px; box-shadow: 0 10px 20px rgba(0,0,0,0.5); z-index: 2; }
         .cafe-counter-items { position: absolute; bottom: 82px; left: 30px; display: flex; gap: 16px; z-index: 3; font-size: 28px; }
         .cafe-door { position: absolute; right: 20px; bottom: 70px; font-size: 45px; z-index: 1; }
-        .cafe-customer { position: absolute; font-size: 34px; transition: transform 2.5s cubic-bezier(0.25, 1, 0.5, 1); z-index: 4; bottom: 75px; right: 15px; }
+        
+        .walking-customer { position: absolute; bottom: 70px; right: 25px; width: 30px; height: 50px; z-index: 4; transition: transform linear; }
+        .customer-body { width: 24px; height: 28px; background: #c87965; border-radius: 12px 12px 4px 4px; position: absolute; top: 0; left: 3px; }
+        .customer-head { width: 16px; height: 16px; background: #f4dcd6; border-radius: 50%; position: absolute; top: -14px; left: 7px; }
+        .customer-legs { position: absolute; bottom: -8px; width: 100%; display: flex; justify-content: space-around; }
+        .leg { width: 6px; height: 12px; background: #3d3430; border-radius: 3px; animation: walkLegs 0.3s infinite alternate; }
+        @keyframes walkLegs { 0% { transform: rotate(15deg); } 100% { transform: rotate(-15deg); } }
+
         .floating-money { position: absolute; color: #a3b19b; text-shadow: 0 2px 4px rgba(0,0,0,0.6); font-weight: 800; font-size: 20px; animation: floatUp 1.2s ease-out forwards; z-index: 5; }
 
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
@@ -90,6 +101,7 @@
 <body data-theme="classic">
 
     <header>
+        <div class="relationship-banner" id="relationship-banner">❤️ Relation : Début (Mois 0 / 12)</div>
         <div class="stats-top">
             <span id="level-display" style="color:var(--blue);">🎓 TOEIC: 300</span>
             <div class="currency"><span id="coins-display">🪙 0</span><span id="euros-display">💶 0</span></div>
@@ -100,7 +112,7 @@
     <main id="view-stories"></main>
 
     <main id="view-chat" class="hidden">
-        <div class="chat-header" id="chat-header"></div>
+        <div class="chat-story-banner" id="chat-header"></div>
         <div class="messages" id="chat-messages"></div>
         <div class="chat-input-area">
             <div class="input-row">
@@ -125,9 +137,13 @@
             <div class="cafe-counter-items" id="counter-decorations">☕</div>
         </div>
         <div style="background:var(--success-light); color:#2e4a23; padding:12px; border-radius:12px; margin-bottom:16px; font-size:14px; text-align:center;">
-            ⏳ Le café tourne 24h/24 en arrière-plan pour te faire gagner des euros !
+            ⏳ Le café tourne en arrière-plan. Améliore tes stats avec des pièces 🪙 !
         </div>
-        <h3 style="margin-bottom: 12px;">Boutique & Améliorations</h3>
+        
+        <h3 style="margin-bottom: 12px;">⚡ Améliorations du Café (avec des 🪙)</h3>
+        <div id="upgrades-list" style="margin-bottom: 24px;"></div>
+
+        <h3 style="margin-bottom: 12px;">🛋️ Boutique & Décos (avec des 💶)</h3>
         <div id="shop-items"></div>
     </main>
 
@@ -137,7 +153,7 @@
             <div class="stat-box"><div class="val" id="stat-lvl" style="color:var(--blue)">300</div><div class="lbl">Score TOEIC de référence</div></div>
             <div class="stat-box"><div class="val" id="stat-tests">0</div><div class="lbl">Tests complets passés</div></div>
             <div class="stat-box"><div class="val" id="stat-msg">0</div><div class="lbl">Messages échangés</div></div>
-            <div class="stat-box"><div class="val" id="stat-stories">0/5</div><div class="lbl">Histoires terminées</div></div>
+            <div class="stat-box"><div class="val" id="stat-stories">0/12</div><div class="lbl">Mois de relation validés</div></div>
         </div>
 
         <h3 style="margin: 20px 0 10px 0;">Personnalisation du Thème</h3>
@@ -163,12 +179,10 @@
     
     <div class="toast" id="toast">Message</div>
 
-    <!-- Modal pour le test TOEIC de 20 questions -->
     <div class="modal-overlay" id="quiz-modal">
         <div class="modal">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                 <h3 style="color:var(--blue);" id="quiz-header-title">📝 Test TOEIC (1/20)</h3>
-                <span id="quiz-timer" style="font-size: 13px; font-weight:600; color: var(--muted);"></span>
             </div>
             <div class="quiz-q" id="quiz-question">Question</div>
             <div id="quiz-options"></div>
@@ -192,7 +206,6 @@
             { rx: /\bfor to\b/gi, right: "to", why: "Pour exprimer le but, on utilise juste « to »." }
         ];
 
-        // GRANDE BANQUE DE QUESTIONS TOEIC (Part 5 Incomplete Sentences)
         const MASTER_QUIZ_BANK = [
             { q: "We are looking forward _______ you at the conference.", opts: ["to meet", "to meeting", "meeting"], ans: 1, why: "« Look forward to » est suivi d'un gérondif en -ING." },
             { q: "Could you tell me where _______ ?", opts: ["the nearest station is", "is the nearest station", "the station be"], ans: 0, why: "Dans une question indirecte, l'ordre est sujet + verbe." },
@@ -202,171 +215,150 @@
             { q: "She _______ finish the quarterly report by tomorrow morning.", opts: ["must to", "has to", "should to"], ans: 1, why: "« Must » et « should » ne prennent jamais « to »." },
             { q: "The board of directors agreed _______ the new budget proposal.", opts: ["to approve", "approving", "approve"], ans: 0, why: "Le verbe « agree » est suivi de « to » + infinitif." },
             { q: "Mr. Davis is responsible _______ overseeing the logistics department.", opts: ["for", "with", "at"], ans: 0, why: "On dit toujours « responsible FOR »." },
-            { q: "Please submit your expense reports _______ Friday afternoon.", opts: ["until", "by", "during"], ans: 1, why: "« By » indique une limite de temps (au plus tard vendredi)." },
-            { q: "Sales increased significantly _______ the launch of the new product.", opts: ["following", "while", "where"], ans: 0, why: "« Following » préposition signifie « après / à la suite de »." },
-            { q: "All employees must wear their security badges _______ times.", opts: ["at all", "in all", "every"], ans: 0, why: "L'expression consacrée est « at all times » (en tout temps)." },
-            { q: "The software update will be installed _______ the weekend.", opts: ["during", "for", "while"], ans: 0, why: "« During » est suivi d'un nom de période précise." },
-            { q: "We need to hire two additional _______ for the customer service team.", opts: ["assistants", "assistance", "assisting"], ans: 0, why: "Il faut un nom pluriel dénombrable (assistants)." },
-            { q: "Ms. Tanaka speaks English much _______ than her predecessor.", opts: ["fluently", "more fluently", "most fluently"], ans: 1, why: "Comparatif de supériorité avec un adverbe long : « more fluently »." },
-            { q: "The training session will begin promptly _______ 9:00 AM.", opts: ["at", "in", "on"], ans: 0, why: "On utilise « at » devant une heure précise." },
-            { q: "Customers can access their invoices _______ logging into their online account.", opts: ["by", "with", "throughout"], ans: 0, why: "« By » + -ING indique le moyen ou la méthode." },
-            { q: "The marketing campaign proved to be extremely _______ for brand awareness.", opts: ["benefit", "beneficial", "beneficially"], ans: 1, why: "Il faut un adjectif après le verbe « to be »." },
-            { q: "Only authorized personnel are permitted to enter the _______ area.", opts: ["restricted", "restriction", "restricting"], ans: 0, why: "Il faut un adjectif (restricted area = zone restreinte)." },
-            { q: "The CEO announced that the merger would take place _______ July.", opts: ["in", "on", "at"], ans: 0, why: "On utilise « in » pour les mois et les années." },
-            { q: "We received several positive _______ regarding the new office layout.", opts: ["comments", "commentary", "comment"], ans: 0, why: "« Comments » est dénombrable et pluriel." },
-            { q: "The printer in the main hallway is currently out of _______.", opts: ["order", "service", "work"], ans: 1, why: "« Out of service » est l'expression fixe pour un appareil en panne." },
-            { q: "Delegates are kindly requested to keep their phones on silent _______ the presentation.", opts: ["during", "while", "meanwhile"], ans: 0, why: "« During » est suivi d'un groupe nominal." },
-            { q: "Our objective is to maximize efficiency _______ minimizing operational costs.", opts: ["while", "during", "since"], ans: 0, why: "« While » + -ING exprime la simultanéité." },
-            { q: "The human resources department handles all employee _______ and grievances.", opts: ["inquiries", "inquire", "inquiry"], ans: 0, why: "Il faut un nom pluriel (inquiries = demandes/questions)." },
-            { q: "Investors were pleased with the company's financial _______ this quarter.", opts: ["performance", "perform", "performing"], ans: 0, why: "Il faut le nom « performance » après un adjectif possessif." }
+            { q: "Please submit your expense reports _______ Friday afternoon.", opts: ["until", "by", "during"], ans: 1, why: "« By » indique une limite de temps." },
+            { q: "Sales increased significantly _______ the launch of the new product.", opts: ["following", "while", "where"], ans: 0, why: "« Following » préposition signifie « après / à la suite de »." }
         ];
 
-        // État du test en cours
-        let activeTest = { questions: [], currentIndex: 0, score: 0, correctCount: 0 };
+        let activeTest = { questions: [], currentIndex: 0, correctCount: 0 };
 
+        // SAISON 1 : 12 HISTOIRES REPRÉSENTANT LES 12 MOIS DE RELATION
         const STORIES = [
-            { id: 0, title: "Dîner romantique avec Clara", icon: "🍝", cost: 0, npc: "Tom (Serveur)", bg: "#f4dcd6",
-              desc: "Une longue soirée au restaurant avec Clara : accueil, commande, discussion intime et addition.",
-              vocab: "Menu = la carte\nI would like = j'aimerais\nStarter = entrée\nMain course = plat principal\nThe bill = l'addition",
-              frTrans: "Discutons avec le serveur et Clara tout au long de ce dîner.",
+            { id: 0, title: "Mois 1 : Dîner romantique", icon: "🍝", cost: 0, npc: "Tom (Serveur)", bg: "#f4dcd6",
+              desc: "Premier grand rendez-vous au restaurant avec Clara.",
+              vocab: "Menu = la carte\nI would like = j'aimerais\nThe bill = l'addition",
               steps: [
-                { npc: "Good evening! Welcome to La Bella Vita. Do you and the lady have a reservation?", 
-                  hints: ["Yes, a table for two under [Name].", "Hi, we booked a table for two."],
-                  nativeTip: "Dis : « Hi, yes, we booked a table for two under [Ton Prénom]. »" },
-                { npc: "Clara smiles at you and whispers: 'It's a lovely place isn't it? What drink are you going to choose?'", 
-                  hints: ["I will take a glass of red wine like Clara.", "I'll go for a sparkling water, please."],
-                  nativeTip: "Pour faire écho à Clara : « I'll have the same as you. »" },
-                { npc: "The waiter comes back: 'Here are your menus. Are you ready to order your starters?'", 
-                  hints: ["I will take the tomato soup as a starter.", "Could we get a few more minutes, please?"],
-                  nativeTip: "Pour commander : « Could we get the soup, please? »" },
-                { npc: "Clara leans in and says: 'You know, I'm really glad we came here tonight. How do you like your food usually?'", 
-                  hints: ["I love spicy food and good pasta.", "I prefer simple and tasty dishes."],
-                  nativeTip: "Pour parler de ses goûts : « I'm really into Italian food. »" },
-                { npc: "The waiter brings the main courses: 'Enjoy your meal! How everything tastes?'", 
-                  hints: ["It tastes absolutely delicious, thank you.", "The food is amazing."],
-                  nativeTip: "Pour complimenter : « Everything is wonderful. »" },
-                { npc: "After eating, Clara holds your hand across the table. 'This was the best date ever. Should we ask for the bill?'", 
-                  hints: ["Yes, could we grab the bill, please?", "Check, please! Let's head home."],
-                  nativeTip: "Pour demander l'addition : « Could we get the check, please? »" },
-                { end: true, npc: "Clara kisses your cheek as you walk out. 'Thank you for this unforgettable evening!'" }
+                { narration: "Vous poussez la porte du restaurant chic. Clara vous sourit.", npc: "Good evening! Welcome to La Bella Vita. Do you and the lady have a reservation?", hints: ["Yes, a table for two."], nativeTip: "Dis : « Hi, yes, we booked a table for two. »", frTrans: "Bonsoir ! Bienvenue à La Bella Vita. Avez-vous une réservation ?" },
+                { narration: "Le serveur vous guide vers une table intime.", npc: "Clara whispers: 'It's a lovely place! What drink will you choose?'", hints: ["I will take red wine."], nativeTip: "Dis : « I'll have red wine. »", frTrans: "Clara murmure : « C'est un bel endroit ! Quelle boisson vas-tu choisir ? »" },
+                { end: true, narration: "Le premier mois s'achève sur un magnifique souvenir.", npc: "Clara kisses your cheek. 'Thank you for this evening!'" }
               ]
             },
-            { id: 1, title: "Soirée chez les amis de Clara", icon: "🥂", cost: 800, npc: "Emma (Amie)", bg: "#e3d4ff",
-              desc: "Clara te présente à son cercle d'amis. Discute, intègre-toi et brille en société.",
-              vocab: "Nice to meet you = enchanté\nWork = travail\nHobby = loisir\nVibe = ambiance",
-              frTrans: "Fais bonne impression auprès des amis de Clara.",
+            { id: 1, title: "Mois 2 : Soirée entre amis", icon: "🥂", cost: 500, npc: "Emma (Amie)", bg: "#e3d4ff",
+              desc: "Clara te présente à son cercle d'amis proches.",
+              vocab: "Nice to meet you = enchanté\nVibe = ambiance",
               steps: [
-                { npc: "Oh, hi! You must be Clara's partner! I’m Emma. She talks about you all the time. How are you finding the party?", 
-                  hints: ["Hi Emma, nice to meet you! The vibe is amazing.", "Hello! The music and people are great."],
-                  nativeTip: "Dis : « Nice to meet you too! I'm having a great time. »" },
-                { npc: "I'm so glad! Clara told me you do something really interesting for a living. What do you do?", 
-                  hints: ["I work in management and love building projects.", "I'm developing my own business, like our café!"],
-                  nativeTip: "Parle de ton projet : « I'm launching my own business venture. »" },
-                { npc: "Emma smiles: 'And outside of work, what do you two like to do together? Any shared hobbies?'", 
-                  hints: ["We love traveling and discovering new places.", "We enjoy cooking and watching movies."],
-                  nativeTip: "Utilise « We're really into... » pour vos passions." },
-                { npc: "Clara laughs and adds: 'Tell her about our trip to London!'", 
-                  hints: ["We went to London last month, it was amazing.", "We explored London together, lots of adventures."],
-                  nativeTip: "Pour raconter un souvenir : « We had an incredible time exploring the city. »" },
-                { npc: "Emma walks away to get drinks. Clara looks at you proudly: 'You're doing great with my friends. Want to stay longer or head home?'", 
-                  hints: ["Let's stay a bit longer, but I'd love to go home with you later.", "We can stay as long as you want."],
-                  nativeTip: "Pour être complice : « I'm happy wherever you are with you. »" },
-                { end: true, npc: "Emma returns with the drinks. 'Here you go! So nice meeting you both tonight!'" }
+                { narration: "La musique résonne doucement dans l'appartement.", npc: "Oh, hi! You must be Clara's partner! I’m Emma. How are you finding the party?", hints: ["The vibe is amazing."], nativeTip: "Dis : « I'm having a great time. »", frTrans: "Tu dois être le partenaire de Clara ! Comment trouves-tu la fête ?" },
+                { end: true, narration: "Tu as fait forte impression auprès des amis de Clara.", npc: "Emma smiles: 'So nice meeting you both tonight!'" }
               ]
             },
-            { id: 2, title: "Week-end à Londres avec Clara", icon: "✈️", cost: 2500, npc: "Réceptionniste", bg: "#cfe8ff",
-              desc: "Arrivée à l'hôtel à Londres. Gère les imprévus de la chambre avec Clara à tes côtés.",
-              vocab: "Reservation = réservation\nDouble room = chambre double\nLuggage = bagages",
-              frTrans: "Gère l'enregistrement à l'hôtel avec le réceptionniste.",
+            { id: 2, title: "Mois 3 : Week-end à Londres", icon: "✈️", cost: 1200, npc: "Réceptionniste", bg: "#cfe8ff",
+              desc: "Premier voyage en amoureux à l'étranger.",
+              vocab: "Reservation = réservation\nDouble room = chambre double",
               steps: [
-                { npc: "Welcome to the Kensington Hotel! How can I help you and the lady today?", 
-                  hints: ["Hello, we have a reservation for a double room.", "Hi, we are here to check in."],
-                  nativeTip: "Dis : « Hi, we're here to check in. The booking is under [Name]. »" },
-                { npc: "Let me check the system... Yes! A deluxe double room. May I have your passports, please?", 
-                  hints: ["Here are our passports, thank you.", "Sure, here you go."],
-                  nativeTip: "Dis : « Here are our passports. »" },
-                { npc: "Your room is ready! Here are your key cards for room 402. Would you like a city map?", 
-                  hints: ["Yes please, a map would be very helpful.", "That's great. Thanks for the map."],
-                  nativeTip: "Dis : « Yes please, and thanks for your help. »" },
-                { npc: "Clara whispers: 'We only have small bags, we can carry them ourselves.' What do you tell the receptionist?", 
-                  hints: ["No thank you, we can manage our bags ourselves.", "We're all good, thanks!"],
-                  nativeTip: "Dis : « We're good, thanks! We can manage. »" },
-                { end: true, npc: "Vous montez dans la chambre 402 pour vous détendre et commencer votre week-end !" }
+                { narration: "Arrivée à l'hôtel sous la pluie londonienne.", npc: "Welcome to the Kensington Hotel! How can I help you today?", hints: ["We have a reservation."], nativeTip: "Dis : « We are here to check in. »", frTrans: "Bienvenue au Kensington Hotel ! Comment puis-je vous aider ?" },
+                { end: true, narration: "Installation parfaite dans la chambre double.", npc: "Your room is ready! Room 402." }
               ]
             },
-            { id: 3, title: "Lancement de notre Café", icon: "☕", cost: 5000, npc: "Sophie (Fournisseur)", bg: "#ffe9b8",
-              desc: "Toi et Clara entreprenez la création de votre café. Négociez les prix du café avec Sophie.",
-              vocab: "Coffee beans = grains de café\nMedium roast = torréfaction moyenne\nDiscount = réduction",
-              frTrans: "Négocie les contrats avec le fournisseur sous le regard de Clara.",
+            { id: 3, title: "Mois 4 : Lancement du Café", icon: "☕", cost: 2000, npc: "Sophie (Fournisseur)", bg: "#ffe9b8",
+              desc: "Toi et Clara concrétisez votre projet de café.",
+              vocab: "Coffee beans = grains de café\nDiscount = réduction",
               steps: [
-                { npc: "Hi! Clara told me you two are opening this wonderful café together. What kind of coffee beans are you looking for?", 
-                  hints: ["We are looking for high-quality Arabica beans.", "We want organic medium roast beans."],
-                  nativeTip: "Dis : « We're aiming for top-quality Arabica beans. »" },
-                { npc: "Excellent choice. How many kilos do you need for your initial stock?", 
-                  hints: ["We need 20 kilos to start.", "Let's begin with 20 kilos."],
-                  nativeTip: "Dis : « Twenty kilos is a solid starting point. »" },
-                { npc: "For 20 kilos, it's €14 per kilo. Can I help you with anything else?", 
-                  hints: ["Is there any discount you can offer for our launch?", "Can we get a better price?"],
-                  nativeTip: "Pour négocier : « Is there any wiggle room on the price? »" },
-                { npc: "Sophie laughs: 'You guys drive a hard bargain! Okay, I can drop it to €12 per kilo. When should I deliver?'", 
-                  hints: ["Thursday morning works best for us.", "Friday before opening would be perfect."],
-                  nativeTip: "Dis : « Thursday morning works perfectly. »" },
-                { end: true, npc: "Sophie sourit : « C'est noté ! Bon courage pour l'ouverture de votre café ! »" }
+                { narration: "Sophie arrive avec les échantillons de café.", npc: "What kind of coffee beans are you looking for?", hints: ["We want Arabica beans."], nativeTip: "Dis : « We want high quality Arabica. »", frTrans: "Quels grains de café recherchez-vous ?" },
+                { end: true, narration: "Le contrat est signé avec succès.", npc: "Sophie smiles: 'Good luck with the café!'" }
               ]
             },
-            { id: 4, title: "Aventure à l'Aéroport", icon: "🛫", cost: 8000, npc: "Agent d'embarquement", bg: "#c9e4f2",
-              desc: "Vol surbooké ! Gère la crise avec l'agent d'embarquement pour ne pas quitter Clara des yeux.",
-              vocab: "Overbooked = surbooké\nBoarding pass = carte d'embarquement\nVoucher = bon d'achat",
-              frTrans: "Gère le problème de surréservation de vol à l'aéroport avec Clara.",
+            { id: 4, title: "Mois 5 : Aventure à l'aéroport", icon: "🛫", cost: 3000, npc: "Agent d'embarquement", bg: "#c9e4f2",
+              desc: "Gérer un vol surbooké sans quitter Clara.",
+              vocab: "Overbooked = surbooké\nVoucher = bon d'achat",
               steps: [
-                { npc: "Good morning. Passports, please. I’m afraid your flight is heavily overbooked. We only have one seat left.", 
-                  hints: ["Oh no, I am traveling with my girlfriend Clara. We must stay together.", "We need two seats on this plane."],
-                  nativeTip: "Dis : « We're traveling together as a couple. We need to stay on the same flight. »" },
-                { npc: "If you both agree to take the next flight in 3 hours, we can offer a €400 travel voucher each.", 
-                  hints: ["Let's take the voucher and wait 3 hours together.", "Yes, that sounds fair to us."],
-                  nativeTip: "Dis : « That sounds fair. Let's take the voucher. »" },
-                { npc: "Here are your new boarding passes and your food vouchers for the airport lounge. Have a great trip!", 
-                  hints: ["Thank you very much for your help.", "Thanks for sorting this out."],
-                  nativeTip: "Dis : « Thanks for your help with this. »" },
-                { end: true, npc: "Clara sourit : « Regarde, on a des bons d'achat, on va pouvoir boire un café en attendant ! »" }
+                { narration: "Le vol est complet au comptoir.", npc: "I’m afraid your flight is heavily overbooked.", hints: ["We must stay together."], nativeTip: "Dis : « We need to stay on the same flight. »", frTrans: "J'ai bien peur que votre vol soit surbooké." },
+                { end: true, narration: "Vous repartez avec des bons d'achat pour patienter.", npc: "Here are your vouchers. Have a great trip!" }
+              ]
+            },
+            { id: 5, title: "Mois 6 : Premier anniversaire", icon: "💖", cost: 4500, npc: "Clara", bg: "#f4dcd6",
+              desc: "Célébration des 6 mois de relation.",
+              vocab: "Anniversary = anniversaire\nForever = pour toujours",
+              steps: [
+                { narration: "Clara t'offre un magnifique cadeau emballé.", npc: "Happy 6 months my love! Do you like your gift?", hints: ["It's wonderful, thank you so much."], nativeTip: "Dis : « I love it, you're amazing. »", frTrans: "Joyeux 6 mois mon amour ! Aimes-tu ton cadeau ?" },
+                { end: true, narration: "Une soirée magique gravée dans vos mémoires.", npc: "Clara hugs you tight." }
+              ]
+            },
+            { id: 6, title: "Mois 7 : Rencontre des parents", icon: "🏡", cost: 6000, npc: "Les parents de Clara", bg: "#e3d4ff",
+              desc: "Un repas dominical crucial chez les beaux-parents.",
+              vocab: "Delicious = délicieux\nProud = fier",
+              steps: [
+                { narration: "Tu arrives avec un bouquet de fleurs pour sa maman.", npc: "Welcome! Please come in. Did you have a good trip?", hints: ["Yes, the trip was very smooth."], nativeTip: "Dis : « Thank you for having us. »", frTrans: "Bienvenue ! Entrez je vous en prie. Avez-vous fait bon voyage ?" },
+                { end: true, narration: "Le repas s'est déroulé à merveilles.", npc: "Her father smiles: 'You're always welcome here.'" }
+              ]
+            },
+            { id: 7, title: "Mois 8 : Vacances en Italie", icon: "🏖️", cost: 8000, npc: "Gondolier", bg: "#cfe8ff",
+              desc: "Balade romantique sur les canaux de Venise.",
+              vocab: "Sunset = coucher de soleil\nBreathtaking = époustouflant",
+              steps: [
+                { narration: "Le soleil se couche sur les palais vénitiens.", npc: "Signore, enjoy this romantic sunset ride!", hints: ["It is breathtaking."], nativeTip: "Dis : « This view is incredible. »", frTrans: "Profitez de cette balade romantique au coucher du soleil !" },
+                { end: true, narration: "Clara pose sa tête sur ton épaule.", npc: "Clara whispers: 'I never want this trip to end.'" }
+              ]
+            },
+            { id: 8, title: "Mois 9 : Adoption d'un chaton", icon: "🐱", cost: 10000, npc: "Responsable refuge", bg: "#ffe9b8",
+              desc: "Vous adoptez votre premier animal ensemble.",
+              vocab: "Cute = mignon\nAdopt = adopter",
+              steps: [
+                { narration: "Un petit chaton roux vient se blottir contre vous.", npc: "Are you ready to adopt this little guy?", hints: ["Yes, we want to take him home."], nativeTip: "Dis : « He's coming home with us today. »", frTrans: "Êtes-vous prêts à adopter ce petit chat ?" },
+                { end: true, narration: "Vous rentrez à la maison avec un nouveau membre dans la famille.", npc: "Clara smiles: 'We're official parents now!'" }
+              ]
+            },
+            { id: 9, title: "Mois 10 : Emménagement", icon: "📦", cost: 12500, npc: "Déménageur", bg: "#c9e4f2",
+              desc: "Cartons, meubles et nouvelle vie sous le même toit.",
+              vocab: "Boxes = cartons\nLiving room = salon",
+              steps: [
+                { narration: "L'appartement est rempli de cartons de déménagement.", npc: "Where should I put this heavy sofa?", hints: ["In the living room, please."], nativeTip: "Dis : « Right over there in the living room. »", frTrans: "Où dois-je poser ce lourd canapé ?" },
+                { end: true, narration: "Le premier soir dans votre propre chez-vous.", npc: "Clara laughs: 'We did it!'" }
+              ]
+            },
+            { id: 10, title: "Mois 11 : Projet d'avenir", icon: "🗺️", cost: 15000, npc: "Agent de voyage", bg: "#f4dcd6",
+              desc: "Planification d'un tour du monde pour l'an prochain.",
+              vocab: "Destination = destination\nTicket = billet",
+              steps: [
+                { narration: "Des brochures de voyage étalées sur la table basse.", npc: "Where do you and Clara dream of traveling?", hints: ["Japan and Australia."], nativeTip: "Dis : « We want to explore Asia and Oceania. »", frTrans: "Où rêvez-vous de voyager avec Clara ?" },
+                { end: true, narration: "Les billets d'avion sont réservés.", npc: "Clara jumps with joy: 'Best year of my life!'" }
+              ]
+            },
+            { id: 11, title: "Mois 12 : Bilan de l'année", icon: "💍", cost: 20000, npc: "Clara", bg: "#e3d4ff",
+              desc: "Un an jour pour jour après votre premier dîner.",
+              vocab: "Proud = fier\nTogether = ensemble",
+              steps: [
+                { narration: "Des bougies illuminent le salon redécoré pour l'occasion.", npc: "Can you believe it's already been a full year?", hints: ["Time flies when I'm with you."], nativeTip: "Dis : « It's been the most wonderful year. »", frTrans: "Peux-tu croire que cela fait déjà une année entière ?" },
+                { end: true, narration: "Saison 1 validée avec succès ! Une relation solide et fusionnelle.", npc: "Clara: 'Here is to many more years together!'" }
               ]
             }
         ];
 
+        // 4 AMÉLIORATIONS DU CAFÉ (Niveau 1 à 5, prix exponentiel en Pièces 🪙)
+        let CAFE_UPGRADES = [
+            { id: 'price', name: "Prix du café", icon: "💰", baseCost: 50, level: 0, max: 5, desc: "Augmente les euros gagnés par client." },
+            { id: 'spawn', name: "Flux de clients", icon: "🚶", baseCost: 80, level: 0, max: 5, desc: "Accélère l'arrivée des clients." },
+            { id: 'speed', name: "Vitesse de service", icon: "⚡", baseCost: 100, level: 0, max: 5, desc: "Les clients marchent plus vite." },
+            { id: 'xp', name: "Efficacité d'étude", icon: "📖", baseCost: 70, level: 0, max: 5, desc: "Augmente l'XP gagnée dans le jeu." }
+        ];
+
         const SHOP = [
-            { id: 0, name: "Machine à café pro", icon: "☕", cost: 500, income: 5, obj: "coffee-machine" },
-            { id: 1, name: "Jolies plantes", icon: "🪴", cost: 1500, income: 10, obj: "plant" },
-            { id: 2, name: "Vitrine pâtisserie", icon: "🍰", cost: 3500, income: 20, obj: "cake" },
-            { id: 3, name: "Déco en bois", icon: "🪑", cost: 7000, income: 35, obj: "table" },
-            { id: 4, name: "Chef cuisinier", icon: "🧑‍🍳", cost: 12000, income: 60, obj: "chef" },
-            { id: 5, name: "Enseigne lumineuse", icon: "🌟", cost: 25000, income: 100, obj: "neon" }
+            { id: 0, name: "Machine à café pro", icon: "☕", cost: 300, income: 5, obj: "coffee-machine" },
+            { id: 1, name: "Jolies plantes", icon: "🪴", cost: 800, income: 10, obj: "plant" },
+            { id: 2, name: "Vitrine pâtisserie", icon: "🍰", cost: 1800, income: 20, obj: "cake" },
+            { id: 3, name: "Déco en bois", icon: "🪑", cost: 3000, income: 35, obj: "table" },
+            { id: 4, name: "Chef cuisinier", icon: "🧑‍🍳", cost: 5000, income: 60, obj: "chef" },
+            { id: 5, name: "Enseigne lumineuse", icon: "🌟", cost: 8000, income: 100, obj: "neon" }
         ];
 
         let S = { 
-            toeicScore: 300, 
-            xp: 0, 
-            coins: 0, 
-            eur: 0, 
-            items: [], 
-            unlocked: [0, 1, 2, 3, 4], // Toutes les histoires sont débloquables par argent, plus de blocage par score
-            storiesDone: [], 
-            currentStory: null, 
-            chatHistory: {}, 
-            stats: { msgs: 0, testsCount: 0 }, 
-            theme: 'classic',
-            lastActive: Date.now() 
+            toeicScore: 300, xp: 0, coins: 200, eur: 500, items: [], unlocked: [0], 
+            storiesDone: [], currentStory: null, chatHistory: {}, 
+            stats: { msgs: 0, testsCount: 0 }, theme: 'classic', upgrades: { price: 0, spawn: 0, speed: 0, xp: 0 }, lastActive: Date.now() 
         };
         
         try { 
-            const saved = localStorage.getItem('cafeToeicDataV9'); 
+            const saved = localStorage.getItem('cafeToeicDataV12'); 
             if (saved) {
                 const parsed = JSON.parse(saved);
                 S = { ...S, ...parsed };
+                if (S.upgrades) {
+                    CAFE_UPGRADES.forEach(u => { if (S.upgrades[u.id] !== undefined) u.level = S.upgrades[u.id]; });
+                }
                 if (S.lastActive) {
                     const elapsedSeconds = Math.floor((Date.now() - S.lastActive) / 1000);
                     if (elapsedSeconds > 5) {
                         const bonus = S.items.reduce((acc, id) => acc + SHOP.find(s=>s.id===id).income, 0);
-                        const offlineEarnings = Math.floor(elapsedSeconds / 5) * (5 + bonus);
+                        const priceMultiplier = 1 + (CAFE_UPGRADES.find(u=>u.id==='price').level * 0.3);
+                        const offlineEarnings = Math.floor(elapsedSeconds / 5) * Math.round((5 + bonus) * priceMultiplier);
                         if (offlineEarnings > 0) {
                             S.eur += offlineEarnings;
                             setTimeout(() => { showToast(`☕ Absent : +${offlineEarnings} 💶 gagnés !`); }, 1500);
@@ -377,8 +369,10 @@
         } catch (e) {}
 
         function saveData() { 
+            CAFE_UPGRADES.forEach(u => S.upgrades[u.id] = u.level);
             S.lastActive = Date.now();
-            localStorage.setItem('cafeToeicDataV9', JSON.stringify(S)); 
+            localStorage.getItem('cafeToeicDataV12');
+            localStorage.setItem('cafeToeicDataV12', JSON.stringify(S)); 
         }
 
         const $ = id => document.getElementById(id);
@@ -391,25 +385,20 @@
             $('xp-bar').style.width = `${((S.xp % 200) / 200) * 100}%`;
             document.body.setAttribute('data-theme', S.theme);
             
-            // Met à jour l'état visuel des boutons de thèmes
+            const monthsDone = S.storiesDone.length;
+            $('relationship-banner').innerText = monthsDone === 0 ? "❤️ Relation : Début (Mois 0 / 12)" : `❤️ Relation : Mois ${monthsDone} sur 12 (Saison 1)`;
+
             ['classic', 'dark', 'vintage', 'gold'].forEach(t => {
                 const btn = $(`theme-${t}`);
-                if (btn) {
-                    btn.classList.toggle('active', S.theme === t);
-                }
+                if (btn) btn.classList.toggle('active', S.theme === t);
             });
         }
 
         function setTheme(t) {
-            // Conditions de déblocage des thèmes basées sur le score TOEIC réel
             if (t === 'dark' && S.toeicScore < 500) { showToast("Atteins un score TOEIC de 500 pour ce thème !"); return; }
             if (t === 'vintage' && S.toeicScore < 700) { showToast("Atteins un score TOEIC de 700 pour ce thème !"); return; }
             if (t === 'gold' && S.toeicScore < 850) { showToast("Atteins un score TOEIC de 850 pour ce thème !"); return; }
-            
-            S.theme = t;
-            saveData();
-            updateHeader();
-            showToast("Thème visuel mis à jour !");
+            S.theme = t; saveData(); updateHeader(); showToast("Thème visuel mis à jour !");
         }
 
         function showToast(msg) {
@@ -431,26 +420,18 @@
             updateHeader();
         }
 
-        /* --- SYSTÈME DE TEST TOEIC COMPLET (20 QUESTIONS) --- */
         function startFullToeicTest() {
-            // Mélange et sélectionne 20 questions aléatoires
             const shuffled = [...MASTER_QUIZ_BANK].sort(() => 0.5 - Math.random());
-            activeTest = {
-                questions: shuffled.slice(0, 20),
-                currentIndex: 0,
-                correctCount: 0
-            };
+            activeTest = { questions: shuffled.slice(0, 10), currentIndex: 0, correctCount: 0 };
             loadQuizQuestion();
             $('quiz-modal').classList.add('active');
         }
 
         function loadQuizQuestion() {
             const qData = activeTest.questions[activeTest.currentIndex];
-            $('quiz-header-title').innerText = `📝 Test TOEIC (${activeTest.currentIndex + 1}/20)`;
+            $('quiz-header-title').innerText = `📝 Test TOEIC (${activeTest.currentIndex + 1}/10)`;
             $('quiz-question').innerText = qData.q;
-            
             let optsHtml = '';
-            // Mélange les options de réponse pour éviter qu'elles soient toujours au même endroit
             qData.opts.forEach((opt, i) => {
                 optsHtml += `<button class="quiz-opt" id="qopt-${i}" onclick="answerFullTest(${i})">${opt}</button>`;
             });
@@ -463,10 +444,8 @@
             if ($('quiz-explanation').style.display === 'block') return;
             const qData = activeTest.questions[activeTest.currentIndex];
             const isCorrect = (idx === qData.ans);
-            
             $(`qopt-${idx}`).classList.add(isCorrect ? 'correct' : 'wrong');
             if (!isCorrect) $(`qopt-${qData.ans}`).classList.add('correct');
-            
             if (isCorrect) activeTest.correctCount++;
 
             $('quiz-explanation').innerText = isCorrect ? "✅ Correct ! " + qData.why : "❌ Incorrect. " + qData.why;
@@ -474,12 +453,9 @@
 
             if (activeTest.currentIndex < activeTest.questions.length - 1) {
                 $('quiz-next-btn').innerText = "Question suivante →";
-                $('quiz-next-btn').onclick = () => {
-                    activeTest.currentIndex++;
-                    loadQuizQuestion();
-                };
+                $('quiz-next-btn').onclick = () => { activeTest.currentIndex++; loadQuizQuestion(); };
             } else {
-                $('quiz-next-btn').innerText = "Terminer le test et voir mon score";
+                $('quiz-next-btn').innerText = "Terminer le test";
                 $('quiz-next-btn').onclick = finishFullToeicTest;
             }
             $('quiz-next-btn').style.display = 'block';
@@ -488,30 +464,23 @@
         function finishFullToeicTest() {
             $('quiz-modal').classList.remove('active');
             S.stats.testsCount++;
-
-            // Calcul du score TOEIC basé sur les 20 questions (échelle de 300 à 990)
-            // 0 fautes = 990, proportionnel au nombre de bonnes réponses
-            const calculatedScore = Math.min(990, Math.max(300, Math.round(300 + (activeTest.correctCount / 20) * 690)));
+            const calculatedScore = Math.min(990, Math.max(300, Math.round(300 + (activeTest.correctCount / 10) * 690)));
             S.toeicScore = calculatedScore;
-            
-            const earnedEur = activeTest.correctCount * 15;
-            S.eur += earnedEur;
-            S.xp += activeTest.correctCount * 5;
-            saveData();
-            updateHeader();
-
-            showToast(`🎯 Test terminé ! Score TOEIC : ${calculatedScore}/990 (+${earnedEur} 💶)`);
+            const earnedCoins = activeTest.correctCount * 10;
+            S.coins += earnedCoins; S.xp += activeTest.correctCount * 5;
+            saveData(); updateHeader();
+            showToast(`🎯 Test terminé ! Score : ${calculatedScore}/990 (+${earnedCoins} 🪙)`);
         }
 
         function renderStories() {
-            const html = STORIES.map(st => {
+            const html = STORIES.map((st, index) => {
                 const isUnlocked = S.unlocked.includes(st.id);
                 const isDone = S.storiesDone.includes(st.id);
                 let btn = isUnlocked ? `<button class="btn" onclick="startStory(${st.id})">${isDone ? 'Rejouer' : 'Jouer'}</button>` 
-                        : `<button class="btn btn-outline" onclick="unlockStory(${st.id})">Débloquer ${st.cost} 💶</button>`;
-                return `<div class="card"><div class="card-icon" style="background: ${st.bg}">${st.icon}</div><div class="card-content"><div class="card-title">${st.title} ${isDone ? '✅' : ''}</div><div class="card-desc">${st.desc}</div></div><div>${btn}</div></div>`;
+                        : `<button class="btn btn-outline" onclick="unlockStory(${st.id})">Débloquer ${st.cost} 💶 (Clé requise)</button>`;
+                return `<div class="card"><div class="card-icon" style="background: ${st.bg}">${st.icon}</div><div class="card-content"><div class="card-title">${st.title} ${isDone ? '🔑✅' : ''}</div><div class="card-desc">${st.desc}</div></div><div>${btn}</div></div>`;
             }).join('');
-            $('view-stories').innerHTML = `<h2 style="margin-bottom:16px;">Toutes les histoires</h2>` + html;
+            $('view-stories').innerHTML = `<h2 style="margin-bottom:16px;">Saison 1 : Les 12 mois de relation</h2>` + html;
         }
 
         function unlockStory(id) {
@@ -520,11 +489,11 @@
                 S.eur -= st.cost; 
                 S.unlocked.push(id); 
                 saveData(); 
-                showToast("Histoire débloquée !"); 
+                showToast("Histoire et clé débloquées !"); 
                 renderStories(); 
                 updateHeader();
-            } else {
-                showToast("Pas assez d'euros 💶 ! Fais des tests TOEIC complets ou laisse tourner le café.");
+            } else { 
+                showToast("Pas assez d'euros 💶 !"); 
             }
         }
 
@@ -537,13 +506,23 @@
         function renderChat() {
             const st = STORIES.find(s => s.id === S.currentStory);
             const hist = S.chatHistory[S.currentStory];
-            if (hist.msgs.length === 0) { hist.msgs.push({ sender: 'npc', text: st.steps[0].npc }); saveData(); }
-            $('chat-header').innerHTML = `<button class="back-btn" onclick="switchTab('stories')">←</button><div style="font-size: 32px;">${st.icon}</div><div><div style="font-weight: bold; font-size:16px">${st.title}</div><div style="font-size: 13px; opacity:0.8">${st.npc}</div></div>`;
+            
+            if (hist.msgs.length === 0) { 
+                const firstStep = st.steps[0];
+                if (firstStep.narration) hist.msgs.push({ sender: 'narration', text: firstStep.narration });
+                hist.msgs.push({ sender: 'npc', text: firstStep.npc, frTrans: firstStep.frTrans }); 
+                saveData(); 
+            }
+
+            $('chat-header').innerHTML = `<button class="back-btn" onclick="switchTab('stories')">←</button><div style="font-size: 28px;">${st.icon}</div><div><div style="font-weight: bold; font-size:15px">${st.title}</div><div style="font-size: 12px; color:var(--muted);">${st.npc}</div></div>`;
 
             let msgHtml = '';
             hist.msgs.forEach(m => {
-                if (m.sender === 'npc') { msgHtml += `<div class="msg npc">${m.text}</div>`; } 
-                else {
+                if (m.sender === 'narration') {
+                    msgHtml += `<div class="msg narration">${m.text}</div>`;
+                } else if (m.sender === 'npc') {
+                    msgHtml += `<div class="msg npc" data-fr="${m.frTrans || ''}">${m.text}</div>`;
+                } else {
                     msgHtml += `<div class="msg player">${m.text}</div>`;
                     if (m.feedback) {
                         msgHtml += `<div class="feedback">`;
@@ -560,7 +539,7 @@
                 }
             });
             $('chat-messages').innerHTML = msgHtml;
-            $('view-chat').scrollTop = $('view-chat').scrollHeight;
+            $('view-chat').scrollTop = $('view-chat'].scrollHeight;
             $('hint-box').style.display = 'none';
         }
 
@@ -573,23 +552,6 @@
         function isFrenchText(text) {
             const frWords = /\b(je|tu|il|nous|vous|est|sont|pas|le|la|les|un|une|et|mais|pour|avec|comment|combien|oui|non|faire|veux|voudrais|c'est)\b/i;
             return frWords.test(text);
-        }
-
-        function generateFlexibleResponse(text, stepIndex) {
-            const lower = text.toLowerCase();
-            if (lower.includes('why') || lower.includes('how') || lower.includes('what') || lower.includes('can you')) {
-                return "That's a very interesting point! Let's move forward with that in mind.";
-            }
-            if (lower.includes('no') || lower.includes('not')) {
-                return "I understand your perspective. Let's look at another way to handle this.";
-            }
-            const reactions = [
-                "That sounds good! Let's proceed.",
-                "Got it! Let's keep going with this idea.",
-                "Interesting choice! Tell me more about that.",
-                "Alright, let's take the next step."
-            ];
-            return reactions[stepIndex % reactions.length];
         }
 
         function sendMessage() {
@@ -611,20 +573,37 @@
             hist.msgs.push({ sender: 'player', text: text, feedback: feedbackData });
             S.stats.msgs++;
             
-            let coinsGained = 15 + Math.floor(getBonusIncome() / 2);
-
-            S.coins += coinsGained; S.xp += (isFr ? 5 : (mistakes.length === 0 ? 25 : 12)); renderChat();
+            let xpBonus = 1 + (CAFE_UPGRADES.find(u=>u.id==='xp').level * 0.2);
+            let earnedCoins = 10;
+            S.coins += earnedCoins; 
+            S.xp += Math.round((isFr ? 5 : (mistakes.length === 0 ? 25 : 12)) * xpBonus); 
+            renderChat();
 
             setTimeout(() => {
                 if (isFr) {
-                    hist.msgs.push({ sender: 'npc', text: "Take your time! How would you say that in English?" });
+                    hist.msgs.push({ sender: 'npc', text: "Take your time! How would you say that in English?", frTrans: "Prends ton temps ! Comment dirais-tu cela en anglais ?" });
                 } else {
                     if (currentStepData.end) {
-                        if (!S.storiesDone.includes(st.id)) { S.storiesDone.push(st.id); S.eur += 800; showToast("Histoire complétée ! +800 💶 !"); }
+                        if (!S.storiesDone.includes(st.id)) { 
+                            S.storiesDone.push(st.id); 
+                            S.eur += 1000; // Récompense généreuse en euros pour acheter les objets
+                            
+                            // Déblocage automatique de l'histoire suivante (clé)
+                            const nextId = st.id + 1;
+                            if (nextId < STORIES.length && !S.unlocked.includes(nextId)) {
+                                S.unlocked.push(nextId);
+                            }
+
+                            showToast(`🎉 Mois validé ! +1000 💶 & Clé du mois suivant débloquée !`); 
+                        }
                     } else {
-                        let reply = currentStepData.process ? currentStepData.process(text) : generateFlexibleResponse(text, hist.step);
-                        hist.msgs.push({ sender: 'npc', text: reply });
                         hist.step++;
+                        const nextStep = st.steps[hist.step];
+                        if (nextStep.narration) {
+                            hist.msgs.push({ sender: 'narration', text: nextStep.narration });
+                        }
+                        let reply = nextStep.process ? nextStep.process(text) : nextStep.npc;
+                        hist.msgs.push({ sender: 'npc', text: reply, frTrans: nextStep.frTrans });
                     }
                 }
                 saveData(); renderChat(); updateHeader();
@@ -641,18 +620,22 @@
 
         function showTranslation() {
             const st = STORIES.find(s => s.id === S.currentStory);
+            const hist = S.chatHistory[S.currentStory];
+            const currentStep = st.steps[hist.step];
             const box = $('hint-box');
-            box.innerHTML = `<strong>🇫🇷 Traduction :</strong><br>${st.frTrans || "Pas de traduction."}`;
+            box.innerHTML = `<strong>🇫🇷 Traduction exacte :</strong><br>${currentStep.frTrans || "Pas de traduction disponible."}`;
             box.style.display = 'block';
         }
 
         function showVocab() {
             const st = STORIES.find(s => s.id === S.currentStory);
-            $('hint-box').innerHTML = `<strong>📚 Vocabulaire :</strong><br>` + st.vocab.replace(/\n/g, '<br>');
-            $('hint-box').style.display = 'block';
+            const box = $('hint-box');
+            box.innerHTML = `<strong>📚 Vocabulaire :</strong><br>` + st.vocab.replace(/\n/g, '<br>');
+            box.style.display = 'block';
         }
 
         function renderCafe() {
+            // Affichage des décos achetées avec des euros
             let itemsHtml = '';
             S.items.forEach(itemId => {
                 const shopItem = SHOP.find(s => s.id === itemId);
@@ -660,33 +643,87 @@
             });
             $('counter-decorations').innerHTML = '☕ ' + itemsHtml;
 
+            // Rendu des améliorations de stats (achetées avec des Pièces 🪙)
+            let upgradesHtml = '';
+            CAFE_UPGRADES.forEach(u => {
+                const cost = Math.round(u.baseCost * Math.pow(2.2, u.level));
+                const isMax = u.level >= u.max;
+                upgradesHtml += `
+                    <div class="card">
+                        <div class="card-icon">${u.icon}</div>
+                        <div class="card-content">
+                            <div class="card-title">${u.name} (Niv. ${u.level}/${u.max})</div>
+                            <div class="card-desc">${u.desc}</div>
+                        </div>
+                        <div>
+                            ${isMax ? `<span style="color:var(--success); font-weight:bold;">MAX</span>` : `<button class="btn" onclick="upgradeStat('${u.id}')">${cost} 🪙</button>`}
+                        </div>
+                    </div>`;
+            });
+            $('upgrades-list').innerHTML = upgradesHtml;
+
+            // Rendu de la boutique (objets achetés avec des Euros 💶)
             const shopHtml = SHOP.map(item => {
                 const owned = S.items.includes(item.id);
-                return `<div class="card"><div class="card-icon">${item.icon}</div><div class="card-content"><div class="card-title">${item.name}</div><div class="card-desc">Revenus passifs : +${item.income} 💶</div></div><div>${owned ? `<span style="color:var(--success); font-weight:bold;">Possédé</span>` : `<button class="btn" onclick="buyItem(${item.id}, ${item.cost})">${item.cost} 🪙</button>`}</div></div>`;
+                return `<div class="card"><div class="card-icon">${item.icon}</div><div class="card-content"><div class="card-title">${item.name}</div><div class="card-desc">Revenus passifs : +${item.income} 💶</div></div><div>${owned ? `<span style="color:var(--success); font-weight:bold;">Possédé</span>` : `<button class="btn" onclick="buyItem(${item.id}, ${item.cost})">${item.cost} 💶</button>`}</div></div>`;
             }).join('');
-            $('shop-items').innerHTML = `<p style="font-size:14px; margin-bottom:12px; color:var(--muted)">Puissance actuelle : <strong>+${5 + getBonusIncome()} 💶 / client</strong>.</p>` + shopHtml;
+            $('shop-items').innerHTML = `<p style="font-size:14px; margin-bottom:12px; color:var(--muted)">Revenu de base + objets : <strong>+${5 + getBonusIncome()} 💶 / client</strong>.</p>` + shopHtml;
+        }
+
+        function upgradeStat(id) {
+            const u = CAFE_UPGRADES.find(item => item.id === id);
+            const cost = Math.round(u.baseCost * Math.pow(2.2, u.level));
+            if (S.coins >= cost && u.level < u.max) {
+                S.coins -= cost;
+                u.level++;
+                saveData();
+                renderCafe();
+                updateHeader();
+                showToast(`Amélioration « ${u.name} » passée au niveau ${u.level} !`);
+            } else {
+                showToast("Pas assez de pièces 🪙 !");
+            }
         }
 
         function buyItem(id, cost) {
-            if (S.coins >= cost) { S.coins -= cost; S.items.push(id); saveData(); showToast("Amélioration achetée !"); renderCafe(); updateHeader(); } 
-            else showToast("Pas assez de pièces 🪙 !");
+            if (S.eur >= cost) { 
+                S.eur -= cost; 
+                S.items.push(id); 
+                saveData(); 
+                showToast("Objet du café acheté avec succès !"); 
+                renderCafe(); 
+                updateHeader(); 
+            } else { 
+                showToast("Pas assez d'euros 💶 !"); 
+            }
         }
 
+        // BOUCLE PASSIVE DU CAFÉ
         setInterval(() => {
-            const gain = 5 + getBonusIncome();
+            const priceLevel = CAFE_UPGRADES.find(u => u.id === 'price').level;
+            const priceMultiplier = 1 + (priceLevel * 0.3);
+            const gain = Math.round((5 + getBonusIncome()) * priceMultiplier);
+            
             S.eur += gain; 
             saveData(); 
             updateHeader();
 
             const cafe = $('cafe-display');
             if(cafe && !$('view-cafe').classList.contains('hidden')) {
-                const cus = document.createElement('div');
-                const faces = ['🧑', '👩', '👨', '👵', '🧔', '👧'];
-                cus.className = 'cafe-customer'; 
-                cus.innerText = faces[Math.floor(Math.random() * faces.length)];
-                cafe.appendChild(cus);
+                const speedLevel = CAFE_UPGRADES.find(u => u.id === 'speed').level;
+                const walkDuration = Math.max(1.5, 3 - (speedLevel * 0.3));
 
-                setTimeout(() => { cus.style.transform = 'translateX(-220px)'; }, 50);
+                const customer = document.createElement('div');
+                customer.className = 'walking-customer';
+                customer.style.transitionDuration = `${walkDuration}s`;
+                customer.innerHTML = `
+                    <div class="customer-head"></div>
+                    <div class="customer-body"></div>
+                    <div class="customer-legs"><div class="leg"></div><div class="leg"></div></div>
+                `;
+                cafe.appendChild(customer);
+
+                setTimeout(() => { customer.style.transform = 'translateX(-230px)'; }, 50);
                 setTimeout(() => {
                     const money = document.createElement('div');
                     money.className = 'floating-money'; 
@@ -695,9 +732,10 @@
                     money.style.bottom = '110px';
                     cafe.appendChild(money); 
                     setTimeout(() => { money.remove(); }, 1200);
-                }, 1200);
-                setTimeout(() => { cus.style.transform = 'translateX(0px)'; }, 2800);
-                setTimeout(() => { cus.remove(); }, 4500);
+                }, walkDuration * 1000 * 0.4);
+
+                setTimeout(() => { customer.style.transform = 'translateX(0px)'; }, walkDuration * 1000 + 500);
+                setTimeout(() => { customer.remove(); }, (walkDuration * 2 + 1) * 1000);
             }
         }, 5000);
 
@@ -705,17 +743,17 @@
             $('stat-lvl').innerText = S.toeicScore; 
             $('stat-tests').innerText = S.stats.testsCount;
             $('stat-msg').innerText = S.stats.msgs; 
-            $('stat-stories').innerText = `${S.storiesDone.length}/5`;
+            $('stat-stories').innerText = `${S.storiesDone.length}/12`;
         }
 
         function exportData() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(S));
-            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v10.json");
+            const a = document.createElement('a'); a.setAttribute("href", dataStr); a.setAttribute("download", "cafe_toeic_v12.json");
             document.body.appendChild(a); a.click(); a.remove();
         }
 
         function resetData() {
-            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV9'); location.reload(); }
+            if(confirm("Effacer la progression ?")) { localStorage.removeItem('cafeToeicDataV12'); location.reload(); }
         }
 
         switchTab('stories');
