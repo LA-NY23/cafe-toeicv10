@@ -138,6 +138,9 @@
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-35px); } }
         .toast { position: fixed; top: 75px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 10px 18px; border-radius: 20px; font-size: 13px; font-weight: 500; z-index: 100; opacity: 0; transition: opacity 0.3s; pointer-events: none; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
         .hidden { display: none !important; }
+        .ai-lbl { display: block; font-size: 12px; color: var(--muted); font-weight: 600; margin-top: 6px; }
+        .ai-field { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 14px; margin: 4px 0 8px; outline: none; }
+        #ai-status { display: block; white-space: pre-wrap; }
     </style>
 </head>
 <body data-theme="classic">
@@ -232,6 +235,27 @@
             <button class="theme-btn" id="theme-dark" onclick="setTheme('dark')">☕ Cozy Sombre</button>
             <button class="theme-btn" id="theme-vintage" onclick="setTheme('vintage')">📜 Vintage Paris</button>
             <button class="theme-btn" id="theme-gold" onclick="setTheme('gold')">✨ Luxe Doré</button>
+        </div>
+
+        <h3 style="margin: 24px 0 10px 0; font-size: 15px;">🤖 IA de Clara (open source)</h3>
+        <div class="bio-card">
+            <label class="ai-lbl" for="ai-mode">Mode</label>
+            <select id="ai-mode" class="ai-field" onchange="saveAISettings()">
+                <option value="auto">Automatique</option>
+                <option value="free">Gratuit, sans clé</option>
+                <option value="cloud">En ligne (Hugging Face)</option>
+                <option value="web">Dans le téléphone (WebLLM)</option>
+                <option value="off">Hors-ligne (réponses prédéfinies)</option>
+            </select>
+            <label class="ai-lbl" for="ai-key">Clé Hugging Face (reste sur ton téléphone)</label>
+            <input id="ai-key" class="ai-field" type="password" placeholder="hf_..." autocomplete="off" onchange="saveAISettings()">
+            <label class="ai-lbl" for="ai-model">Modèle en ligne</label>
+            <input id="ai-model" class="ai-field" type="text" autocomplete="off" onchange="saveAISettings()">
+            <div class="helpers">
+                <button class="btn btn-outline" onclick="testAI()">🧪 Tester</button>
+                <button class="btn btn-outline" onclick="downloadWebModel()">⬇️ IA du téléphone (~1 Go)</button>
+            </div>
+            <div class="hint-box" id="ai-status"></div>
         </div>
 
         <div style="display:flex; gap:10px; flex-direction:column; margin-top:24px;">
@@ -391,8 +415,6 @@
             S.lastActive = Date.now();
             localStorage.setItem('cafeToeicDataV38', JSON.stringify(S)); 
         }
-
-        const EMBEDDED_HF_TOKEN = "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";
 
         const $ = id => document.getElementById(id);
         const getBonusIncome = () => S.items.reduce((acc, id) => {
@@ -583,17 +605,20 @@
                 if (m.sender === 'narration') {
                     msgHtml += `<div class="msg narration">${m.text}</div>`;
                 } else if (m.sender === 'npc') {
-                    msgHtml += `<div class="msg npc">${m.text}</div>`;
+                    msgHtml += `<div class="msg npc">${esc(m.text)}</div>`;
                 } else {
-                    msgHtml += `<div class="msg player">${m.text}</div>`;
-                    if (m.feedback) {
-                        msgHtml += `<div class="feedback">`;
-                        if (m.feedback.isFrench) {
-                            msgHtml += `<p style="font-weight:600;">🇫🇷 Traduction :</p><p>${m.feedback.frResponse}</p>`;
+                    msgHtml += `<div class="msg player">${esc(m.text)}</div>`;
+                    const f = m.feedback;
+                    if (f) {
+                        let inner = '';
+                        if (f.isFrench) {
+                            inner = `<p><strong>🇫🇷 Écris en anglais</strong> pour t'entraîner avec Clara !</p>`;
                         } else {
-                            msgHtml += `<p><strong>Réponse IA :</strong> ${m.feedback.aiReply}</p>`;
+                            if (f.correction) inner += `<p><strong>✏️ Correction :</strong> ${esc(f.correction)}</p>`;
+                            if (f.tip) inner += `<p><strong>🗣️ Astuce de local :</strong> ${esc(f.tip)}</p>`;
+                            if (f.aiReply) inner += `<p><strong>Réponse IA :</strong> ${esc(f.aiReply)}</p>`;
                         }
-                        msgHtml += `</div>`;
+                        if (inner) msgHtml += `<div class="feedback">${inner}</div>`;
                     }
                 }
             });
@@ -607,77 +632,246 @@
             return frWords.test(text);
         }
 
-        async function callHuggingFaceAI(userText, chapterTitle) {
-            const token = EMBEDDED_HF_TOKEN;
+        /* ===== IA de Clara : modèles open source (Llama / Qwen) =====
+           Aucune clé dans le code : la clé éventuelle est saisie dans l'onglet Profil
+           et reste dans le localStorage de ton téléphone. */
+        function esc(s) {
+            return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
 
-            const prompt = `Tu es Clara, une libraire passionnée de littérature anglaise. Tu discutes avec Lucas dans le cadre du chapitre "${chapterTitle}". 
-Lucas vient de t'écrire : "${userText}".
-Réponds-lui en anglais de manière naturelle pour faire avancer la conversation. Si Lucas fait des fautes en anglais, corrige-les brièvement et donne une astuce de local (native tip).
-Format de réponse attendu : 
-[Réponse de Clara en anglais] 
---- 
-[Correction & Astuce en français si nécessaire]`;
+        const AI_DEFAULT = { mode: 'auto', key: '', model: 'meta-llama/Llama-3.1-8B-Instruct', freeModel: 'mistral', webModel: 'Qwen2.5-1.5B-Instruct-q4f16_1-MLC' };
+        let AI = { ...AI_DEFAULT };
+        try { AI = { ...AI_DEFAULT, ...JSON.parse(localStorage.getItem('cafeToeicAI') || '{}') }; } catch (e) {}
+        function saveAI() { try { localStorage.setItem('cafeToeicAI', JSON.stringify(AI)); } catch (e) {} }
+        function webReady() { try { return localStorage.getItem('cafeToeicWebReady') === '1'; } catch (e) { return false; } }
 
+        let aiBusy = false, lastOffline = -1;
+        const WEBLLM_URL = 'https://esm.run/@mlc-ai/web-llm';
+        const OFFLINE_REPLIES = [
+            "That sounds interesting! Tell me more. What happened next?",
+            "Really? I love that. What does a perfect weekend look like for you?",
+            "Haha, I can picture it! By the way, what kind of café would you like us to open?",
+            "Good point. How would you say that in an email to a client?",
+            "Mmm, I'd love to try that. What's your favourite book or film at the moment?",
+            "That's a lot to think about. How do you usually relax after work?",
+            "I see! And what would you do if the shop were full of customers right now?",
+            "That's lovely. If we had a bigger budget, what would you change first?"
+        ];
+
+        function levelHint() {
+            const s = S.toeicScore;
+            return s < 450 ? 'A2: very simple words and short sentences' : s < 650 ? 'B1: everyday and workplace English' : s < 850 ? 'B2: fluent workplace English' : 'C1: advanced and idiomatic';
+        }
+
+        function buildMessages(userText, st) {
+            const hist = S.chatHistory[S.currentStory] || { msgs: [] };
+            const system = `You are Clara, a warm and witty bookseller who loves English literature, pastries and rare teas. You are the partner of Lucas (21, electrical maintenance apprentice, triathlete, coffee lover). Together you dream of opening a café-bookshop.
+Current scene: "${st.title}". ${st.desc}
+Roleplay rules: stay in character, speak natural spoken English in 1 to 3 short sentences, react to what Lucas really said, bring new details or topics, and end with a question or a hook. Never repeat yourself. Lucas is a French speaker preparing for the TOEIC (level ${levelHint()}), so use useful office, travel, shopping and everyday vocabulary.
+Then coach Lucas on his LAST message only. Use EXACTLY this format and nothing else:
+CLARA: <your reply in English>
+CORRECTION: <if there are mistakes: the corrected sentence, then the grammar rule explained simply in French in 1-2 sentences. If there are none: Parfait !>
+TIP: <one expression that real native speakers use in this situation, with its meaning in French>`;
+            const msgs = [{ role: 'system', content: system }];
+            const all = hist.msgs.filter(m => m.sender === 'npc' || m.sender === 'player');
+            const tail = all[all.length - 1];
+            if (tail && tail.sender === 'player' && tail.text === userText) all.pop();
+            const past = all.slice(-10);
+            past.forEach(m => {
+                const role = m.sender === 'npc' ? 'assistant' : 'user';
+                const content = m.sender === 'npc' ? 'CLARA: ' + m.text : m.text;
+                const prev = msgs[msgs.length - 1];
+                if (prev.role === role) prev.content += '\n' + content;
+                else msgs.push({ role, content });
+            });
+            if (msgs[1] && msgs[1].role === 'assistant') msgs.splice(1, 0, { role: 'user', content: '(The scene begins.)' });
+            const last = msgs[msgs.length - 1];
+            if (last.role === 'user') last.content += '\n' + userText;
+            else msgs.push({ role: 'user', content: userText });
+            return msgs;
+        }
+
+        function parseAI(raw) {
+            const t = String(raw || '').trim();
+            const c = t.match(/CLARA:\s*([\s\S]*?)(?=\n\s*CORRECTION:|\n\s*TIP:|$)/i);
+            const k = t.match(/CORRECTION:\s*([\s\S]*?)(?=\n\s*TIP:|$)/i);
+            const p = t.match(/TIP:\s*([\s\S]*)$/i);
+            const reply = (c ? c[1] : t.split(/\n\s*(?:CORRECTION|TIP):/i)[0]).replace(/^\s*CLARA:\s*/i, '').trim();
+            const clean = s => s.replace(/\s*-{3,}\s*$/, '').trim();
+            return { reply: clean(reply), correction: k ? clean(k[1]) : '', tip: p ? clean(p[1]) : '' };
+        }
+
+        async function aiChat(url, headers, model, messages) {
+            const ctrl = new AbortController();
+            const timer = setTimeout(() => ctrl.abort(), 30000);
             try {
-                const response = await fetch("https://api-inference.huggingface.co/models/meta-llama/Meta-Llama-3-8B-Instruct", {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${token}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ inputs: prompt, parameters: { max_new_tokens: 200 } })
+                const r = await fetch(url, {
+                    method: 'POST',
+                    signal: ctrl.signal,
+                    headers: { 'Content-Type': 'application/json', ...headers },
+                    body: JSON.stringify({ model, messages, max_tokens: 350, temperature: 0.9 })
                 });
+                const raw = await r.text();
+                let d = {}; try { d = JSON.parse(raw); } catch (e) {}
+                if (!r.ok) throw new Error((d.error && (d.error.message || d.error)) || ('HTTP ' + r.status));
+                const txt = (d.choices && d.choices[0] && d.choices[0].message && d.choices[0].message.content) || (d.choices ? '' : raw);
+                if (!txt) throw new Error('réponse vide');
+                return String(txt).replace(/\n[^\n]*pollinations[^\n]*/gi, '');
+            } finally { clearTimeout(timer); }
+        }
+        async function aiCloud(messages) {
+            if (!AI.key) throw new Error('no-key');
+            return aiChat('https://router.huggingface.co/v1/chat/completions', { 'Authorization': 'Bearer ' + AI.key }, AI.model, messages);
+        }
+        async function aiFree(messages) {
+            return aiChat('https://text.pollinations.ai/openai', {}, AI.freeModel, messages);
+        }
 
-                const data = await response.json();
-                if (data && data[0] && data[0].generated_text) {
-                    let fullText = data[0].generated_text;
-                    return fullText.replace(prompt, "").trim();
-                } else if (data.error) {
-                    return "Erreur API Hugging Face : " + data.error;
-                }
-                return "Réponse de l'IA indisponible pour le moment.";
-            } catch (err) {
-                return "Erreur de connexion réseau avec l'API Hugging Face.";
+        let webEngine = null, webLoading = null, webProgress = null;
+        function loadWebLLM() {
+            if (webEngine) return Promise.resolve(webEngine);
+            if (!navigator.gpu) return Promise.reject(new Error('no-webgpu'));
+            if (!webLoading) {
+                webLoading = (async () => {
+                    const lib = await import(WEBLLM_URL);
+                    webEngine = await lib.CreateMLCEngine(AI.webModel, {
+                        initProgressCallback: p => { if (webProgress) webProgress(p.text || '', p.progress || 0); }
+                    });
+                    try { localStorage.setItem('cafeToeicWebReady', '1'); } catch (e) {}
+                    return webEngine;
+                })().catch(e => { webLoading = null; throw e; });
+            }
+            return webLoading;
+        }
+        async function aiWeb(messages) {
+            webProgress = (txt, p) => showToast('IA du téléphone : ' + Math.round(p * 100) + '%');
+            const e = await loadWebLLM();
+            webProgress = null;
+            const r = await e.chat.completions.create({ messages, max_tokens: 300, temperature: 0.9 });
+            return r.choices[0].message.content;
+        }
+
+        function offlineReply(reason) {
+            let i; do { i = Math.floor(Math.random() * OFFLINE_REPLIES.length); } while (i === lastOffline && OFFLINE_REPLIES.length > 1);
+            lastOffline = i;
+            const why = reason
+                ? 'IA indisponible (' + reason + ') : réponse hors-ligne, sans correction.'
+                : "Aucune IA active : va dans Profil → IA de Clara et colle ta clé Hugging Face pour être corrigé.";
+            return { reply: OFFLINE_REPLIES[i], correction: why, tip: '' };
+        }
+
+        function pickProvider() {
+            if (AI.mode !== 'auto') return AI.mode;
+            if (AI.key) return 'cloud';
+            if (webReady() && navigator.gpu) return 'web';
+            return 'free';
+        }
+
+        function shortErr(e) {
+            const m = String((e && e.message) || e);
+            if (m === 'no-key') return 'clé manquante';
+            if (m === 'no-webgpu') return 'WebGPU absent';
+            if (e && e.name === 'AbortError') return 'trop long';
+            return m.slice(0, 60);
+        }
+
+        async function getClaraReply(userText, st) {
+            const provider = pickProvider();
+            if (provider === 'off') return { ...offlineReply(), source: 'off' };
+            try {
+                const messages = buildMessages(userText, st);
+                const raw = provider === 'cloud' ? await aiCloud(messages) : provider === 'free' ? await aiFree(messages) : await aiWeb(messages);
+                const p = parseAI(raw);
+                if (!p.reply) throw new Error('réponse vide');
+                return { ...p, source: provider };
+            } catch (e) {
+                const err = shortErr(e);
+                return { ...offlineReply(err), source: 'off', error: err };
             }
         }
 
+        function showTyping() {
+            const box = $('chat-messages');
+            const d = document.createElement('div');
+            d.className = 'msg npc'; d.id = 'typing'; d.innerText = '✍️ Clara écrit…';
+            box.appendChild(d);
+            $('view-chat').scrollTop = $('view-chat').scrollHeight;
+        }
+
         async function sendMessage() {
-            const input = $('chat-input'); const text = input.value.trim(); if (!text) return; input.value = '';
+            if (aiBusy) return;
+            const input = $('chat-input'); const text = input.value.trim(); if (!text) return;
+            input.value = '';
             const st = STORIES.find(s => s.id === S.currentStory);
             const hist = S.chatHistory[S.currentStory];
+            const isFr = isFrenchText(text);
+            const playerMsg = { sender: 'player', text: text };
 
-            let isFr = isFrenchText(text);
-            let aiResponse = "";
+            hist.msgs.push(playerMsg);
+            S.stats.msgs++;
+            renderChat();
 
             if (isFr) {
-                aiResponse = "Please write in English so we can practice together! / S'il te plaît, écris en anglais !";
+                playerMsg.feedback = { isFrench: true };
             } else {
-                showToast("Interrogation de l'IA open-source...");
-                aiResponse = await callHuggingFaceAI(text, st.title);
+                aiBusy = true; showTyping();
+                let rep;
+                try { rep = await getClaraReply(text, st); } finally { aiBusy = false; }
+                playerMsg.feedback = { isFrench: false, correction: rep.correction, tip: rep.tip };
+                hist.msgs.push({ sender: 'npc', text: rep.reply });
+                if (rep.error) showToast('IA indisponible (' + rep.error + ') : réponse hors-ligne.');
             }
 
-            let feedbackData = {
-                isFrench: isFr,
-                aiReply: aiResponse
-            };
-
-            hist.msgs.push({ sender: 'player', text: text, feedback: feedbackData });
-            S.stats.msgs++;
-            
-            let xpBonus = 1 + ((S.upgrades.xp || 0) * 0.2);
-            let earnedCoins = 10;
-            S.coins += earnedCoins; 
-            S.xp += Math.round((isFr ? 5 : 25) * xpBonus); 
+            const xpBonus = 1 + ((S.upgrades.xp || 0) * 0.2);
+            S.coins += 10;
+            S.xp += Math.round((isFr ? 5 : 25) * xpBonus);
             renderChat();
 
             if (!isFr) {
                 hist.step++;
                 if (hist.step >= 40) {
+                    saveData(); updateHeader();
                     triggerKeyReward(st.id);
                     return;
                 }
             }
             saveData(); updateHeader();
+        }
+
+        /* --- Réglages de l'IA (onglet Profil) --- */
+        function aiStatusText() {
+            const p = pickProvider();
+            if (p === 'free') return '🆓 IA gratuite sans clé (modèle open source ' + AI.freeModel + ')';
+            if (p === 'cloud') return '🌐 IA en ligne : ' + AI.model + (AI.key ? '' : ' (clé manquante)');
+            if (p === 'web') return '📱 IA du téléphone : ' + AI.webModel + (webReady() ? '' : ' (à télécharger)');
+            return '💬 Mode hors-ligne : réponses prédéfinies, sans correction.';
+        }
+        function setAIStatus(t) { const b = $('ai-status'); if (b) b.innerText = t; }
+        function renderAISettings() {
+            if (!$('ai-mode')) return;
+            $('ai-mode').value = AI.mode; $('ai-key').value = AI.key; $('ai-model').value = AI.model;
+            setAIStatus(aiStatusText());
+        }
+        function saveAISettings() {
+            AI.mode = $('ai-mode').value;
+            AI.key = $('ai-key').value.trim();
+            AI.model = $('ai-model').value.trim() || AI_DEFAULT.model;
+            saveAI(); setAIStatus(aiStatusText()); showToast('Réglages IA enregistrés');
+        }
+        async function testAI() {
+            setAIStatus('Test en cours…');
+            const st = STORIES[0];
+            const r = await getClaraReply('Hello Clara, I am very happy to see you yesterday.', st);
+            if (r.source === 'off') setAIStatus(r.error ? '❌ ' + r.error : aiStatusText());
+            else setAIStatus('✅ ' + r.reply + (r.correction ? '\n✏️ ' + r.correction : ''));
+        }
+        async function downloadWebModel() {
+            if (!navigator.gpu) { setAIStatus("❌ Ce navigateur n'a pas WebGPU : utilise le mode En ligne."); return; }
+            setAIStatus('Téléchargement du modèle (environ 1 Go, garde l\'écran allumé)…');
+            webProgress = (txt, p) => setAIStatus('⬇️ ' + Math.round(p * 100) + '% ' + txt);
+            try { await loadWebLLM(); setAIStatus('✅ IA du téléphone prête. Choisis le mode Automatique ou Dans le téléphone.'); }
+            catch (e) { setAIStatus('❌ ' + shortErr(e)); }
+            webProgress = null;
         }
 
         function triggerKeyReward(storyId) {
@@ -712,7 +906,7 @@ Format de réponse attendu :
 
         function showTranslation() {
             const box = $('hint-box');
-            box.innerHTML = `<strong>🇫🇷 Mode IA Connectée :</strong><br>L'IA open-source Llama 3 analyse tes phrases en direct.`;
+            box.innerHTML = `<strong>🤖 IA de Clara :</strong><br>${esc(aiStatusText())}<br>Réglages dans l'onglet Profil.`;
             box.style.display = 'block';
         }
 
@@ -841,6 +1035,7 @@ Format de réponse attendu :
             $('stat-tests').innerText = S.stats.testsCount;
             $('stat-msg').innerText = S.stats.msgs; 
             $('stat-stories').innerText = `${S.storiesDone.length}/72`;
+            renderAISettings();
         }
 
         function exportData() {
