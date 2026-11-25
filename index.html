@@ -86,28 +86,24 @@
         .helpers button { flex: 1; font-size: 11px; padding: 6px 4px; }
         .hint-box { background: var(--accent-light); color: var(--accent); padding: 10px; border-radius: 10px; font-size: 12px; margin-top: 8px; display: none; line-height: 1.4; border: 1px solid var(--border); }
         
-        .cafe-display { 
-            background: url('cafe-bg.JPG') center/cover no-repeat; 
-            border: 2px solid var(--border); 
-            border-radius: 16px; 
-            height: 240px; 
-            position: relative; 
-            margin-bottom: 16px; 
-            overflow: hidden; 
-            box-shadow: inset 0 4px 15px rgba(0,0,0,0.3); 
+        .cafe-scroll { overflow-x: auto; overflow-y: hidden; border-radius: 16px; border: 2px solid var(--border); margin-bottom: 6px; -webkit-overflow-scrolling: touch; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+        .cafe-display {
+            background: url('decors/cafe_etape_1.jpg') center/100% 100% no-repeat;
+            height: 220px;
+            aspect-ratio: 766 / 256;
+            position: relative;
+            overflow: hidden;
         }
-        
-        .cafe-item-visual { position: absolute; z-index: 3; transition: all 0.3s; pointer-events: none; image-rendering: pixelated; }
-        #vis-plant { bottom: 22px; left: 12px; font-size: 30px; display: none; }
-        #vis-cake { bottom: 75px; right: 110px; font-size: 32px; display: none; }
-        #vis-table { bottom: 18px; left: 115px; font-size: 32px; display: none; }
-        #vis-chef { bottom: 78px; right: 185px; font-size: 32px; display: none; }
-        #vis-neon { top: 15px; left: 20px; font-size: 26px; display: none; }
+        .cafe-hint { font-size: 11px; color: var(--muted); text-align: center; margin-bottom: 14px; }
 
-        .walking-customer { position: absolute; bottom: 30px; right: 15px; width: 34px; height: 44px; z-index: 4; transition: transform linear; display: flex; justify-content: center; align-items: center; }
-        .customer-avatar { font-size: 26px; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.4)); }
+        .visitor { position: absolute; transform: translate(-50%, -100%); background-repeat: no-repeat; pointer-events: none; will-change: left, top; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.35)); }
+        .bubble { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); margin-bottom: 4px; background: #fffaf2; color: #3d3430; border: 1px solid #c8a27a; border-radius: 8px; padding: 3px 7px; font-size: 10px; font-weight: 600; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,0.2); opacity: 0; transition: opacity 0.25s; }
+        .bubble.show { opacity: 1; }
+        .bubble.right { transform: translateX(-85%); }
+        .bubble.left { transform: translateX(-15%); }
+        .chef-bubble { position: absolute; left: 55%; top: 16%; transform: translateX(-50%); z-index: 2000; }
 
-        .floating-money { position: absolute; color: #a3b19b; text-shadow: 0 2px 4px rgba(0,0,0,0.6); font-weight: 800; font-size: 16px; animation: floatUp 1.2s ease-out forwards; z-index: 5; }
+        .floating-money { position: absolute; color: #fff3b0; text-shadow: 0 2px 4px rgba(0,0,0,0.8); font-weight: 800; font-size: 15px; animation: floatUp 1.2s ease-out forwards; z-index: 2000; transform: translateX(-50%); pointer-events: none; }
 
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
         .stat-box { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; text-align: center; }
@@ -179,13 +175,10 @@
 
     <main id="view-cafe" class="hidden">
         <button class="btn btn-blue" onclick="startFullToeicTest()">📝 Lancer un Test TOEIC complet (10 questions)</button>
-        <div class="cafe-display" id="cafe-display">
-            <div id="vis-plant" class="cafe-item-visual">🌿</div>
-            <div id="vis-cake" class="cafe-item-visual">🥮</div>
-            <div id="vis-table" class="cafe-item-visual">🪵</div>
-            <div id="vis-chef" class="cafe-item-visual">👨‍🍳</div>
-            <div id="vis-neon" class="cafe-item-visual">✨</div>
+        <div class="cafe-scroll" id="cafe-scroll">
+            <div class="cafe-display" id="cafe-display"></div>
         </div>
+        <div class="cafe-hint">↔️ Fais glisser pour voir tout le café</div>
         <div style="background:var(--success-light); color:#2e4a23; padding:12px; border-radius:12px; margin-bottom:16px; font-size:13px; text-align:center; border:1px solid var(--border);">
             ⏳ Le café tourne en arrière-plan. Améliore tes stats avec des pièces 🪙 !
         </div>
@@ -315,10 +308,8 @@
 
         let activeTest = { questions: [], currentIndex: 0, correctCount: 0 };
         let pendingRewardStoryId = null;
-        let lastClientIndex = -1;
         let currentSelectedBook = null;
 
-        const CLEAN_CLIENTS = ['🧑‍💼', '👩‍🦰', '👨‍💻', '👩‍🦱', '👴', '👩🏾', '👨‍🦰', '👵', '🧢', '🎧'];
 
         function getKeySpriteStyle(id) {
             const index = id % 72;
@@ -384,11 +375,13 @@
         ];
 
         const SHOP = [
-            { id: 1, name: "Jolies plantes", icon: "🪴", cost: 800, income: 10, targetVis: "vis-plant" },
-            { id: 2, name: "Vitrine pâtisserie", icon: "🍰", cost: 1800, income: 20, targetVis: "vis-cake" },
-            { id: 3, name: "Déco en bois (Table)", icon: "🪑", cost: 3000, income: 35, targetVis: "vis-table" },
-            { id: 4, name: "Chef cuisinier", icon: "🧑‍🍳", cost: 5000, income: 60, targetVis: "vis-chef" },
-            { id: 5, name: "Enseigne lumineuse", icon: "🌟", cost: 8000, income: 100, targetVis: "vis-neon" }
+            { id: 1, name: "Tableaux & déco murale", icon: "🖼️", cost: 600, income: 8 },
+            { id: 2, name: "Plantes & fleurs", icon: "🪴", cost: 1200, income: 15 },
+            { id: 3, name: "Chef cuisinier & vitrine à pâtisseries", icon: "🧑‍🍳", cost: 2200, income: 25 },
+            { id: 4, name: "Coin des premiers habitués", icon: "🙋", cost: 3500, income: 40 },
+            { id: 5, name: "Tables & tapis", icon: "🪑", cost: 5500, income: 60 },
+            { id: 6, name: "Ardoise du menu & étagères", icon: "📋", cost: 8000, income: 85 },
+            { id: 7, name: "Café de rêve (auvent, fauteuil)", icon: "✨", cost: 12000, income: 120 }
         ];
 
         let S = { 
@@ -917,17 +910,178 @@ TIP: <one expression that real native speakers use in this situation, with its m
             box.style.display = 'block';
         }
 
+        /* ===== Café animé : décors 1 à 8 + clients en pixel art ===== */
+        const CLIENT_SPRITES = ['02_blonde', '03_homme_lunettes', '04_rousse', '05_homme_age', '06_cheveux_noirs', '07_barbe', '08_femme_lunettes', '09_casquette', '10_queue_de_cheval'];
+        const SPR_W = 72, SPR_H = 128;            // taille d'une case ; lignes : 0 bas, 1 haut, 2 gauche, 3 droite
+        const CAFE_LINES = {
+            hello: ["Hello! 👋", "Hi there!", "Good morning!", "Hey, what a cozy place!"],
+            order: ["Can I get a latte, please?", "A cappuccino to go, please!", "One espresso, please.", "Could I have a hot chocolate?", "I'll have a flat white, thanks!", "A cup of tea, please."],
+            vitrine: ["This cake looks delicious!", "I'll take a croissant too.", "Wow, so many pastries!"],
+            drink: ["Mmm, this coffee is great!", "What a cozy place!", "Cheers! ☕", "I could stay here all day."],
+            window: ["Lovely weather today!", "What a nice view!"],
+            plants: ["I love these plants!", "So green and fresh!"],
+            paintings: ["Nice painting!", "Is that London?"],
+            bye: ["See you soon!", "Thank you, bye!", "Have a nice day!"]
+        };
+        const CHEF_LINES = ["Coming right up! 👨‍🍳", "Enjoy! ☕", "Fresh out of the oven!"];
+        let visitors = [], cafeRAF = null, cafeLastT = 0, nextSpawn = 0.5, shownStage = 0;
+        const pick = a => a[Math.floor(Math.random() * a.length)];
+        const rnd = (a, b) => a + Math.random() * (b - a);
+
+        function cafeStage() { return Math.min(8, 1 + S.items.filter(id => id >= 1 && id <= 7).length); }
+        function nextShopItem() { return SHOP.find(it => !S.items.includes(it.id)); }
+        function cafeGain() {
+            const priceLevel = CAFE_UPGRADES.find(u => u.id === 'price').level;
+            return Math.round((5 + getBonusIncome()) * (1 + priceLevel * 0.3));
+        }
+
         function updateCafeVisuals() {
-            SHOP.forEach(item => {
-                const el = $(item.targetVis);
-                if (el) {
-                    if (S.items.includes(item.id)) {
-                        el.style.display = 'block';
-                    } else {
-                        el.style.display = 'none';
-                    }
-                }
+            const st = cafeStage();
+            const cafe = $('cafe-display');
+            if (cafe && st !== shownStage) {
+                cafe.style.backgroundImage = `url('decors/cafe_etape_${st}.jpg')`;
+                shownStage = st;
+                if (st < 8) { const pre = new Image(); pre.src = `decors/cafe_etape_${st + 1}.jpg`; }
+            }
+            startCafeLoop();
+        }
+
+        function spritePlan(st) {
+            const plan = [];
+            plan.push({ wait: 1000, face: 0, say: pick(CAFE_LINES.hello) });
+            plan.push({ go: [rnd(41, 58), 95] });
+            plan.push({ wait: 2400, face: 1, say: pick(CAFE_LINES.order), pay: true });
+            const acts = [];
+            if (st >= 4) acts.push({ x: 74, y: 96, face: 1, l: 'vitrine' });
+            if (st >= 2) acts.push({ x: 47, y: 95, face: 1, l: 'paintings' });
+            if (st >= 3) acts.push({ x: 83, y: 96, face: 1, l: 'plants' });
+            if (st < 5) acts.push({ x: 13, y: 97, face: 1, l: 'window' });
+            (st < 5 ? [21] : [29, 65]).forEach(x => acts.push({ x, y: 97, face: 0, l: 'drink' }));
+            acts.sort(() => Math.random() - 0.5);
+            acts.slice(0, Math.random() < 0.6 ? 2 : 1).forEach(a => {
+                plan.push({ go: [a.x + rnd(-2, 2), a.y] });
+                plan.push({ wait: 2800, face: a.face, say: pick(CAFE_LINES[a.l]) });
             });
+            plan.push({ go: [93, 90] });
+            plan.push({ wait: 900, face: 1, say: pick(CAFE_LINES.bye), leave: true });
+            return plan;
+        }
+
+        function spawnVisitor() {
+            const used = new Set(visitors.map(v => v.sprite));
+            const pool = CLIENT_SPRITES.filter(s => !used.has(s));
+            if (!pool.length) return;
+            const sprite = pick(pool);
+            const el = document.createElement('div');
+            el.className = 'visitor';
+            el.style.backgroundImage = `url('sprites/clients/${sprite}.png')`;
+            const bub = document.createElement('div');
+            bub.className = 'bubble';
+            el.appendChild(bub);
+            $('cafe-display').appendChild(el);
+            visitors.push({ sprite, el, bub, x: 93, y: 90, dir: 0, ft: 0, moving: false, op: 0, leaving: false, steps: spritePlan(cafeStage()), cur: null });
+        }
+
+        function visitorSay(v, text) {
+            v.bub.textContent = text;
+            v.bub.classList.toggle('right', v.x > 78);
+            v.bub.classList.toggle('left', v.x < 20);
+            v.bub.classList.add('show');
+        }
+
+        function visitorPay(v) {
+            const cafe = $('cafe-display');
+            const money = document.createElement('div');
+            money.className = 'floating-money';
+            money.innerText = `+${cafeGain()}💶`;
+            money.style.left = v.x + '%';
+            money.style.top = Math.max(5, v.y - 55) + '%';
+            cafe.appendChild(money);
+            setTimeout(() => money.remove(), 1200);
+            if (cafeStage() >= 4) {
+                const cb = document.createElement('div');
+                cb.className = 'bubble chef-bubble show';
+                cb.textContent = pick(CHEF_LINES);
+                cafe.appendChild(cb);
+                setTimeout(() => cb.remove(), 1600);
+            }
+        }
+
+        function stepVisitor(v, dt, spd) {
+            if (v.leaving) {
+                v.op -= dt * 2;
+                if (v.op <= 0) { v.dead = true; v.el.remove(); }
+                return;
+            }
+            v.op = Math.min(1, v.op + dt * 2.5);
+            if (!v.cur) {
+                v.cur = v.steps.shift();
+                if (!v.cur) { v.leaving = true; return; }
+                v.cur.t = 0;
+                if (v.cur.wait) {
+                    v.dir = v.cur.face;
+                    if (v.cur.say) visitorSay(v, v.cur.say);
+                    if (v.cur.pay) visitorPay(v);
+                }
+            }
+            const c = v.cur;
+            if (c.go) {
+                const dx = c.go[0] - v.x, dy = (c.go[1] - v.y) * 0.35;
+                const d = Math.hypot(dx, dy);
+                if (d < 0.5) { v.x = c.go[0]; v.y = c.go[1]; v.cur = null; v.moving = false; return; }
+                const k = Math.min(1, spd * dt / d);
+                v.x += dx * k; v.y += (c.go[1] - v.y) * k;
+                v.dir = Math.abs(dx) > Math.abs(dy) * 1.5 ? (dx < 0 ? 2 : 3) : (dy > 0 ? 0 : 1);
+                v.moving = true;
+            } else {
+                v.moving = false;
+                c.t += dt * 1000;
+                if (c.t >= c.wait) {
+                    v.bub.classList.remove('show');
+                    if (c.leave) v.leaving = true;
+                    v.cur = null;
+                }
+            }
+        }
+
+        function cafeFrame(t) {
+            const view = $('view-cafe');
+            if (!view || view.classList.contains('hidden')) { cafeRAF = null; return; }
+            const dt = cafeLastT ? Math.min(0.05, (t - cafeLastT) / 1000) : 0;
+            cafeLastT = t;
+            const speedLvl = CAFE_UPGRADES.find(u => u.id === 'speed').level;
+            const spawnLvl = CAFE_UPGRADES.find(u => u.id === 'spawn').level;
+            const spd = 7 * (1 + 0.15 * speedLvl);
+            nextSpawn -= dt;
+            if (nextSpawn <= 0) {
+                if (visitors.length < Math.min(CLIENT_SPRITES.length, 2 + cafeStage())) spawnVisitor();
+                nextSpawn = Math.max(2.5, 7 - spawnLvl * 0.9) * rnd(0.7, 1.3);
+            }
+            const cafe = $('cafe-display');
+            const ch = cafe.clientHeight * 0.36, cw = ch * SPR_W / SPR_H;
+            visitors.forEach(v => {
+                stepVisitor(v, dt, spd);
+                if (v.dead) return;
+                v.ft = v.moving ? v.ft + dt : 0;
+                const frame = v.moving ? Math.floor(v.ft * 8) % 4 : 0;
+                const s = v.el.style;
+                s.left = v.x + '%'; s.top = v.y + '%';
+                s.width = cw + 'px'; s.height = ch + 'px';
+                s.backgroundSize = `${cw * 4}px ${ch * 4}px`;
+                s.backgroundPosition = `${-frame * cw}px ${-v.dir * ch}px`;
+                s.zIndex = Math.round(v.y * 10);
+                s.opacity = v.op;
+            });
+            visitors = visitors.filter(v => !v.dead);
+            cafeRAF = requestAnimationFrame(cafeFrame);
+        }
+
+        function startCafeLoop() {
+            if (cafeRAF) return;
+            cafeLastT = 0;
+            const sc = $('cafe-scroll');
+            if (sc && !sc.dataset.centered) { sc.scrollLeft = (sc.scrollWidth - sc.clientWidth) / 2; if (sc.scrollWidth > 0) sc.dataset.centered = '1'; }
+            cafeRAF = requestAnimationFrame(cafeFrame);
         }
 
         function renderCafe() {
@@ -951,11 +1105,18 @@ TIP: <one expression that real native speakers use in this situation, with its m
             });
             $('upgrades-list').innerHTML = upgradesHtml;
 
+            const next = nextShopItem();
             const shopHtml = SHOP.map(item => {
                 const owned = S.items.includes(item.id);
-                return `<div class="card"><div class="card-icon">${item.icon}</div><div class="card-content"><div class="card-title">${item.name}</div><div class="card-desc">Revenus passifs : +${item.income} 💶</div></div><div>${owned ? `<span style="color:var(--success); font-weight:bold; font-size:13px;">Possédé</span>` : `<button class="btn" onclick="buyItem(${item.id}, ${item.cost})">${item.cost} 💶</button>`}</div></div>`;
+                const isNext = next && next.id === item.id;
+                const action = owned
+                    ? `<span style="color:var(--success); font-weight:bold; font-size:13px;">Possédé</span>`
+                    : isNext
+                        ? `<button class="btn" onclick="buyItem(${item.id}, ${item.cost})">${item.cost} 💶</button>`
+                        : `<span style="color:var(--muted); font-size:13px;">🔒 ${item.cost} 💶</span>`;
+                return `<div class="card ${!owned && !isNext ? 'locked' : ''}"><div class="card-icon">${item.icon}</div><div class="card-content"><div class="card-title">${item.name}</div><div class="card-desc">Nouveau décor · revenus : +${item.income} 💶 / client</div></div><div>${action}</div></div>`;
             }).join('');
-            $('shop-items').innerHTML = `<p style="font-size:13px; margin-bottom:12px; color:var(--muted)">Revenu de base : <strong>+${5 + getBonusIncome()} 💶 / client</strong>.</p>` + shopHtml;
+            $('shop-items').innerHTML = `<p style="font-size:13px; margin-bottom:12px; color:var(--muted)">Décor ${cafeStage()}/8 · revenu : <strong>+${cafeGain()} 💶 / client</strong>.</p>` + shopHtml;
         }
 
         function upgradeStat(id) {
@@ -974,60 +1135,24 @@ TIP: <one expression that real native speakers use in this situation, with its m
         }
 
         function buyItem(id, cost) {
-            if (S.eur >= cost) { 
-                S.eur -= cost; 
-                S.items.push(id); 
-                saveData(); 
-                showToast("Objet acheté ! Il apparaît dans le café."); 
-                renderCafe(); 
-                updateCafeVisuals();
-                updateHeader(); 
-            } else { 
-                showToast("Pas assez d'💶 !"); 
+            const next = nextShopItem();
+            if (!next || next.id !== id) { showToast("Débloque d'abord le décor précédent !"); return; }
+            if (S.eur >= cost) {
+                S.eur -= cost;
+                S.items.push(id);
+                saveData();
+                showToast(`✨ Nouveau décor débloqué (${cafeStage()}/8) !`);
+                renderCafe();
+                updateHeader();
+            } else {
+                showToast("Pas assez d'💶 !");
             }
         }
 
         setInterval(() => {
-            const priceLevel = CAFE_UPGRADES.find(u => u.id === 'price').level;
-            const priceMultiplier = 1 + (priceLevel * 0.3);
-            const gain = Math.round((5 + getBonusIncome()) * priceMultiplier);
-            
-            S.eur += gain; 
-            saveData(); 
+            S.eur += cafeGain();
+            saveData();
             updateHeader();
-
-            const cafe = $('cafe-display');
-            if(cafe && !$('view-cafe').classList.contains('hidden')) {
-                const speedLevel = CAFE_UPGRADES.find(u => u.id === 'speed').level;
-                const walkDuration = Math.max(1.5, 3 - (speedLevel * 0.3));
-
-                let newClientIndex;
-                do {
-                    newClientIndex = Math.floor(Math.random() * CLEAN_CLIENTS.length);
-                } while (newClientIndex === lastClientIndex && CLEAN_CLIENTS.length > 1);
-                lastClientIndex = newClientIndex;
-                const clientAvatar = CLEAN_CLIENTS[newClientIndex];
-
-                const customer = document.createElement('div');
-                customer.className = 'walking-customer';
-                customer.style.transitionDuration = `${walkDuration}s`;
-                customer.innerHTML = `<div class="customer-avatar">${clientAvatar}</div>`;
-                cafe.appendChild(customer);
-
-                setTimeout(() => { customer.style.transform = 'translateX(-180px)'; }, 50);
-                setTimeout(() => {
-                    const money = document.createElement('div');
-                    money.className = 'floating-money'; 
-                    money.innerText = `+${gain}💶`; 
-                    money.style.right = '110px'; 
-                    money.style.bottom = '45px';
-                    cafe.appendChild(money); 
-                    setTimeout(() => { money.remove(); }, 1200);
-                }, walkDuration * 1000 * 0.4);
-
-                setTimeout(() => { customer.style.transform = 'translateX(0px)'; }, walkDuration * 1000 + 500);
-                setTimeout(() => { customer.remove(); }, (walkDuration * 2 + 1) * 1000);
-            }
         }, 5000);
 
         function renderProgression() {
