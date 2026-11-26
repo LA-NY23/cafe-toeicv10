@@ -632,9 +632,11 @@
             return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
         }
 
-        const AI_DEFAULT = { mode: 'auto', key: '', model: 'meta-llama/Llama-3.1-8B-Instruct', freeModel: 'mistral', webModel: 'Qwen2.5-1.5B-Instruct-q4f16_1-MLC' };
+        const AI_DEFAULT = { mode: 'auto', key: '', model: 'meta-llama/Llama-3.1-8B-Instruct', freeModel: 'gpt-oss-20b', webModel: 'Qwen2.5-1.5B-Instruct-q4f16_1-MLC' };
+        const FREE_MODELS = ['gpt-oss-20b', 'openai-fast', 'openai'];   // modèles gratuits sans clé (le 1er est open source)
         let AI = { ...AI_DEFAULT };
         try { AI = { ...AI_DEFAULT, ...JSON.parse(localStorage.getItem('cafeToeicAI') || '{}') }; } catch (e) {}
+        AI.freeModel = AI_DEFAULT.freeModel;   // ne jamais réutiliser un ancien modèle gratuit enregistré
         function saveAI() { try { localStorage.setItem('cafeToeicAI', JSON.stringify(AI)); } catch (e) {} }
         function webReady() { try { return localStorage.getItem('cafeToeicWebReady') === '1'; } catch (e) { return false; } }
 
@@ -717,7 +719,19 @@ TIP: <one expression that real native speakers use in this situation, with its m
             return aiChat('https://router.huggingface.co/v1/chat/completions', { 'Authorization': 'Bearer ' + AI.key }, AI.model, messages);
         }
         async function aiFree(messages) {
-            return aiChat('https://text.pollinations.ai/openai', {}, AI.freeModel, messages);
+            const order = [AI.freeModel, ...FREE_MODELS.filter(m => m !== AI.freeModel)];
+            let lastErr;
+            for (const m of order) {
+                try {
+                    const txt = await aiChat('https://text.pollinations.ai/openai', {}, m, messages);
+                    AI.freeModel = m;   // garde le modèle qui marche pour la suite
+                    return txt;
+                } catch (e) {
+                    lastErr = e;
+                    if (!/model|classic|not found|404|400/i.test(String(e && e.message))) throw e;   // panne réseau : inutile d'essayer les autres
+                }
+            }
+            throw lastErr;
         }
 
         let webEngine = null, webLoading = null, webProgress = null;
