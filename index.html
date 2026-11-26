@@ -235,12 +235,15 @@
             <label class="ai-lbl" for="ai-mode">Mode</label>
             <select id="ai-mode" class="ai-field" onchange="saveAISettings()">
                 <option value="auto">Automatique</option>
-                <option value="free">Gratuit, sans clé</option>
+                <option value="groq">Rapide : Groq (clé gratuite)</option>
+                <option value="free">Gratuit, sans clé (plus lent)</option>
                 <option value="cloud">En ligne (Hugging Face)</option>
                 <option value="web">Dans le téléphone (WebLLM)</option>
                 <option value="off">Hors-ligne (réponses prédéfinies)</option>
             </select>
-            <label class="ai-lbl" for="ai-key">Clé Hugging Face (reste sur ton téléphone)</label>
+            <label class="ai-lbl" for="ai-groq">Clé Groq gratuite (console.groq.com, reste sur ton téléphone)</label>
+            <input id="ai-groq" class="ai-field" type="password" placeholder="gsk_..." autocomplete="off" onchange="saveAISettings()">
+            <label class="ai-lbl" for="ai-key">Clé Hugging Face (facultatif)</label>
             <input id="ai-key" class="ai-field" type="password" placeholder="hf_..." autocomplete="off" onchange="saveAISettings()">
             <label class="ai-lbl" for="ai-model">Modèle en ligne</label>
             <input id="ai-model" class="ai-field" type="text" autocomplete="off" onchange="saveAISettings()">
@@ -608,6 +611,7 @@
                             inner = `<p><strong>🇫🇷 Écris en anglais</strong> pour t'entraîner avec Clara !</p>`;
                         } else {
                             if (f.correction) inner += `<p><strong>✏️ Correction :</strong> ${esc(f.correction)}</p>`;
+                            if (f.rule) inner += `<p><strong>📘 Règle :</strong> ${esc(f.rule)}</p>`;
                             if (f.tip) inner += `<p><strong>🗣️ Astuce de local :</strong> ${esc(f.tip)}</p>`;
                             if (f.aiReply) inner += `<p><strong>Réponse IA :</strong> ${esc(f.aiReply)}</p>`;
                         }
@@ -632,8 +636,8 @@
             return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
         }
 
-        const AI_DEFAULT = { mode: 'auto', key: '', model: 'meta-llama/Llama-3.1-8B-Instruct', freeModel: 'gpt-oss-20b', webModel: 'Qwen2.5-1.5B-Instruct-q4f16_1-MLC' };
-        const FREE_MODELS = ['gpt-oss-20b', 'openai-fast', 'openai'];   // modèles gratuits sans clé (le 1er est open source)
+        const AI_DEFAULT = { mode: 'auto', key: '', model: 'meta-llama/Llama-3.1-8B-Instruct', freeModel: 'openai-fast', groqKey: '', groqModel: 'openai/gpt-oss-20b', webModel: 'Qwen2.5-1.5B-Instruct-q4f16_1-MLC' };
+        const FREE_MODELS = ['openai-fast', 'gpt-oss-20b', 'openai'];   // modèles gratuits sans clé (GPT-OSS 20B open source en premier)
         let AI = { ...AI_DEFAULT };
         try { AI = { ...AI_DEFAULT, ...JSON.parse(localStorage.getItem('cafeToeicAI') || '{}') }; } catch (e) {}
         AI.freeModel = AI_DEFAULT.freeModel;   // ne jamais réutiliser un ancien modèle gratuit enregistré
@@ -658,20 +662,42 @@
             return s < 450 ? 'A2: very simple words and short sentences' : s < 650 ? 'B1: everyday and workplace English' : s < 850 ? 'B2: fluent workplace English' : 'C1: advanced and idiomatic';
         }
 
+        const STORY_BEATS = [
+            "introduce a small surprise or event in the scene",
+            "ask Lucas's opinion about something new you have not discussed yet",
+            "share a short personal anecdote, then ask a follow-up about it",
+            "move the scene to its next step (ordering, paying, leaving, arriving somewhere new...)",
+            "bring in a side character (waiter, friend, stranger, colleague) who says one line",
+            "suggest a plan or a decision you must make together",
+            "describe a detail of the place (smell, music, view, weather) and react to it",
+            "make a light joke and ask something unexpected but related to the scene"
+        ];
+
         function buildMessages(userText, st) {
-            const hist = S.chatHistory[S.currentStory] || { msgs: [] };
+            const hist = S.chatHistory[S.currentStory] || { msgs: [], step: 0 };
+            const asked = [];
+            hist.msgs.filter(m => m.sender === 'npc').forEach(m => {
+                (String(m.text).match(/[^.!?]*\?/g) || []).forEach(q => { q = q.trim(); if (q && !asked.includes(q)) asked.push(q); });
+            });
+            const askedTxt = asked.slice(-15).map(q => '- ' + q).join('\n') || '- (none yet)';
+            const beat = STORY_BEATS[Math.floor(Math.random() * STORY_BEATS.length)];
             const system = `You are Clara, a warm and witty bookseller who loves English literature, pastries and rare teas. You are the partner of Lucas (21, electrical maintenance apprentice, triathlete, coffee lover). Together you dream of opening a café-bookshop.
 Current scene: "${st.title}". ${st.desc}
-Roleplay rules: stay in character, speak natural spoken English in 1 to 3 short sentences, react to what Lucas really said, bring new details or topics, and end with a question or a hook. Never repeat yourself. Lucas is a French speaker preparing for the TOEIC (level ${levelHint()}), so use useful office, travel, shopping and everyday vocabulary.
-Then coach Lucas on his LAST message only. Use EXACTLY this format and nothing else:
-CLARA: <your reply in English>
-CORRECTION: <if there are mistakes: the corrected sentence, then the grammar rule explained simply in French in 1-2 sentences. If there are none: Parfait !>
-TIP: <one expression that real native speakers use in this situation, with its meaning in French>`;
+This is exchange ${(hist.step || 0) + 1} of 40 in this chapter: the story must keep moving forward.
+Roleplay rules: stay in character, speak natural spoken English in 1 to 3 short sentences, react precisely to what Lucas just said, and end with ONE new question. For this turn: ${beat}.
+Questions you ALREADY asked (never ask them again, nor anything similar):
+${askedTxt}
+Lucas is a French speaker preparing for the TOEIC (level ${levelHint()}): use useful office, travel, shopping and everyday vocabulary.
+ALWAYS answer in EXACTLY this format, with the 4 lines, in this order, and nothing else:
+CORRECTION: <Lucas's LAST message rewritten in correct, natural English. If it was already correct, write: Parfait !>
+RULE: <in French, 1 or 2 simple sentences explaining the grammar or vocabulary rule behind the correction (if it was correct, give one useful remark)>
+TIP: <one expression that native speakers really use in this situation, with its meaning in French>
+CLARA: <your reply in English>`;
             const msgs = [{ role: 'system', content: system }];
             const all = hist.msgs.filter(m => m.sender === 'npc' || m.sender === 'player');
             const tail = all[all.length - 1];
             if (tail && tail.sender === 'player' && tail.text === userText) all.pop();
-            const past = all.slice(-10);
+            const past = all.slice(-16);
             past.forEach(m => {
                 const role = m.sender === 'npc' ? 'assistant' : 'user';
                 const content = m.sender === 'npc' ? 'CLARA: ' + m.text : m.text;
@@ -687,16 +713,19 @@ TIP: <one expression that real native speakers use in this situation, with its m
         }
 
         function parseAI(raw) {
-            const t = String(raw || '').trim();
-            const c = t.match(/CLARA:\s*([\s\S]*?)(?=\n\s*CORRECTION:|\n\s*TIP:|$)/i);
-            const k = t.match(/CORRECTION:\s*([\s\S]*?)(?=\n\s*TIP:|$)/i);
-            const p = t.match(/TIP:\s*([\s\S]*)$/i);
-            const reply = (c ? c[1] : t.split(/\n\s*(?:CORRECTION|TIP):/i)[0]).replace(/^\s*CLARA:\s*/i, '').trim();
-            const clean = s => s.replace(/\s*-{3,}\s*$/, '').trim();
-            return { reply: clean(reply), correction: k ? clean(k[1]) : '', tip: p ? clean(p[1]) : '' };
+            const t = String(raw || '').replace(/\*\*/g, '').trim();
+            const re = /^\s*(CORRECTION|RULE|TIP|CLARA)\s*:\s*/gim;
+            const marks = [];
+            let m;
+            while ((m = re.exec(t))) marks.push({ k: m[1].toUpperCase(), start: m.index, end: re.lastIndex });
+            const out = {};
+            marks.forEach((mk, i) => { out[mk.k] = t.slice(mk.end, i + 1 < marks.length ? marks[i + 1].start : t.length).trim(); });
+            const clean = x => String(x || '').replace(/\s*-{3,}\s*$/, '').trim();
+            const reply = out.CLARA != null ? out.CLARA : (marks.length ? '' : t);
+            return { reply: clean(reply), correction: clean(out.CORRECTION), rule: clean(out.RULE), tip: clean(out.TIP) };
         }
 
-        async function aiChat(url, headers, model, messages) {
+        async function aiChat(url, headers, model, messages, maxTokens = 900) {
             const ctrl = new AbortController();
             const timer = setTimeout(() => ctrl.abort(), 30000);
             try {
@@ -704,7 +733,7 @@ TIP: <one expression that real native speakers use in this situation, with its m
                     method: 'POST',
                     signal: ctrl.signal,
                     headers: { 'Content-Type': 'application/json', ...headers },
-                    body: JSON.stringify({ model, messages, max_tokens: 350, temperature: 0.9 })
+                    body: JSON.stringify({ model, messages, max_tokens: maxTokens, temperature: 0.9 })
                 });
                 const raw = await r.text();
                 let d = {}; try { d = JSON.parse(raw); } catch (e) {}
@@ -717,6 +746,10 @@ TIP: <one expression that real native speakers use in this situation, with its m
         async function aiCloud(messages) {
             if (!AI.key) throw new Error('no-key');
             return aiChat('https://router.huggingface.co/v1/chat/completions', { 'Authorization': 'Bearer ' + AI.key }, AI.model, messages);
+        }
+        async function aiGroq(messages) {
+            if (!AI.groqKey) throw new Error('no-key');
+            return aiChat('https://api.groq.com/openai/v1/chat/completions', { 'Authorization': 'Bearer ' + AI.groqKey }, AI.groqModel, messages, 1500);
         }
         async function aiFree(messages) {
             const order = [AI.freeModel, ...FREE_MODELS.filter(m => m !== AI.freeModel)];
@@ -763,12 +796,13 @@ TIP: <one expression that real native speakers use in this situation, with its m
             lastOffline = i;
             const why = reason
                 ? 'IA indisponible (' + reason + ') : réponse hors-ligne, sans correction.'
-                : "Aucune IA active : va dans Profil → IA de Clara et colle ta clé Hugging Face pour être corrigé.";
-            return { reply: OFFLINE_REPLIES[i], correction: why, tip: '' };
+                : "Aucune IA active : va dans Profil → IA de Clara (mode Automatique) pour être corrigé.";
+            return { reply: OFFLINE_REPLIES[i], correction: why, rule: '', tip: '' };
         }
 
         function pickProvider() {
             if (AI.mode !== 'auto') return AI.mode;
+            if (AI.groqKey) return 'groq';
             if (AI.key) return 'cloud';
             if (webReady() && navigator.gpu) return 'web';
             return 'free';
@@ -782,19 +816,30 @@ TIP: <one expression that real native speakers use in this situation, with its m
             return m.slice(0, 60);
         }
 
+        async function callProvider(provider, messages) {
+            if (provider === 'groq') return aiGroq(messages);
+            if (provider === 'cloud') return aiCloud(messages);
+            if (provider === 'web') return aiWeb(messages);
+            return aiFree(messages);
+        }
+
         async function getClaraReply(userText, st) {
             const provider = pickProvider();
             if (provider === 'off') return { ...offlineReply(), source: 'off' };
-            try {
-                const messages = buildMessages(userText, st);
-                const raw = provider === 'cloud' ? await aiCloud(messages) : provider === 'free' ? await aiFree(messages) : await aiWeb(messages);
-                const p = parseAI(raw);
-                if (!p.reply) throw new Error('réponse vide');
-                return { ...p, source: provider };
-            } catch (e) {
-                const err = shortErr(e);
-                return { ...offlineReply(err), source: 'off', error: err };
+            const chain = provider === 'free' ? ['free'] : [provider, 'free'];   // secours : IA gratuite
+            const messages = buildMessages(userText, st);
+            let firstErr = null;
+            for (const pv of chain) {
+                try {
+                    const p = parseAI(await callProvider(pv, messages));
+                    if (!p.reply) throw new Error('réponse vide');
+                    if (!p.correction) p.correction = 'Pas de correction reçue pour ce message.';
+                    return { ...p, source: pv, warn: firstErr };
+                } catch (e) {
+                    if (!firstErr) firstErr = shortErr(e);
+                }
             }
+            return { ...offlineReply(firstErr), source: 'off', error: firstErr };
         }
 
         function showTyping() {
@@ -824,9 +869,10 @@ TIP: <one expression that real native speakers use in this situation, with its m
                 aiBusy = true; showTyping();
                 let rep;
                 try { rep = await getClaraReply(text, st); } finally { aiBusy = false; }
-                playerMsg.feedback = { isFrench: false, correction: rep.correction, tip: rep.tip };
+                playerMsg.feedback = { isFrench: false, correction: rep.correction, rule: rep.rule, tip: rep.tip };
                 hist.msgs.push({ sender: 'npc', text: rep.reply });
                 if (rep.error) showToast('IA indisponible (' + rep.error + ') : réponse hors-ligne.');
+                else if (rep.warn) showToast('IA rapide indisponible (' + rep.warn + ') : IA gratuite utilisée.');
             }
 
             const xpBonus = 1 + ((S.upgrades.xp || 0) * 0.2);
@@ -848,6 +894,7 @@ TIP: <one expression that real native speakers use in this situation, with its m
         /* --- Réglages de l'IA (onglet Profil) --- */
         function aiStatusText() {
             const p = pickProvider();
+            if (p === 'groq') return '⚡ IA rapide Groq : ' + AI.groqModel + ' (open source)' + (AI.groqKey ? '' : ' (clé manquante)');
             if (p === 'free') return '🆓 IA gratuite sans clé (modèle open source ' + AI.freeModel + ')';
             if (p === 'cloud') return '🌐 IA en ligne : ' + AI.model + (AI.key ? '' : ' (clé manquante)');
             if (p === 'web') return '📱 IA du téléphone : ' + AI.webModel + (webReady() ? '' : ' (à télécharger)');
@@ -856,12 +903,13 @@ TIP: <one expression that real native speakers use in this situation, with its m
         function setAIStatus(t) { const b = $('ai-status'); if (b) b.innerText = t; }
         function renderAISettings() {
             if (!$('ai-mode')) return;
-            $('ai-mode').value = AI.mode; $('ai-key').value = AI.key; $('ai-model').value = AI.model;
+            $('ai-mode').value = AI.mode; $('ai-key').value = AI.key; $('ai-model').value = AI.model; $('ai-groq').value = AI.groqKey || '';
             setAIStatus(aiStatusText());
         }
         function saveAISettings() {
             AI.mode = $('ai-mode').value;
             AI.key = $('ai-key').value.trim();
+            AI.groqKey = $('ai-groq').value.trim();
             AI.model = $('ai-model').value.trim() || AI_DEFAULT.model;
             saveAI(); setAIStatus(aiStatusText()); showToast('Réglages IA enregistrés');
         }
@@ -870,7 +918,7 @@ TIP: <one expression that real native speakers use in this situation, with its m
             const st = STORIES[0];
             const r = await getClaraReply('Hello Clara, I am very happy to see you yesterday.', st);
             if (r.source === 'off') setAIStatus(r.error ? '❌ ' + r.error : aiStatusText());
-            else setAIStatus('✅ ' + r.reply + (r.correction ? '\n✏️ ' + r.correction : ''));
+            else setAIStatus('✅ (' + r.source + ') ' + r.reply + (r.correction ? '\n✏️ ' + r.correction : '') + (r.rule ? '\n📘 ' + r.rule : ''));
         }
         async function downloadWebModel() {
             if (!navigator.gpu) { setAIStatus("❌ Ce navigateur n'a pas WebGPU : utilise le mode En ligne."); return; }

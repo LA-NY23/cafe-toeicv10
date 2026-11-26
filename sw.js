@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cafe-toeic-v6';
+const CACHE_NAME = 'cafe-toeic-v7';
 const ASSETS = [
   '/',
   '/index.html',
